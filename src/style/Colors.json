@@ -1,0 +1,75 @@
+{
+    "colors": {
+        "baseColor": {
+            "base_011": "#941d10",
+            "base_01": "#f36527",
+            "base_02": "#f47b45",
+            "base_03": "#f69164",
+            "base_04": "#f8a783",
+            "base_05": "#f9bda2",
+            "base_06": "#fbd3c1",
+            "base_07": "#fde9e0",
+            "base_08": "#fee5dc"
+        },
+        "errorColor": {
+            "error_01": "#e74c3c",
+            "error_02": "#ea6557",
+            "error_03": "#ed7f73",
+            "error_04": "#f1988f",
+            "error_05": "#f4b2ab",
+            "error_06": "#f8cbc7",
+            "error_07": "#fbe5e3"
+        },
+        "alertColor": {
+            "alert_01": "#f1c40f",
+            "alert_02": "#f3cc31",
+            "alert_03": "#f5d453",
+            "alert_04": "#f7dd75",
+            "alert_05": "#f9e598",
+            "alert_06": "#fbeeba",
+            "alert_07": "#fdf6dc"
+        },
+        "successColor": {
+            "success_11": "#00662c",
+            "success_01": "#2ecc71",
+            "success_02": "#4bd385",
+            "success_03": "#69da99",
+            "success_04": "#87e1ad",
+            "success_05": "#a5e9c2",
+            "success_06": "#c3f0d6",
+            "success_07": "#e1f7ea"
+        },
+        "infoColor": {
+            "info_01": "#3498db",
+            "info_02": "#51a6e0",
+            "info_03": "#6eb5e5",
+            "info_04": "#8bc4ea",
+            "info_05": "#a8d2ef",
+            "info_06": "#c5e1f4",
+            "info_07": "#e1f0f9",
+            "info_11": "#09598b"
+        },
+        "neutral01Color": {
+            "neutral_01": "#2f2522",
+            "neutral_02": "#4c4441",
+            "neutral_03": "#6a6361",
+            "neutral_04": "#888280",
+            "neutral_05": "#a5a1a0",
+            "neutral_06": "#c3c0bf",
+            "neutral_07": "#e1dfdf",
+            "neutral_08": "#ffffff"
+        },
+        "neutral02Color": {
+            "neutral_01": "#201f23",
+            "neutral_02": "#29272d",
+            "neutral_03": "#313033",
+            "neutral_04": "#48464a",
+            "neutral_05": "#79767b",
+            "neutral_06": "#a5a2a6",
+            "neutral_07": "#dad6d4",
+            "neutral_08": "#fff6f9",
+            "neutral_09": "#fdf7f9",
+            "neutral_10": "#ffffff"
+        }
+    }
+}
