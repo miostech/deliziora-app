@@ -5,8 +5,8 @@ import WalkthroughSlider from "../components/WalkthroughSlider";
 export default function Walkthrough({ navigation }) {
   
   return (
-    <SafeAreaView>
+    <View>
       <WalkthroughSlider />
-    </SafeAreaView>
+    </View>
   );
 }

@@ -34,6 +34,7 @@ export default function App() {
           options={{
             headerShadowVisible: false,
             headerShown: true,
+            headerTitle:"",
             headerRight: () => {
               return (
                 <TouchableOpacity>
