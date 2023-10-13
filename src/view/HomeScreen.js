@@ -1,12 +1,13 @@
 //import liraries
-import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from 'react';
+import { View , StyleSheet } from 'react-native';
+import SearchBar from '../components/SearchBar';
 
 // create a component
 const HomeScreen = () => {
     return (
         <View style={styles.container}>
-            <Text>HomeScreen</Text>
+            <SearchBar />
         </View>
     );
 };
@@ -15,6 +16,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#2c3e50',

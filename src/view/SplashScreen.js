@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Image, SafeAreaView, Text } from "react-native";
+import { Image, View, Text } from "react-native";
 const gif = require("../../assets/SplashDelizioragif.gif");
 export default function SplashScreen({ navigation }) {
   useEffect(()=>{
@@ -12,13 +12,12 @@ export default function SplashScreen({ navigation }) {
     
   },[])
   return (
-    <SafeAreaView>
+    <View>
       <Image
         source={gif}
         style={{ height: "100%", width: "100%" }}
         resizeMode={"cover"}
-
       />
-    </SafeAreaView>
+    </View>
   );
 }
