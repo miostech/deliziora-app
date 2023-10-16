@@ -5980,6 +5980,11 @@ p-try@^2.0.0:
   resolved "https://registry.npmjs.org/p-try/-/p-try-2.2.0.tgz"
   integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
 
+pagescrollview@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/pagescrollview/-/pagescrollview-2.2.0.tgz#4a337e1f1c8a4fa11c3aba8c069af33a36f4eae7"
+  integrity sha512-7xz8E8Gwy3SN4wV96mz/mfNr0vc1SOwOlQ0MGAmHncKrUoR6EyXC1a4OVATWYVLRvSgjz03wQHnio+NmJkvk7Q==
+
 parse-json@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/parse-json/-/parse-json-4.0.0.tgz"

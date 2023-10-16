@@ -2,12 +2,15 @@
 import React from 'react';
 import { View , StyleSheet } from 'react-native';
 import SearchBar from '../components/SearchBar';
+import RestaurantsCardCarousel from '../components/RestaurantsCardCarousel';
+import a from '@ant-design/react-native/lib/modal/alert';
 
 // create a component
 const HomeScreen = () => {
     return (
         <View style={styles.container}>
             <SearchBar />
+            <RestaurantsCardCarousel/>
         </View>
     );
 };
@@ -16,10 +19,12 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'center',
+        top: 75,
+        display: 'flex',
+        gap: 500,
+        flexDirection: 'column',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: '#2c3e50',
     },
 });
 
