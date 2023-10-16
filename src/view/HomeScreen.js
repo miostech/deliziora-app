@@ -1,16 +1,16 @@
 //import liraries
 import React from 'react';
-import { View , StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import SearchBar from '../components/SearchBar';
 import RestaurantsCardCarousel from '../components/RestaurantsCardCarousel';
-import a from '@ant-design/react-native/lib/modal/alert';
+
 
 // create a component
 const HomeScreen = () => {
     return (
         <View style={styles.container}>
             <SearchBar />
-            <RestaurantsCardCarousel/>
+            <RestaurantsCardCarousel />
         </View>
     );
 };
