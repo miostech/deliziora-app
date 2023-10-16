@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     TextInput,
@@ -34,6 +34,7 @@ const SearchBar = () => {
                 <View>
                     <TextInput
                         placeholder="Pesquisar"
+                        autoComplete="on"
                         placeholderTextColor={colors.colors.neutral02Color.neutral_1}
                         style={styles.placeholderLabel}
                         overflow="hidden"
@@ -228,7 +229,7 @@ const styles = StyleSheet.create({
     },
     buttonClose: {
         backgroundColor: "transparent",
-        
+
     },
     textStyle: {
         color: "black",

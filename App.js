@@ -1,5 +1,5 @@
 
-import { Image, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -11,7 +11,8 @@ import Walkthrough from "./src/view/Walkthrough";
 import SearchErrorScreen from "./src/view/SearchErrorScreen";
 import SearchPostalCodeScreen from "./src/view/SearchPostalCodeScreen";
 import NotificationNotFoundScreen from "./src/view/NotificationNotFoundScreen";
-
+import LoadingPageScreen from "./src/view/LoadingPageScreen";
+import HomeLoading from "./src/view/HomeLoading";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -19,7 +20,7 @@ export default function App() {
   function StackApp() {
     return (
       <Stack.Navigator
-        initialRouteName="NotificationNotFoundScreen"
+        initialRouteName="HomeScreen"
         screenptions={{
           headerShadowVisible: false,
           animation: "timing",
@@ -54,6 +55,11 @@ export default function App() {
           options={{ headerShadowVisible: false, headerShown: false }}
         />
         <Stack.Screen
+          name="HomeLoading"
+          component={HomeLoading}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="SearchErrorScreen"
           component={SearchErrorScreen}
           screenoptions={{ headerShadowVisible: false, animation: "fade" }}
@@ -65,9 +71,15 @@ export default function App() {
           screenoptions={{ headerShadowVisible: false, animation: "fade" }}
           options={{ headerShadowVisible: false, headerShown: false }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="NotificationNotFoundScreen"
           component={NotificationNotFoundScreen}
+          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
+          options={{ headerShadowVisible: false, headerShown: false }}
+        />
+        <Stack.Screen
+          name="LoadingPageScreen"
+          component={LoadingPageScreen}
           screenoptions={{ headerShadowVisible: false, animation: "fade" }}
           options={{ headerShadowVisible: false, headerShown: false }}
         />
