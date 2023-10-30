@@ -7,6 +7,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { registerRootComponent } from "expo";
 import SplashScreen from "./src/view/SplashScreen";
 import Walkthrough from "./src/view/Walkthrough";
+import Notifications from "./src/view/Notifications";
+import ArrowLeft from "./src/components/SVGs/ArrowLeft/ArrowLeft";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -15,7 +17,7 @@ export default function App() {
   function StackApp() {
     return (
       <Stack.Navigator
-        initialRouteName="Splash"
+        initialRouteName="Notifications"
         screenptions={{
           headerShadowVisible: false,
           animation: "timing",
@@ -28,13 +30,23 @@ export default function App() {
           options={{ headerShadowVisible: false, headerShown: false }}
         />
         <Stack.Screen
+          name="Notifications"
+          component={Notifications}
+          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
+          options={{
+            headerShadowVisible: true,
+            headerShown: true,
+            headerTitle:"",
+          }}
+        />
+        <Stack.Screen
           name="Walkthrough"
           component={Walkthrough}
           screenoptions={{ headerShadowVisible: false, animation: "fade" }}
           options={{
             headerShadowVisible: false,
             headerShown: true,
-            headerTitle:"",
+            headerTitle: "",
             headerRight: () => {
               return (
                 <TouchableOpacity>
