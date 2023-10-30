@@ -17,7 +17,6 @@ export default function SplashScreen({ navigation }) {
         source={gif}
         style={{ height: "100%", width: "100%" }}
         resizeMode={"cover"}
-
       />
     </View>
   );

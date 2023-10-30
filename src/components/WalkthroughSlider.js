@@ -79,7 +79,7 @@ export default function WalkthroughSlider() {
                 }}
               >
                 <Text
-                  style={{ fontSize: 24, fontWeight: 500, textAlign: "center" }}
+                  style={{ fontSize: 24, fontWeight: "bold", textAlign: "center" }}
                 >
                   {item.title}
                 </Text>
