@@ -13,6 +13,7 @@ import HomeScreen from "./src/view/HomeScreen";
 import NotificationSvg from "./src/components/SVGs/NotificationSvg/NotificationSvg";
 import HomeSvg from "./src/components/SVGs/HomeSvg/HomeSvg";
 import MapScreen from "./src/view/MapScreen";
+import MapSvg from "./src/components/SVGs/MapSvg/MapSvg";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -42,11 +43,11 @@ export default function App() {
                   alignItems: "center",
                 }}
               >
-                <View>
-                  <HomeSvg />
+                <View style={{}}>
+                  <HomeSvg focused={focused} />
                 </View>
                 <View>
-                  <Text>Inicio</Text>
+                  <Text style={{color: focused ? colors.colors.baseColor.base_01: ""}}>Inicio</Text>
                 </View>
               </View>
             ),
@@ -80,13 +81,14 @@ export default function App() {
                     alignItems: "center",
                     justifyContent: "center",
                     borderWidth: 3,
-                    borderColor: focused ? colors.colors.baseColor.base_01 : colors.colors.neutral01Color.neutral_08,
+                    borderColor: "#e9e9e9"
+
                   }}
                 >
-                  <HomeSvg />
+                  <MapSvg focused={focused} />
                 </View>
                 <View>
-                  <Text style={{ bottom: 17 }}>Mapa</Text>
+                  <Text style={{ bottom: 17, color: focused ? colors.colors.baseColor.base_01: "" }}>Mapa</Text>
                 </View>
               </View>
             ),
@@ -111,10 +113,10 @@ export default function App() {
                 }}
               >
                 <View>
-                  <NotificationSvg />
+                  <NotificationSvg focused={focused} />
                 </View>
                 <View>
-                  <Text>Notificações</Text>
+                  <Text style={{color: focused ? colors.colors.baseColor.base_01: ""}}>Notificações</Text>
                 </View>
               </View>
             ),
