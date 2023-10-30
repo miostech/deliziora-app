@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'react-native';
-import { View, Text, Image, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, Image, TouchableWithoutFeedback, Pressable } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 const Colors = require("../style/Colors.json");
 const data = [
@@ -68,7 +68,7 @@ const RestaurantsCardCarousel = () => {
                             <Button
                                 onPress={() => console.log("Visitar")}
                                 title="Visitar"
-                                color="#fff"
+                                color={Colors.colors.neutral02Color.neutral_02}
                             />
                         </View>
                     </View>
@@ -93,10 +93,9 @@ const styles = {
     carouselItem: {
         width: 296,
         height: 170,
-        flexShrink: 0,
         backgroundColor: Colors.colors.neutral02Color.neutral_10,
         borderRadius: 16,
-        boxShadow: '0px 1px 9px 1px rgba(0, 0, 0, 0.05)',
+        marginBottom:20
     },
     Containers: {
         display: 'inline-flex',

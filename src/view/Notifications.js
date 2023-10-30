@@ -45,7 +45,7 @@ export default function Notifications() {
           display: "flex",
           flexDirection: "row",
           marginLeft: 16,
-          marginTop: 24,
+          marginTop: 40,
           marginBottom: 15,
           justifyContent: "flex-start",
           alignItems: "center",

@@ -1,13 +1,11 @@
 import { StatusBar } from "expo-status-bar";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { registerRootComponent } from "expo";
 import SplashScreen from "./src/view/SplashScreen";
-import HomeScreen from "./src/view/HomeScreen";
 import Walkthrough from "./src/view/Walkthrough";
 import Notifications from "./src/view/Notifications";
 import ArrowLeft from "./src/components/SVGs/ArrowLeft/ArrowLeft";
@@ -54,7 +52,13 @@ export default function App() {
                   <HomeSvg focused={focused} />
                 </View>
                 <View>
-                  <Text style={{color: focused ? colors.colors.baseColor.base_01: ""}}>Inicio</Text>
+                  <Text
+                    style={{
+                      color: focused ? colors.colors.baseColor.base_01 : "",
+                    }}
+                  >
+                    Inicio
+                  </Text>
                 </View>
               </View>
             ),
@@ -88,14 +92,20 @@ export default function App() {
                     alignItems: "center",
                     justifyContent: "center",
                     borderWidth: 3,
-                    borderColor: "#e9e9e9"
-
+                    borderColor: "#e9e9e9",
                   }}
                 >
                   <MapSvg focused={focused} />
                 </View>
                 <View>
-                  <Text style={{ bottom: 17, color: focused ? colors.colors.baseColor.base_01: "" }}>Mapa</Text>
+                  <Text
+                    style={{
+                      bottom: 17,
+                      color: focused ? colors.colors.baseColor.base_01 : "",
+                    }}
+                  >
+                    Mapa
+                  </Text>
                 </View>
               </View>
             ),
@@ -123,7 +133,13 @@ export default function App() {
                   <NotificationSvg focused={focused} />
                 </View>
                 <View>
-                  <Text style={{color: focused ? colors.colors.baseColor.base_01: ""}}>Notificações</Text>
+                  <Text
+                    style={{
+                      color: focused ? colors.colors.baseColor.base_01 : "",
+                    }}
+                  >
+                    Notificações
+                  </Text>
                 </View>
               </View>
             ),
@@ -136,7 +152,7 @@ export default function App() {
   function StackApp() {
     return (
       <Stack.Navigator
-        initialRouteName="HomeTab"
+        initialRouteName="Splash"
         screenptions={{
           headerShadowVisible: false,
           animation: "timing",
@@ -159,18 +175,22 @@ export default function App() {
           name="Walkthrough"
           component={Walkthrough}
           screenoptions={{ headerShadowVisible: false, animation: "fade" }}
-          options={{
+          options={({ navigation }) => ({
             headerShadowVisible: false,
             headerShown: true,
             headerTitle: "",
             headerRight: () => {
               return (
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("HomeTab");
+                  }}
+                >
                   <Text style={{ fontSize: 18, fontWeight: 500 }}>Pular</Text>
                 </TouchableOpacity>
               );
             },
-          }}
+          })}
         />
         <Stack.Screen
           name="HomeScreen"

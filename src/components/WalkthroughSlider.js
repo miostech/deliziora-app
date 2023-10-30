@@ -5,8 +5,7 @@ import WalkthroughSvg3 from "./SVGs/WalkthroughSvg3/WalkthroughSvg3";
 import WalkthroughSvg2 from "./SVGs/WalkthroughSvg2/WalkthroughSvg2";
 import WalkthroughSvg1 from "./SVGs/WalkthroughSvg1/WalkthroughSvg1";
 
-
-export default function WalkthroughSlider() {
+export default function WalkthroughSlider({ navigation }) {
   const colors = require("../style/Colors.json");
   const [carouselWidth, setCarouselWidth] = useState(
     Dimensions.get("window").width
@@ -41,7 +40,7 @@ export default function WalkthroughSlider() {
         justifyContent: "space-between",
         alignItems: "center",
         height: "100%",
-        backgroundColor:colors.colors.neutral01Color.neutral_08
+        backgroundColor: colors.colors.neutral01Color.neutral_08,
       }}
     >
       <View
@@ -51,9 +50,7 @@ export default function WalkthroughSlider() {
           alignSelf: "flex-end",
           marginRight: 40,
         }}
-      >
-        
-      </View>
+      ></View>
 
       <Carousel
         data={items}
@@ -65,8 +62,8 @@ export default function WalkthroughSlider() {
         renderItem={({ item }) => {
           return (
             <View key={item.id}>
-              <View style={{display:"flex", alignItems:"center"}}>
-                <Text >{item.image}</Text>
+              <View style={{ display: "flex", alignItems: "center" }}>
+                <Text>{item.image}</Text>
               </View>
               <View
                 style={{
@@ -79,7 +76,11 @@ export default function WalkthroughSlider() {
                 }}
               >
                 <Text
-                  style={{ fontSize: 24, fontWeight: "bold", textAlign: "center" }}
+                  style={{
+                    fontSize: 24,
+                    fontWeight: "bold",
+                    textAlign: "center",
+                  }}
                 >
                   {item.title}
                 </Text>
@@ -131,7 +132,7 @@ export default function WalkthroughSlider() {
           />
         </View>
         {activeSlide === 2 ? (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("HomeTab")}>
             <Text>Finalizar</Text>
           </TouchableOpacity>
         ) : (

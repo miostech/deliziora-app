@@ -6,7 +6,7 @@ export default function Walkthrough({ navigation }) {
   
   return (
     <View>
-      <WalkthroughSlider />
+      <WalkthroughSlider navigation={navigation}/>
     </View>
   );
 }
