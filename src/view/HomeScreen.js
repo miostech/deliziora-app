@@ -6,11 +6,11 @@ import RestaurantsCardCarousel from '../components/RestaurantsCardCarousel';
 
 
 // create a component
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
     return (
         <View style={styles.container}>
             <SearchBar />
-            <RestaurantsCardCarousel />
+            <RestaurantsCardCarousel navigation={navigation}/>
         </View>
     );
 };

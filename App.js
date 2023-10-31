@@ -19,6 +19,7 @@ import SearchPostalCodeScreen from "./src/view/SearchPostalCodeScreen";
 import NotificationNotFoundScreen from "./src/view/NotificationNotFoundScreen";
 import LoadingPageScreen from "./src/view/LoadingPageScreen";
 import HomeLoading from "./src/view/HomeLoading";
+import ProfileRestaurantPage from "./src/view/ProfileRestaurantPage";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -214,6 +215,31 @@ export default function App() {
           component={SearchPostalCodeScreen}
           screenoptions={{ headerShadowVisible: false, animation: "fade" }}
           options={{ headerShadowVisible: false, headerShown: false }}
+        />
+        <Stack.Screen
+          name="ProfileRestaurantPage"
+          component={ProfileRestaurantPage}
+          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
+          options={({ navigation }) => ({
+            headerShadowVisible: false,
+            headerShown: true,
+            headerTitle: "",
+            headerLeft: () => {
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("HomeTab");
+                  }}
+                  style={{ flexDirection: "row", gap: 80 }}
+                >
+                  <ArrowLeft />
+                  <Text style={{ fontSize: 18, fontWeight: 500 }}>
+                    Perfil do Restaurante
+                  </Text>
+                </TouchableOpacity>
+              );
+            },
+          })}
         />
         <Stack.Screen
           name="NotificationNotFoundScreen"
