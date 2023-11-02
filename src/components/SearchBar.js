@@ -36,7 +36,6 @@ const SearchBar = () => {
         <View>
           <TextInput
             placeholder="Pesquisar"
-            autoComplete="on"
             placeholderTextColor={colors.colors.neutral02Color.neutral_1}
             style={styles.placeholderLabel}
             overflow="hidden"
@@ -191,7 +190,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 32,
-    display: "flex",
   },
 
   root: {

@@ -1,32 +1,144 @@
-//import liraries
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import SearchBar from '../components/SearchBar';
-import RestaurantsCardCarousel from '../components/RestaurantsCardCarousel';
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import {
+  SafeAreaView,
+  StatusBar,
+  Appearance,
+  useColorScheme,
+  Platform,
+  KeyboardAvoidingView,
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
+
+import Loader from "../components/Loader";
+import SearchBar from "../components/SearchBar";
+import RestaurantsCardCarousel from "../components/RestaurantsCardCarousel";
+import * as Location from "expo-location";
+import MapView, { Marker, Polyline } from "react-native-maps";
+import MarkersRestaurant from "../components/MarkersRestaurant";
+
+export default function HomeScreen({ route, navigation }) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [location, setLocation] = useState(null);
+  const [messageLocation, setMessageLocation] = useState("");
+  const [restaurants, setRestaurants] = useState([]);
 
 
-// create a component
-const HomeScreen = ({navigation}) => {
-    return (
-        <View style={styles.container}>
-            <SearchBar />
-            <RestaurantsCardCarousel navigation={navigation}/>
+  var colors = require("../style/Colors.json");
+
+  const maps = useRef(null);
+
+  useEffect(() => {
+    console.log("OPEN", HomeScreen.name, "SCREEN");
+    GetLocation();
+    return () => {
+      console.log("SCREEN", HomeScreen.name, "CLOSE");
+    };
+  }, []);
+
+  function GetLocation() {
+    return new Promise(async (resolve, reject) => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        reject("Permission to access location was denied");
+        return;
+      }
+      console.log("GET LOCATION");
+      let location = await Location.getCurrentPositionAsync({});
+      console.log("LOCATION", location);
+      setLocation(location);
+      setMessageLocation(
+        location.coords.latitude + " " + location.coords.longitude
+      );
+      resolve("sucess");
+    });
+  }
+
+  useEffect(() => {
+    console.warn("HERE", location);
+    if (
+      location?.coords?.latitude != undefined ||
+      location?.coords?.latitude != null
+    ) {
+      setIsLoading(false);
+    }
+  }, [location]);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (isLoading) {
+      GetLocation();
+    }
+  }, [isLoading]);
+  if (isLoading) {
+    return <Loader />;
+  }
+  return (
+    <SafeAreaView>
+      <View style={styles.container} onLayout={onLayoutRootView}>
+        <View
+          style={{
+            width: "100%",
+            position: "absolute",
+            zIndex: 1,
+            alignItems: "center",
+            marginTop: 35,
+          }}
+        >
+          <SearchBar />
         </View>
-    );
-};
+        <View>
+          <MapView
+            ref={maps}
+            style={{
+              height: Dimensions.get("window").height,
+              width: Dimensions.get("window").width,
+            }}
+            zoomEnabled={true}
+            showsUserLocation={false}
+            showsMyLocationButton={false}
+            provider="google"
+            region={{
+              latitude: location?.coords?.latitude,
+              longitude: location?.coords?.longitude,
+              latitudeDelta: 0.05,
+              longitudeDelta: 0.05,
+            }}
+            initialRegion={{
+              latitude: location?.coords?.latitude,
+              longitude: location?.coords?.longitude,
+              latitudeDelta: 0.05,
+              longitudeDelta: 0.05,
+            }}
+          >
+            <MarkersRestaurant restaurants={restaurants}/>
+          </MapView>
+        </View>
+
+        <View
+          style={{
+            width: "100%",
+            height: 200,
+            position: "absolute",
+            alignItems: "center",
+            bottom: 0,
+          }}
+        >
+          <RestaurantsCardCarousel navigation={navigation} setRestaurants={setRestaurants}/>
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+}
 
 // define your styles
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        top: 75,
-        display: 'flex',
-        gap: 500,
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
+  container: {
+    flexDirection: "column",
+    width: "100%",
+    height: "100%",
+    position: "relative",
+  },
 });
-
-//make this component available to the app
-export default HomeScreen;

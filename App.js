@@ -21,6 +21,7 @@ import LoadingPageScreen from "./src/view/LoadingPageScreen";
 import HomeLoading from "./src/view/HomeLoading";
 import ProfileRestaurantPage from "./src/view/ProfileRestaurantPage";
 
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -55,7 +56,7 @@ export default function App() {
                 <View>
                   <Text
                     style={{
-                      color: focused ? colors.colors.baseColor.base_01 : "",
+                      color: focused ? colors.colors.baseColor.base_01 : "transparent",
                     }}
                   >
                     Inicio
@@ -102,7 +103,7 @@ export default function App() {
                   <Text
                     style={{
                       bottom: 17,
-                      color: focused ? colors.colors.baseColor.base_01 : "",
+                      color: focused ? colors.colors.baseColor.base_01 : "transparent",
                     }}
                   >
                     Mapa
@@ -136,7 +137,7 @@ export default function App() {
                 <View>
                   <Text
                     style={{
-                      color: focused ? colors.colors.baseColor.base_01 : "",
+                      color: focused ? colors.colors.baseColor.base_01 : "transparent",
                     }}
                   >
                     Notificações
