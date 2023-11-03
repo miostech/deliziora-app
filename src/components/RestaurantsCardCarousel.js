@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { Button, Dimensions } from "react-native";
 import {
   View,
@@ -8,6 +8,7 @@ import {
   Pressable,
 } from "react-native";
 import Carousel from "react-native-snap-carousel";
+import CarouselContext from "./CarouselContext";
 const Colors = require("../style/Colors.json");
 const data = [
   {
@@ -20,10 +21,10 @@ const data = [
     ],
     title: "Restaurant Name 1",
     description: "Restaurant description",
-    address:"Jl, Raya Yeh gangga - n°65",
-    contact:"911111111",
-    latitude:"38.524319",
-    longitude:"-8.889212",
+    address: "Jl, Raya Yeh gangga - n°65",
+    contact: "911111111",
+    latitude: "38.524319",
+    longitude: "-8.889212",
     about:
       "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
   },
@@ -37,10 +38,10 @@ const data = [
     ],
     title: "Restaurant Name 2",
     description: "Restaurant description",
-    address:"Jl, Raya Yeh gangga - n°63",
-    contact:"911111444",
-    latitude:"38.526971",
-    longitude:"-8.889441",
+    address: "Jl, Raya Yeh gangga - n°63",
+    contact: "911111444",
+    latitude: "38.526971",
+    longitude: "-8.889441",
     about:
       "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
   },
@@ -54,10 +55,10 @@ const data = [
     ],
     title: "Restaurant Name 3",
     description: "Restaurant description",
-    address:"Jl, Raya Yeh gangga - n°61",
-    contact:"911111112",
-    latitude:"38.529810",
-    longitude:"-8.895425",
+    address: "Jl, Raya Yeh gangga - n°61",
+    contact: "911111112",
+    latitude: "38.529810",
+    longitude: "-8.895425",
     about:
       "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
   },
@@ -71,19 +72,38 @@ const data = [
     ],
     title: "Restaurant Name 4",
     description: "Restaurant description",
-    address:"Jl, Raya Yeh gangga - n°66",
-    contact:"911111333",
-    latitude:"38.528576",
-    longitude:"-8.900009",
+    address: "Jl, Raya Yeh gangga - n°66",
+    contact: "911111333",
+    latitude: "38.528576",
+    longitude: "-8.900009",
+    about:
+      "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
+  },
+  {
+    id: 5,
+    image: require("../../assets/Restaurant1.png"),
+    dishes: [
+      require("../../assets/Dishe.png"),
+      require("../../assets/Dishe.png"),
+      require("../../assets/Dishe.png"),
+    ],
+    title: "Restaurant Name 5",
+    description: "Restaurant description",
+    address: "Jl, Raya Yeh gangga - n°66",
+    contact: "911111333",
+    latitude: "38.539908",
+    longitude: " -8.869396",
     about:
       "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
   },
 ];
 
 const RestaurantsCardCarousel = ({ navigation, setRestaurants }) => {
-  useEffect(()=>{
-    setRestaurants(data)
-  },[])
+  const { carouselRef } = useContext(CarouselContext);
+  useEffect(() => {
+    setRestaurants(data);
+  }, []);
+  
   const renderItem = ({ item }) => {
     return (
       <View style={styles.carouselItem}>
@@ -120,6 +140,7 @@ const RestaurantsCardCarousel = ({ navigation, setRestaurants }) => {
 
   return (
     <Carousel
+      ref={carouselRef}
       data={data}
       renderItem={renderItem}
       sliderWidth={350} // Largura do slider
@@ -130,15 +151,15 @@ const RestaurantsCardCarousel = ({ navigation, setRestaurants }) => {
   );
 };
 
+
 const styles = {
   carouselItem: {
     width: 290,
     height: 170,
-    
+
     backgroundColor: Colors.colors.neutral02Color.neutral_10,
     borderRadius: 16,
     marginBottom: 20,
-
   },
   Containers: {
     display: "inline-flex",

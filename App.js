@@ -20,7 +20,7 @@ import NotificationNotFoundScreen from "./src/view/NotificationNotFoundScreen";
 import LoadingPageScreen from "./src/view/LoadingPageScreen";
 import HomeLoading from "./src/view/HomeLoading";
 import ProfileRestaurantPage from "./src/view/ProfileRestaurantPage";
-
+import { CarouselProvider } from "./src/components/CarouselContext";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -56,7 +56,9 @@ export default function App() {
                 <View>
                   <Text
                     style={{
-                      color: focused ? colors.colors.baseColor.base_01 : "transparent",
+                      color: focused
+                        ? colors.colors.baseColor.base_01
+                        : "transparent",
                     }}
                   >
                     Inicio
@@ -103,7 +105,9 @@ export default function App() {
                   <Text
                     style={{
                       bottom: 17,
-                      color: focused ? colors.colors.baseColor.base_01 : "transparent",
+                      color: focused
+                        ? colors.colors.baseColor.base_01
+                        : "transparent",
                     }}
                   >
                     Mapa
@@ -137,7 +141,9 @@ export default function App() {
                 <View>
                   <Text
                     style={{
-                      color: focused ? colors.colors.baseColor.base_01 : "transparent",
+                      color: focused
+                        ? colors.colors.baseColor.base_01
+                        : "transparent",
                     }}
                   >
                     Notificações
@@ -259,9 +265,11 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      <StackApp />
-    </NavigationContainer>
+    <CarouselProvider>
+      <NavigationContainer>
+        <StackApp />
+      </NavigationContainer>
+    </CarouselProvider>
   );
 }
 
