@@ -25,6 +25,9 @@ import * as Location from "expo-location";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import MarkersRestaurant from "../components/MarkersRestaurant";
 import CarouselMapContext from "../components/CarouselMapContext";
+import MarkerCurrentLocationComponent from "../components/MarkerCurrentLocationIconComponent";
+import CurrentLocationMarker from "../components/CurrentLocationMarker";
+import MarkerCurrentLocationIconComponent from "../components/MarkerCurrentLocationIconComponent";
 
 export default function HomeScreen({ route, navigation }) {
   const { handleMarkerPress, location, setLocation, mapRef } =
@@ -121,7 +124,9 @@ export default function HomeScreen({ route, navigation }) {
               longitudeDelta: 0.005,
             }}
           >
-            <MarkersRestaurant restaurants={restaurants} />
+            <View>
+              <MarkersRestaurant restaurants={restaurants} />
+            </View>
           </MapView>
         </View>
 
@@ -131,7 +136,7 @@ export default function HomeScreen({ route, navigation }) {
             height: 200,
             position: "absolute",
             alignItems: "center",
-            bottom: 0,
+            bottom: 10,
           }}
         >
           <RestaurantsCardCarousel

@@ -1,9 +1,10 @@
 import { View, Text, SafeAreaView, Image, Dimensions, StyleSheet } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import MarkersRestaurant from "../components/MarkersRestaurant";
-import MapView from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import Loader from "../components/Loader";
+import MarkerCurrentLocationIconComponent from "../components/MarkerCurrentLocationIconComponent";
 
 export default function MapScreen() {
   const [isLoading, setIsLoading] = useState(true);
@@ -88,6 +89,20 @@ export default function MapScreen() {
             }}
           >
             <MarkersRestaurant restaurants={restaurants}/>
+            <Marker
+                key={"CurrentLocation"}
+                identifier="CurrentLocation"
+                draggable={true}
+                onDrag={(e) => {
+                  console.log(e.nativeEvent?.coordinate);
+                }}
+                coordinate={{
+                  latitude: location?.coords?.latitude,
+                  longitude: location?.coords?.longitude,
+                }}
+              >
+                <MarkerCurrentLocationIconComponent />
+              </Marker>
           </MapView>
         </View>
     </SafeAreaView>

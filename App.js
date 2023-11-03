@@ -40,7 +40,7 @@ export default function App() {
             headerShadowVisible: false,
             tabBarShowLabel: false,
             headerShown: false,
-            title: "",
+            title: "Inicio",
             tabBarIcon: ({ focused, color, size }) => (
               <View
                 style={{
@@ -58,7 +58,7 @@ export default function App() {
                     style={{
                       color: focused
                         ? colors.colors.baseColor.base_01
-                        : "transparent",
+                        : "black",
                     }}
                   >
                     Inicio
@@ -107,7 +107,7 @@ export default function App() {
                       bottom: 17,
                       color: focused
                         ? colors.colors.baseColor.base_01
-                        : "transparent",
+                        : "black",
                     }}
                   >
                     Mapa
@@ -143,7 +143,7 @@ export default function App() {
                     style={{
                       color: focused
                         ? colors.colors.baseColor.base_01
-                        : "transparent",
+                        : "black",
                     }}
                   >
                     Notificações
