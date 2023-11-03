@@ -2,10 +2,10 @@ import { View, Text } from "react-native";
 import React, { useContext } from "react";
 import { Marker } from "react-native-maps";
 import MarkerIconComponent from "./MarkerIconComponent";
-import CarouselContext from "./CarouselContext";
+import CarouselMapContext from "./CarouselMapContext";
 
 export default function MarkersRestaurant({ restaurants }) {
-  const { changeSlide } = useContext(CarouselContext);
+  const { handleMarkerPress, changeSlide } = useContext(CarouselMapContext);
   const handleChangeSlide = (slideIndex) => {
     changeSlide(slideIndex); 
   };
@@ -21,15 +21,16 @@ export default function MarkersRestaurant({ restaurants }) {
               console.log(e.nativeEvent?.coordinate);
             }}
             onPress={(e) => {
-              handleChangeSlide(e._dispatchInstances._debugOwner.index);
+              handleChangeSlide(e._dispatchInstances._debugOwner.index, );
+              console.log(e.nativeEvent.coordinate)
               console.log(
                 "nome do restaurante",
                 e._dispatchInstances._debugOwner.key
               );
             }}
             coordinate={{
-              latitude: parseFloat(item.latitude),
-              longitude: parseFloat(item.longitude),
+              latitude: parseFloat(item.coordinates.latitude),
+              longitude: parseFloat(item.coordinates.longitude),
             }}
           >
             <MarkerIconComponent />

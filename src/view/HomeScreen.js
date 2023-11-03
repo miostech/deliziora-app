@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useContext,
+} from "react";
 import {
   SafeAreaView,
   StatusBar,
@@ -18,13 +24,15 @@ import RestaurantsCardCarousel from "../components/RestaurantsCardCarousel";
 import * as Location from "expo-location";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import MarkersRestaurant from "../components/MarkersRestaurant";
+import CarouselMapContext from "../components/CarouselMapContext";
 
 export default function HomeScreen({ route, navigation }) {
+  const { handleMarkerPress, location, setLocation, mapRef } =
+    useContext(CarouselMapContext);
+
   const [isLoading, setIsLoading] = useState(true);
-  const [location, setLocation] = useState(null);
   const [messageLocation, setMessageLocation] = useState("");
   const [restaurants, setRestaurants] = useState([]);
-
 
   var colors = require("../style/Colors.json");
 
@@ -91,7 +99,7 @@ export default function HomeScreen({ route, navigation }) {
         </View>
         <View>
           <MapView
-            ref={maps}
+            ref={mapRef}
             style={{
               height: Dimensions.get("window").height,
               width: Dimensions.get("window").width,
@@ -103,17 +111,17 @@ export default function HomeScreen({ route, navigation }) {
             region={{
               latitude: location?.coords?.latitude,
               longitude: location?.coords?.longitude,
-              latitudeDelta: 0.05,
-              longitudeDelta: 0.05,
+              latitudeDelta: 0.005,
+              longitudeDelta: 0.005,
             }}
             initialRegion={{
               latitude: location?.coords?.latitude,
               longitude: location?.coords?.longitude,
-              latitudeDelta: 0.05,
-              longitudeDelta: 0.05,
+              latitudeDelta: 0.005,
+              longitudeDelta: 0.005,
             }}
           >
-            <MarkersRestaurant restaurants={restaurants}/>
+            <MarkersRestaurant restaurants={restaurants} />
           </MapView>
         </View>
 
@@ -126,7 +134,10 @@ export default function HomeScreen({ route, navigation }) {
             bottom: 0,
           }}
         >
-          <RestaurantsCardCarousel navigation={navigation} setRestaurants={setRestaurants}/>
+          <RestaurantsCardCarousel
+            navigation={navigation}
+            setRestaurants={setRestaurants}
+          />
         </View>
       </View>
     </SafeAreaView>

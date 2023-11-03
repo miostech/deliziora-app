@@ -8,7 +8,7 @@ import {
   Pressable,
 } from "react-native";
 import Carousel from "react-native-snap-carousel";
-import CarouselContext from "./CarouselContext";
+import CarouselMapContext from "./CarouselMapContext";
 const Colors = require("../style/Colors.json");
 const data = [
   {
@@ -23,8 +23,8 @@ const data = [
     description: "Restaurant description",
     address: "Jl, Raya Yeh gangga - n°65",
     contact: "911111111",
-    latitude: "38.524319",
-    longitude: "-8.889212",
+    coordinates: { latitude: 38.524319, longitude: -8.889212 },
+
     about:
       "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
   },
@@ -40,8 +40,8 @@ const data = [
     description: "Restaurant description",
     address: "Jl, Raya Yeh gangga - n°63",
     contact: "911111444",
-    latitude: "38.526971",
-    longitude: "-8.889441",
+    coordinates: { latitude: 38.526971, longitude: -8.889441 },
+
     about:
       "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
   },
@@ -57,8 +57,8 @@ const data = [
     description: "Restaurant description",
     address: "Jl, Raya Yeh gangga - n°61",
     contact: "911111112",
-    latitude: "38.529810",
-    longitude: "-8.895425",
+    coordinates: { latitude: 38.52981, longitude: -8.895425 },
+
     about:
       "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
   },
@@ -74,8 +74,7 @@ const data = [
     description: "Restaurant description",
     address: "Jl, Raya Yeh gangga - n°66",
     contact: "911111333",
-    latitude: "38.528576",
-    longitude: "-8.900009",
+    coordinates: { latitude: 38.528576, longitude: -8.900009 },
     about:
       "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
   },
@@ -91,19 +90,21 @@ const data = [
     description: "Restaurant description",
     address: "Jl, Raya Yeh gangga - n°66",
     contact: "911111333",
-    latitude: "38.539908",
-    longitude: " -8.869396",
+    coordinates: {
+      latitude: 38.539908,
+      longitude: -8.869396,
+    },
     about:
       "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
   },
 ];
 
 const RestaurantsCardCarousel = ({ navigation, setRestaurants }) => {
-  const { carouselRef } = useContext(CarouselContext);
+  const { carouselRef, goToMarker } = useContext(CarouselMapContext);
   useEffect(() => {
     setRestaurants(data);
   }, []);
-  
+
   const renderItem = ({ item }) => {
     return (
       <View style={styles.carouselItem}>
@@ -147,10 +148,13 @@ const RestaurantsCardCarousel = ({ navigation, setRestaurants }) => {
       itemWidth={290} // Largura de cada item
       itemHeight={152}
       style={styles.carousel}
+      enableMomentum
+      onSnapToItem={(e) => {
+        goToMarker(e, data);
+      }}
     />
   );
 };
-
 
 const styles = {
   carouselItem: {

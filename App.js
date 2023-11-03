@@ -20,7 +20,7 @@ import NotificationNotFoundScreen from "./src/view/NotificationNotFoundScreen";
 import LoadingPageScreen from "./src/view/LoadingPageScreen";
 import HomeLoading from "./src/view/HomeLoading";
 import ProfileRestaurantPage from "./src/view/ProfileRestaurantPage";
-import { CarouselProvider } from "./src/components/CarouselContext";
+import { CarouselMapProvider } from "./src/components/CarouselMapContext";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -96,7 +96,7 @@ export default function App() {
                     alignItems: "center",
                     justifyContent: "center",
                     borderWidth: 3,
-                    borderColor: "#e9e9e9",
+                    borderColor: "#f1f3f4",
                   }}
                 >
                   <MapSvg focused={focused} />
@@ -265,11 +265,11 @@ export default function App() {
   }
 
   return (
-    <CarouselProvider>
+    <CarouselMapProvider>
       <NavigationContainer>
         <StackApp />
       </NavigationContainer>
-    </CarouselProvider>
+    </CarouselMapProvider>
   );
 }
 
