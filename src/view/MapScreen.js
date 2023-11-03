@@ -1,17 +1,24 @@
-import { View, Text, SafeAreaView, Image, Dimensions, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Image,
+  Dimensions,
+  StyleSheet,
+} from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import MarkersRestaurant from "../components/MarkersRestaurant";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import Loader from "../components/Loader";
 import MarkerCurrentLocationIconComponent from "../components/MarkerCurrentLocationIconComponent";
+import SearchBar from "../components/SearchBar";
 
 export default function MapScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [location, setLocation] = useState(null);
   const [messageLocation, setMessageLocation] = useState("");
   const [restaurants, setRestaurants] = useState([]);
-
 
   var colors = require("../style/Colors.json");
 
@@ -65,6 +72,18 @@ export default function MapScreen() {
   return (
     <SafeAreaView>
       <View style={styles.container} onLayout={onLayoutRootView}>
+        <View
+          style={{
+            width: "100%",
+            position: "absolute",
+            zIndex: 1,
+            alignItems: "center",
+            marginTop: 35,
+          }}
+        >
+          <SearchBar />
+        </View>
+        <View>
           <MapView
             ref={maps}
             style={{
@@ -88,32 +107,32 @@ export default function MapScreen() {
               longitudeDelta: 0.05,
             }}
           >
-            <MarkersRestaurant restaurants={restaurants}/>
+            <MarkersRestaurant restaurants={restaurants} />
             <Marker
-                key={"CurrentLocation"}
-                identifier="CurrentLocation"
-                draggable={true}
-                onDrag={(e) => {
-                  console.log(e.nativeEvent?.coordinate);
-                }}
-                coordinate={{
-                  latitude: location?.coords?.latitude,
-                  longitude: location?.coords?.longitude,
-                }}
-              >
-                <MarkerCurrentLocationIconComponent />
-              </Marker>
+              key={"CurrentLocation"}
+              identifier="CurrentLocation"
+              draggable={true}
+              onDrag={(e) => {
+                console.log(e.nativeEvent?.coordinate);
+              }}
+              coordinate={{
+                latitude: location?.coords?.latitude,
+                longitude: location?.coords?.longitude,
+              }}
+            >
+              <MarkerCurrentLocationIconComponent />
+            </Marker>
           </MapView>
         </View>
+      </View>
     </SafeAreaView>
   );
-
 }
-  const styles = StyleSheet.create({
-    container: {
-      flexDirection: "column",
-      width: "100%",
-      height: "100%",
-      position: "relative",
-    },
-  });
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "column",
+    width: "100%",
+    height: "100%",
+    position: "relative",
+  },
+});

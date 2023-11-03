@@ -114,14 +114,14 @@ export default function HomeScreen({ route, navigation }) {
             region={{
               latitude: location?.coords?.latitude,
               longitude: location?.coords?.longitude,
-              latitudeDelta: 0.005,
-              longitudeDelta: 0.005,
+              latitudeDelta: 0.03,
+              longitudeDelta: 0.03,
             }}
             initialRegion={{
               latitude: location?.coords?.latitude,
               longitude: location?.coords?.longitude,
-              latitudeDelta: 0.005,
-              longitudeDelta: 0.005,
+              latitudeDelta: 0.03,
+              longitudeDelta: 0.03,
             }}
           >
             <View>
@@ -136,7 +136,8 @@ export default function HomeScreen({ route, navigation }) {
             height: 200,
             position: "absolute",
             alignItems: "center",
-            bottom: 10,
+            bottom: 35,
+
           }}
         >
           <RestaurantsCardCarousel
