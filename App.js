@@ -21,12 +21,23 @@ import LoadingPageScreen from "./src/view/LoadingPageScreen";
 import HomeLoading from "./src/view/HomeLoading";
 import ProfileRestaurantPage from "./src/view/ProfileRestaurantPage";
 import { CarouselMapProvider } from "./src/components/CarouselMapContext";
+import { useFonts, Roboto_400Regular } from '@expo-google-fonts/roboto';
+
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function App() {
   const colors = require("./src/style/Colors.json");
+
+  let [fontsLoaded, fontError] = useFonts({
+    Roboto_400Regular,
+  });
+
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
+
   function HomeTab() {
     return (
       <Tab.Navigator
@@ -121,11 +132,10 @@ export default function App() {
           name="Notifications"
           component={Notifications}
           screenoptions={{ headerShadowVisible: false, animation: "fade" }}
-          options={{
-            tabBarShowLabel: false,
+          options={({ navigation }) => ({
             headerShadowVisible: true,
-            headerShown: false,
-            headerTitle: "",
+            tabBarShowLabel: false,
+            headerTitle: "Quadro de notificações",
             tabBarIcon: ({ focused, color, size }) => (
               <View
                 style={{
@@ -151,7 +161,16 @@ export default function App() {
                 </View>
               </View>
             ),
-          }}
+            headerLeft: () => {
+              return (
+                <TouchableOpacity
+                  onPress={() => { navigation.goBack() }}
+                  style={{ height: "100%", width: "100%", justifyContent: "center", marginLeft: 10 }}>
+                  <ArrowLeft />
+                </TouchableOpacity>
+              )
+            },
+          })}
         />
       </Tab.Navigator>
     );

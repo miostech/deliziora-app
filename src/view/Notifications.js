@@ -40,7 +40,7 @@ export default function Notifications() {
         width: "100%",
       }}
     >
-      <View
+      {/* <View
         style={{
           display: "flex",
           flexDirection: "row",
@@ -59,7 +59,7 @@ export default function Notifications() {
         <View style={{ marginLeft: "15%" }}>
           <Text style={{ fontSize: 19 }}>Quadro de Notificações</Text>
         </View>
-      </View>
+      </View> */}
       <ScrollView>
         <View
           style={{

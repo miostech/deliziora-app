@@ -28,13 +28,14 @@ import CarouselMapContext from "../components/CarouselMapContext";
 import MarkerCurrentLocationComponent from "../components/MarkerCurrentLocationIconComponent";
 import CurrentLocationMarker from "../components/CurrentLocationMarker";
 import MarkerCurrentLocationIconComponent from "../components/MarkerCurrentLocationIconComponent";
+import * as Device from 'expo-device';
 
 export default function HomeScreen({ route, navigation }) {
   const { handleMarkerPress, location, setLocation, mapRef } =
     useContext(CarouselMapContext);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [messageLocation, setMessageLocation] = useState("");
+  const [messageLocation, setMssageLocation] = useState("");
   const [restaurants, setRestaurants] = useState([]);
 
   var colors = require("../style/Colors.json");
@@ -57,6 +58,7 @@ export default function HomeScreen({ route, navigation }) {
         reject("Permission to access location was denied");
         return;
       }
+      console.log("DEVICE", Device.brand);
       console.log("GET LOCATION");
       let location = await Location.getCurrentPositionAsync({});
       console.log("LOCATION", location);
@@ -87,7 +89,7 @@ export default function HomeScreen({ route, navigation }) {
     return <Loader />;
   }
   return (
-    <SafeAreaView>
+    <View>
       <View style={styles.container} onLayout={onLayoutRootView}>
         <View
           style={{
@@ -95,7 +97,7 @@ export default function HomeScreen({ route, navigation }) {
             position: "absolute",
             zIndex: 1,
             alignItems: "center",
-            marginTop: 35,
+            marginTop: Device.brand == "Apple" ? 80 : 35,
           }}
         >
           <SearchBar />
@@ -124,9 +126,7 @@ export default function HomeScreen({ route, navigation }) {
               longitudeDelta: 0.03,
             }}
           >
-            <View>
-              <MarkersRestaurant restaurants={restaurants} />
-            </View>
+            <MarkersRestaurant restaurants={restaurants} />
           </MapView>
         </View>
 
@@ -146,7 +146,7 @@ export default function HomeScreen({ route, navigation }) {
           />
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 

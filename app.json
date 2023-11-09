@@ -25,7 +25,10 @@
         "NSLocationWhenInUseUsageDescription": "Permitir Deliziora que use sua localização",
         "NSLocationAlwaysUsageDescription": "Permitir Deliziora que use sua localização"
       },
-      "bundleIdentifier": "com.miostechgabriel.Deliziora"
+      "bundleIdentifier": "com.miostech.Deliziora",
+      "config": {
+        "googleMapsApiKey": "AIzaSyCPEiRsxgQkP-SJjjZF2VEVCZ2_QTeCwfo"
+      }
     },
     "android": {
       "permissions": [
@@ -41,8 +44,12 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      
-      "package": "com.miostechgabriel.Deliziora"
+      "package": "com.miostech.Deliziora",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyD6fOT8rSbECcaRqpKQL94QKtgtDss4jbw"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

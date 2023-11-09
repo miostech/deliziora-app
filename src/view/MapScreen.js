@@ -6,19 +6,23 @@ import {
   Dimensions,
   StyleSheet,
 } from "react-native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import MarkersRestaurant from "../components/MarkersRestaurant";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import Loader from "../components/Loader";
 import MarkerCurrentLocationIconComponent from "../components/MarkerCurrentLocationIconComponent";
 import SearchBar from "../components/SearchBar";
+import * as Device from 'expo-device';
+import CarouselMapContext from "../components/CarouselMapContext";
 
 export default function MapScreen() {
   const [isLoading, setIsLoading] = useState(true);
-  const [location, setLocation] = useState(null);
   const [messageLocation, setMessageLocation] = useState("");
   const [restaurants, setRestaurants] = useState([]);
+
+  const { handleMarkerPress, location, setLocation, mapRef } =
+    useContext(CarouselMapContext);
 
   var colors = require("../style/Colors.json");
 
@@ -34,20 +38,26 @@ export default function MapScreen() {
 
   function GetLocation() {
     return new Promise(async (resolve, reject) => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
-        reject("Permission to access location was denied");
+      if (location?.coords?.latitude != undefined) {
+        setIsLoading(false);
+        resolve("sucess");
         return;
+      } else {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          setErrorMsg("Permission to access location was denied");
+          reject("Permission to access location was denied");
+          return;
+        }
+        console.log("GET LOCATION");
+        let location = await Location.getCurrentPositionAsync({});
+        console.log("LOCATION", location);
+        setLocation(location);
+        setMessageLocation(
+          location.coords.latitude + " " + location.coords.longitude
+        );
+        resolve("sucess");
       }
-      console.log("GET LOCATION");
-      let location = await Location.getCurrentPositionAsync({});
-      console.log("LOCATION", location);
-      setLocation(location);
-      setMessageLocation(
-        location.coords.latitude + " " + location.coords.longitude
-      );
-      resolve("sucess");
     });
   }
 
@@ -70,7 +80,7 @@ export default function MapScreen() {
     return <Loader />;
   }
   return (
-    <SafeAreaView>
+    <View>
       <View style={styles.container} onLayout={onLayoutRootView}>
         <View
           style={{
@@ -78,7 +88,7 @@ export default function MapScreen() {
             position: "absolute",
             zIndex: 1,
             alignItems: "center",
-            marginTop: 35,
+            marginTop: Device.brand == "Apple" ? 80 : 35,
           }}
         >
           <SearchBar />
@@ -125,7 +135,7 @@ export default function MapScreen() {
           </MapView>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 const styles = StyleSheet.create({

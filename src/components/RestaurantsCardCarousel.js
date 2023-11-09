@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import Carousel from "react-native-snap-carousel";
 import CarouselMapContext from "./CarouselMapContext";
+import * as Device from 'expo-device';
+
 const Colors = require("../style/Colors.json");
 const data = [
   {
@@ -130,7 +132,7 @@ const RestaurantsCardCarousel = ({ navigation, setRestaurants }) => {
                   })
                 }
                 title="Visitar"
-                color={Colors.colors.neutral02Color.neutral_02}
+                color={Device.brand == "Apple" ? Colors.colors.neutral01Color.neutral_08 : Colors.colors.neutral02Color.neutral_02}
               />
             </View>
           </View>
