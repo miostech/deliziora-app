@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
   modalText: {
     textAlign: "center",
     color: "#201F23",
-    fontFamily: "Roboto",
+    fontFamily: "Roboto_400Regular",
     fontSize: 18,
     fontStyle: "normal",
     fontWeight: "normal",

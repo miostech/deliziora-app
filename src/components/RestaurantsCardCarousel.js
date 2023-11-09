@@ -186,7 +186,7 @@ const styles = {
   title: {
     flexShrink: 0,
     color: Colors.colors.neutral02Color.neutral_02,
-    fontFamily: "Roboto",
+    fontFamily: "Roboto_400Regular",
     fontSize: 18,
     fontStyle: "normal",
     fontWeight: "400",
@@ -194,7 +194,7 @@ const styles = {
   description: {
     flexShrink: 0,
     color: Colors.colors.neutral02Color.neutral_04,
-    fontFamily: "Roboto",
+    fontFamily: "Roboto_400Regular",
     fontSize: 12,
     fontStyle: "normal",
     fontWeight: "400",
@@ -234,7 +234,7 @@ const styles = {
     backgroundColor: Colors.colors.neutral02Color.neutral_02,
     color: Colors.colors.neutral02Color.neutral_10,
     textAlign: "center",
-    fontFamily: "Roboto",
+    fontFamily: "Roboto_400Regular",
     fontSize: 14,
     fontStyle: "normal",
     fontWeight: "500",
