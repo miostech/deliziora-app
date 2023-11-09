@@ -110,9 +110,11 @@ export default function HomeScreen({ route, navigation }) {
               width: Dimensions.get("window").width,
             }}
             zoomEnabled={true}
-            showsUserLocation={false}
-            showsMyLocationButton={false}
-            provider="google"
+            showsUserLocation={true}
+            showsMyLocationButton={true}
+            
+            // showsTraffic={true}
+            // provider="google"
             region={{
               latitude: location?.coords?.latitude,
               longitude: location?.coords?.longitude,
