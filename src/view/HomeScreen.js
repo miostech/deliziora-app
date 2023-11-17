@@ -28,7 +28,8 @@ import CarouselMapContext from "../components/CarouselMapContext";
 import MarkerCurrentLocationComponent from "../components/MarkerCurrentLocationIconComponent";
 import CurrentLocationMarker from "../components/CurrentLocationMarker";
 import MarkerCurrentLocationIconComponent from "../components/MarkerCurrentLocationIconComponent";
-import * as Device from 'expo-device';
+import * as Device from "expo-device";
+import ListMapRestaurant from "../components/ListMapRestaurant";
 
 export default function HomeScreen({ route, navigation }) {
   const { handleMarkerPress, location, setLocation, mapRef } =
@@ -37,6 +38,7 @@ export default function HomeScreen({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(true);
   const [messageLocation, setMssageLocation] = useState("");
   const [restaurants, setRestaurants] = useState([]);
+  const [listType, setListType] = useState(false);
 
   var colors = require("../style/Colors.json");
 
@@ -100,53 +102,67 @@ export default function HomeScreen({ route, navigation }) {
             marginTop: Device.brand == "Apple" ? 80 : 35,
           }}
         >
-          <SearchBar />
+          <SearchBar listType={listType} setListType={setListType} />
         </View>
-        <View>
-          <MapView
-            ref={mapRef}
+        {listType ? (
+          <View
             style={{
               height: Dimensions.get("window").height,
               width: Dimensions.get("window").width,
             }}
-            zoomEnabled={true}
-            showsUserLocation={true}
-            showsMyLocationButton={true}
-            
-            // showsTraffic={true}
-            // provider="google"
-            region={{
-              latitude: location?.coords?.latitude,
-              longitude: location?.coords?.longitude,
-              latitudeDelta: 0.03,
-              longitudeDelta: 0.03,
-            }}
-            initialRegion={{
-              latitude: location?.coords?.latitude,
-              longitude: location?.coords?.longitude,
-              latitudeDelta: 0.03,
-              longitudeDelta: 0.03,
-            }}
           >
-            <MarkersRestaurant restaurants={restaurants} />
-          </MapView>
-        </View>
+            <ListMapRestaurant
+              navigation={navigation}
+              restaurants={restaurants}
+            />
+          </View>
+        ) : (
+          <>
+            <View>
+              <MapView
+                ref={mapRef}
+                style={{
+                  height: Dimensions.get("window").height,
+                  width: Dimensions.get("window").width,
+                }}
+                zoomEnabled={true}
+                showsUserLocation={true}
+                showsMyLocationButton={false}
+                toolbarEnabled={false}
+                region={{
+                  latitude: location?.coords?.latitude,
+                  longitude: location?.coords?.longitude,
+                  latitudeDelta: 0.03,
+                  longitudeDelta: 0.03,
+                }}
+                initialRegion={{
+                  latitude: location?.coords?.latitude,
+                  longitude: location?.coords?.longitude,
+                  latitudeDelta: 0.03,
+                  longitudeDelta: 0.03,
+                }}
+              >
+                <MarkersRestaurant restaurants={restaurants} />
+              </MapView>
+            </View>
 
-        <View
-          style={{
-            width: "100%",
-            height: 200,
-            position: "absolute",
-            alignItems: "center",
-            bottom: 35,
-
-          }}
-        >
-          <RestaurantsCardCarousel
-            navigation={navigation}
-            setRestaurants={setRestaurants}
-          />
-        </View>
+            <View
+              style={{
+                width: "100%",
+                height: 200,
+                position: "absolute",
+                alignItems: "center",
+                bottom: 35,
+              }}
+            >
+              <RestaurantsCardCarousel
+                navigation={navigation}
+                setRestaurants={setRestaurants}
+                location={location}
+              />
+            </View>
+          </>
+        )}
       </View>
     </View>
   );

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Button, Dimensions } from "react-native";
 import {
   View,
@@ -9,18 +9,15 @@ import {
 } from "react-native";
 import Carousel from "react-native-snap-carousel";
 import CarouselMapContext from "./CarouselMapContext";
-import * as Device from 'expo-device';
+import * as Device from "expo-device";
 
 const Colors = require("../style/Colors.json");
-const data = [
+const dataRestaurant = [
   {
     id: 1,
     image: require("../../assets/Restaurant1.png"),
-    dishes: [
-      require("../../assets/Dishe.png"),
-      require("../../assets/Dishe.png"),
-      require("../../assets/Dishe.png"),
-    ],
+    dishes: require("../../assets/Favorite1.png"),
+    isFavorite: false,
     title: "Restaurant Name 1",
     description: "Restaurant description",
     address: "Jl, Raya Yeh gangga - n°65",
@@ -33,11 +30,8 @@ const data = [
   {
     id: 2,
     image: require("../../assets/Restaurant1.png"),
-    dishes: [
-      require("../../assets/Dishe.png"),
-      require("../../assets/Dishe.png"),
-      require("../../assets/Dishe.png"),
-    ],
+    dishes: require("../../assets/Favorite1.png"),
+    isFavorite: false,
     title: "Restaurant Name 2",
     description: "Restaurant description",
     address: "Jl, Raya Yeh gangga - n°63",
@@ -50,11 +44,8 @@ const data = [
   {
     id: 3,
     image: require("../../assets/Restaurant1.png"),
-    dishes: [
-      require("../../assets/Dishe.png"),
-      require("../../assets/Dishe.png"),
-      require("../../assets/Dishe.png"),
-    ],
+    dishes: require("../../assets/Favorite1.png"),
+    isFavorite: false,
     title: "Restaurant Name 3",
     description: "Restaurant description",
     address: "Jl, Raya Yeh gangga - n°61",
@@ -67,11 +58,8 @@ const data = [
   {
     id: 4,
     image: require("../../assets/Restaurant1.png"),
-    dishes: [
-      require("../../assets/Dishe.png"),
-      require("../../assets/Dishe.png"),
-      require("../../assets/Dishe.png"),
-    ],
+    dishes: require("../../assets/Favorite1.png"),
+    isFavorite: false,
     title: "Restaurant Name 4",
     description: "Restaurant description",
     address: "Jl, Raya Yeh gangga - n°66",
@@ -83,11 +71,8 @@ const data = [
   {
     id: 5,
     image: require("../../assets/Restaurant1.png"),
-    dishes: [
-      require("../../assets/Dishe.png"),
-      require("../../assets/Dishe.png"),
-      require("../../assets/Dishe.png"),
-    ],
+    dishes: require("../../assets/Favorite1.png"),
+    isFavorite: false,
     title: "Restaurant Name 5",
     description: "Restaurant description",
     address: "Jl, Raya Yeh gangga - n°66",
@@ -101,13 +86,22 @@ const data = [
   },
 ];
 
-const RestaurantsCardCarousel = ({ navigation, setRestaurants }) => {
+const RestaurantsCardCarousel = ({ navigation, setRestaurants, location }) => {
   const { carouselRef, goToMarker } = useContext(CarouselMapContext);
+  const [data, setData] = useState(dataRestaurant);
+  const handleFavoriteToggle = (id) => {
+    const updatedRestaurants = data.map((restaurant) =>
+      restaurant.id === id
+        ? { ...restaurant, isFavorite: !restaurant.isFavorite }
+        : restaurant
+    );
+    setData(updatedRestaurants);
+  };
   useEffect(() => {
     setRestaurants(data);
   }, []);
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item, index }) => {
     return (
       <View style={styles.carouselItem}>
         <View style={styles.Containers}>
@@ -120,19 +114,40 @@ const RestaurantsCardCarousel = ({ navigation, setRestaurants }) => {
           </View>
           <View style={styles.dishesAndVisitButton}>
             <View style={styles.dishesContainer}>
-              {item.dishes.map((dish, index) => (
-                <Image key={index} source={dish} style={styles.dishImage} />
-              ))}
+              <Pressable
+                onPress={() => {
+                  handleFavoriteToggle(item.id);
+                }}
+              >
+                {item.isFavorite ? (
+                  <Image
+                    key={index}
+                    source={require("../../assets/FavoriteSelected1.png")}
+                    style={styles.dishImage}
+                  />
+                ) : (
+                  <Image
+                    key={index}
+                    source={item.dishes}
+                    style={styles.dishImage}
+                  />
+                )}
+              </Pressable>
             </View>
             <View style={styles.visitButton}>
               <Button
                 onPress={() =>
                   navigation.navigate("ProfileRestaurantPage", {
                     restaurant: item,
+                    location: location
                   })
                 }
                 title="Visitar"
-                color={Device.brand == "Apple" ? Colors.colors.neutral01Color.neutral_08 : Colors.colors.neutral02Color.neutral_02}
+                color={
+                  Device.brand == "Apple"
+                    ? Colors.colors.neutral01Color.neutral_08
+                    : Colors.colors.neutral02Color.neutral_02
+                }
               />
             </View>
           </View>
@@ -182,6 +197,10 @@ const styles = {
     alignItems: "center",
     width: 90,
     height: 72,
+  },
+  dishImage: {
+    width: 30,
+    height: 30,
   },
   title: {
     flexShrink: 0,

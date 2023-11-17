@@ -12,7 +12,6 @@ import ArrowLeft from "./src/components/SVGs/ArrowLeft/ArrowLeft";
 import HomeScreen from "./src/view/HomeScreen";
 import NotificationSvg from "./src/components/SVGs/NotificationSvg/NotificationSvg";
 import HomeSvg from "./src/components/SVGs/HomeSvg/HomeSvg";
-import MapScreen from "./src/view/MapScreen";
 import MapSvg from "./src/components/SVGs/MapSvg/MapSvg";
 import SearchErrorScreen from "./src/view/SearchErrorScreen";
 import SearchPostalCodeScreen from "./src/view/SearchPostalCodeScreen";
@@ -21,8 +20,9 @@ import LoadingPageScreen from "./src/view/LoadingPageScreen";
 import HomeLoading from "./src/view/HomeLoading";
 import ProfileRestaurantPage from "./src/view/ProfileRestaurantPage";
 import { CarouselMapProvider } from "./src/components/CarouselMapContext";
-import { useFonts, Roboto_400Regular } from '@expo-google-fonts/roboto';
-
+import { useFonts, Roboto_400Regular } from "@expo-google-fonts/roboto";
+import MenuPlatesPage from "./src/view/MenuPlatesPage";
+import RestaurantList from "./src/view/RestaurantList";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -41,12 +41,12 @@ export default function App() {
   function HomeTab() {
     return (
       <Tab.Navigator
-        initialRouteName="Home"
+        initialRouteName="Map"
         options={{ headerShadowVisible: false, headerShown: false }}
       >
         <Tab.Screen
           name="Home"
-          component={HomeScreen}
+          component={RestaurantList}
           options={{
             headerShadowVisible: false,
             tabBarShowLabel: false,
@@ -81,7 +81,7 @@ export default function App() {
         />
         <Tab.Screen
           name="Map"
-          component={MapScreen}
+          component={HomeScreen}
           options={{
             headerShadowVisible: false,
             tabBarShowLabel: false,
@@ -164,11 +164,19 @@ export default function App() {
             headerLeft: () => {
               return (
                 <TouchableOpacity
-                  onPress={() => { navigation.goBack() }}
-                  style={{ height: "100%", width: "100%", justifyContent: "center", marginLeft: 10 }}>
+                  onPress={() => {
+                    navigation.goBack();
+                  }}
+                  style={{
+                    height: "100%",
+                    width: "100%",
+                    justifyContent: "center",
+                    marginLeft: 10,
+                  }}
+                >
                   <ArrowLeft />
                 </TouchableOpacity>
-              )
+              );
             },
           })}
         />
@@ -197,6 +205,12 @@ export default function App() {
           screenoptions={{ headerShadowVisible: false, animation: "fade" }}
           options={{ headerShadowVisible: false, headerShown: false }}
         />
+        <Stack.Screen
+          name="RestaurantList"
+          component={RestaurantList}
+          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
+          options={{ headerShadowVisible: false, headerShown: false }}
+        />
 
         <Stack.Screen
           name="Walkthrough"
@@ -206,6 +220,7 @@ export default function App() {
             headerShadowVisible: false,
             headerShown: true,
             headerTitle: "",
+
             headerRight: () => {
               return (
                 <TouchableOpacity
@@ -241,6 +256,32 @@ export default function App() {
           component={SearchPostalCodeScreen}
           screenoptions={{ headerShadowVisible: false, animation: "fade" }}
           options={{ headerShadowVisible: false, headerShown: false }}
+        />
+        <Stack.Screen
+          name="MenuPlatesPage"
+          component={MenuPlatesPage}
+          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
+          options={({ navigation }) => ({
+            headerShadowVisible: false,
+            headerShown: true,
+            headerTitle: "Menu",
+            headerLeft: () => {
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.goBack();
+                  }}
+                  style={{
+                    justifyContent: "center",
+                    marginLeft: 10,
+                    marginRight: 15,
+                  }}
+                >
+                  <ArrowLeft />
+                </TouchableOpacity>
+              );
+            },
+          })}
         />
         <Stack.Screen
           name="ProfileRestaurantPage"

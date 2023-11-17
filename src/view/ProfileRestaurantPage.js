@@ -10,11 +10,20 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import Close from "../components/SVGs/Close";
+import { Linking } from "react-native";
+import * as Device from "expo-device";
+import PhoneIcon from "../components/PhoneIcon";
+import MapSvg from "../components/SVGs/MapSvg/MapSvg";
+import GoogleMapsIcon from "../components/GoogleMapsIcon";
+import WazeIcon from "../components/WazeIcon";
 const Colors = require("../style/Colors.json");
 
 export default function ProfileRestaurantPage({ route, navigation }) {
   const [restaurant, setRestaurant] = useState(route.params.restaurant);
+  const [location, setLocation] = useState(route.params.location);
   const [modalVisible, setModalVisible] = useState(false);
+  var addressNavigateWaze = `https://www.waze.com/ul?ll=${restaurant?.coordinates.latitude}%2C${restaurant?.coordinates.longitude}&navigate=yes&zoom=17`;
+  var coordinatesNavigateGoogle = `https://www.google.com/maps/dir/?api=1&origin=${location?.coords.latitude},${location?.coords.longitude}&destination=${restaurant?.coordinates.latitude},${restaurant?.coordinates.longitude}&travelmode=driving`;
 
   const image1 = require("../../assets/AccessAnimals.png");
   const image2 = require("../../assets/AccessCard.png");
@@ -27,29 +36,35 @@ export default function ProfileRestaurantPage({ route, navigation }) {
   const plate4 = require("../../assets/PlatesOfTheDay4.png");
 
   const plates = [
-    { imagePlate: plate1, name: "Massas" },
-    { imagePlate: plate2, name: "Saladas" },
-    { imagePlate: plate3, name: "Aperitivos" },
-    { imagePlate: plate4, name: "Vinhos" },
+    { price: 20, name: "Prato 1" },
+    { price: 20, name: "Prato 2" },
+    { price: 20, name: "Prato 3" },
+    { price: 20, name: "Prato 4" },
   ];
 
-  const handleItemPress = () => {
-    setModalVisible(!modalVisible);
+  const handleItemPress = (e) => {
+    console.log("PLATE", e);
+    navigation.navigate("MenuPlatesPage", {
+      namePlate: e,
+    });
   };
-  const RenderItem = ({ item }) => {
+  const RenderItem = ({ item, index }) => {
     const itemStyle = styles.item;
     const nameStyle = styles.itemName;
     return (
-      <Pressable style={itemStyle} onPress={() => handleItemPress()}>
+      <Pressable style={itemStyle} onPress={() => handleItemPress(index)}>
         <View
           style={{
             marginRight: 10,
-            justifyContent: "center",
-            alignItems: "center",
+            justifyContent: "space-between",
+            flexDirection: "row",
+            width: 330,
+            borderBottomWidth: 1,
+            marginBottom: 20,
           }}
         >
-          <Image source={item.imagePlate} style={styles.imagePlates} />
           <Text style={nameStyle}>{item.name}</Text>
+          <Text style={nameStyle}>€{item.price}</Text>
         </View>
       </Pressable>
     );
@@ -67,18 +82,47 @@ export default function ProfileRestaurantPage({ route, navigation }) {
       >
         <View style={styles.restaurantTitleInfo}>
           <Text style={styles.textRestaurantTitleInfo}>{restaurant.title}</Text>
-          <Text style={styles.textRestaurantNormalInfo}>
-            {restaurant.address}
-          </Text>
-          <View style={[styles.row, { marginBottom: 15, marginTop: 15 }]}>
-            <Text
-              style={[styles.textRestaurantNormalInfo, { fontWeight: "bold" }]}
-            >
-              Contato:
-            </Text>
-            <Text style={styles.textRestaurantNormalInfo}>
-              {restaurant.contact}
-            </Text>
+
+          <View
+            style={[{ marginBottom: 15, marginTop: 15, alignItems: "flex-start", justifyContent:"space-around" }]}
+          >
+            <View style={[styles.row, { alignItems: "center" }]}>
+              <View style={styles.phoneNumberCall}>
+                <Pressable
+                  onPress={() => {
+                    Linking.openURL(addressNavigateWaze);
+                  }}
+                >
+                  <WazeIcon />
+                </Pressable>
+              </View>
+              <View style={styles.phoneNumberCall}>
+                <Pressable
+                  onPress={() => {
+                    Linking.openURL(coordinatesNavigateGoogle);
+                  }}
+                >
+                  <GoogleMapsIcon />
+                </Pressable>
+              </View>
+              <Text style={styles.textRestaurantNormalInfo}>
+                {restaurant.address}
+              </Text>
+            </View>
+            <View style={[styles.row, { alignItems: "center", }]}>
+              <View style={styles.phoneNumberCall}>
+                <Pressable
+                  onPress={() => {
+                    Linking.openURL(`tel:${restaurant.contact}`);
+                  }}
+                >
+                  <PhoneIcon />
+                </Pressable>
+              </View>
+              <Text style={[styles.textRestaurantNormalInfo, {marginLeft:50}]}>
+                {restaurant.contact}
+              </Text>
+            </View>
           </View>
         </View>
         <View style={[styles.row, styles.restaurantDistanceInfo]}>
@@ -143,140 +187,53 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           <Text
             style={[
               styles.textRestaurantNormalInfo,
-              { fontWeight: "bold", fontSize: 18, marginBottom: 10 },
+              {
+                fontWeight: "bold",
+                fontSize: 18,
+                marginBottom: 10,
+                textAlign: "center",
+              },
             ]}
           >
             Pratos do Dia
           </Text>
-          <FlatList
-            horizontal
-            data={plates}
-            renderItem={({ item }) => <RenderItem item={item} />}
-            showsHorizontalScrollIndicator={false}
-          />
-        </View>
-      </ScrollView>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View
-          style={{
-            position: "absolute",
-            height: "100%",
-            width: "100%",
-            backgroundColor: "rgba(0,0,0,0.4)",
-          }}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <View style={{ width: "100%", paddingLeft: "85%" }}>
-                <Pressable onPress={() => setModalVisible(!modalVisible)}>
-                  <Close height={"32"} width={"32"} />
-                </Pressable>
-              </View>
-              <ScrollView
-                vertical={true}
-                showsHorizontalScrollIndicator={false}
-                style={styles.containerModalInfo}
-                contentContainerStyle={styles.contentContainer}
+          <View style={{}}>
+            <FlatList
+              vertical
+              data={plates}
+              renderItem={({ item, index }) => (
+                <RenderItem item={item} index={index} />
+              )}
+              showsHorizontalScrollIndicator={false}
+            />
+            <View>
+              <Pressable
+                style={{
+                  backgroundColor: Colors.colors.baseColor.base_01,
+                  borderRadius: 100,
+                  marginBottom: 25,
+                }}
+                onPress={() => {
+                  navigation.navigate("MenuPlatesPage");
+                }}
               >
-                <View style={styles.modalMenuTitle}>
-                  <Text style={[{fontSize:24, textAlign:"center"}]}>Menu {restaurant.title}</Text>
-                </View>
-                <View style={styles.modalContentMenu}>
-                  <Text style={[styles.bold, {fontSize:22, marginBottom:24}]}>Massas</Text>
-                  <View style={styles.modalContentMenuBox}>
-                    <View style={[styles.row, {justifyContent:"space-between", }]}>
-                      <Text style={[styles.bold, {fontSize:16, color:"grey"}]}>Esparguete</Text>
-                      <Text style={[styles.bold, {fontSize:16, color:"grey"}]}>€000</Text>
-                    </View>
-                    <View>
-                      <Text>
-                        Lorem ipsum dolor sit amet consectetur. Nunc lectus
-                        mollis aliquet sit.
-                      </Text>
-                    </View>
-                  </View>
-                  <View>
-                    <View style={[styles.row, {justifyContent:"space-between", }]}>
-                      <Text style={[styles.bold, {fontSize:16, color:"grey"}]}>Lasanha</Text>
-                      <Text style={[styles.bold, {fontSize:16, color:"grey"}]}>€000</Text>
-                    </View>
-
-                    <View>
-                      <Text>
-                        Lorem ipsum dolor sit amet consectetur. Nunc lectus
-                        mollis aliquet sit.
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <View style={styles.modalContentMenu}>
-                  <Text style={[styles.bold, {fontSize:22, marginBottom:24}]}>Massas</Text>
-                  <View style={styles.modalContentMenuBox}>
-                    <View style={[styles.row, {justifyContent:"space-between", }]}>
-                      <Text style={[styles.bold, {fontSize:16, color:"grey"}]}>Esparguete</Text>
-                      <Text style={[styles.bold, {fontSize:16, color:"grey"}]}>€000</Text>
-                    </View>
-                    <View>
-                      <Text>
-                        Lorem ipsum dolor sit amet consectetur. Nunc lectus
-                        mollis aliquet sit.
-                      </Text>
-                    </View>
-                  </View>
-                  <View>
-                    <View style={[styles.row, {justifyContent:"space-between", }]}>
-                      <Text style={[styles.bold, {fontSize:16, color:"grey"}]}>Lasanha</Text>
-                      <Text style={[styles.bold, {fontSize:16, color:"grey"}]}>€000</Text>
-                    </View>
-
-                    <View>
-                      <Text>
-                        Lorem ipsum dolor sit amet consectetur. Nunc lectus
-                        mollis aliquet sit.
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-                <View style={styles.modalContentMenu}>
-                  <Text style={[styles.bold, {fontSize:22, marginBottom:24}]}>Massas</Text>
-                  <View style={styles.modalContentMenuBox}>
-                    <View style={[styles.row, {justifyContent:"space-between", }]}>
-                      <Text style={[styles.bold, {fontSize:16, color:"grey"}]}>Esparguete</Text>
-                      <Text style={[styles.bold, {fontSize:16, color:"grey"}]}>€000</Text>
-                    </View>
-                    <View>
-                      <Text>
-                        Lorem ipsum dolor sit amet consectetur. Nunc lectus
-                        mollis aliquet sit.
-                      </Text>
-                    </View>
-                  </View>
-                  <View>
-                    <View style={[styles.row, {justifyContent:"space-between", }]}>
-                      <Text style={[styles.bold, {fontSize:16, color:"grey"}]}>Lasanha</Text>
-                      <Text style={[styles.bold, {fontSize:16, color:"grey"}]}>€000</Text>
-                    </View>
-
-                    <View>
-                      <Text>
-                        Lorem ipsum dolor sit amet consectetur. Nunc lectus
-                        mollis aliquet sit.
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </ScrollView>
+                <Text
+                  style={{
+                    color:
+                      Device.brand == "Apple"
+                        ? Colors.colors.neutral02Color.neutral_02
+                        : Colors.colors.neutral01Color.neutral_08,
+                    textAlign: "center",
+                    padding: 10,
+                  }}
+                >
+                  Ver Menu Completo
+                </Text>
+              </Pressable>
             </View>
           </View>
         </View>
-      </Modal>
+      </ScrollView>
     </View>
   );
 }
@@ -309,8 +266,8 @@ const styles = StyleSheet.create({
     marginBottom: 35,
     paddingBottom: 35,
   },
-  modalContentMenuBox:{
-    marginBottom:23,
+  modalContentMenuBox: {
+    marginBottom: 23,
   },
   row: {
     flexDirection: "row",
@@ -381,5 +338,12 @@ const styles = StyleSheet.create({
   platesContainer: { marginTop: 35, flex: 1 },
   itemName: {
     fontWeight: "bold",
+  },
+  item: {},
+  phoneNumberCall: {
+    margin: 10,
+  },
+  AddressButton: {
+    margin: 10,
   },
 });

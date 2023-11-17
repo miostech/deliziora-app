@@ -1,9 +1,19 @@
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import { useState } from "react";
-import { Dimensions, Image, Text, TouchableOpacity, View } from "react-native";
+import {
+  Button,
+  Dimensions,
+  Image,
+  Pressable,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import WalkthroughSvg3 from "./SVGs/WalkthroughSvg3/WalkthroughSvg3";
 import WalkthroughSvg2 from "./SVGs/WalkthroughSvg2/WalkthroughSvg2";
 import WalkthroughSvg1 from "./SVGs/WalkthroughSvg1/WalkthroughSvg1";
+import * as Device from "expo-device";
+import * as Location from "expo-location";
 
 export default function WalkthroughSlider({ navigation }) {
   const colors = require("../style/Colors.json");
@@ -13,12 +23,6 @@ export default function WalkthroughSlider({ navigation }) {
   const [activeSlide, setActiveSlide] = useState(0);
   const [carouselRef, setCarouselRef] = useState(null);
   const items = [
-    {
-      id: 1,
-      title: "Registrar endereço",
-      text: "Ao acessar o mapa digite o código postal para selecionarmos restaurantes próximos a si.",
-      image: <WalkthroughSvg1 />,
-    },
     {
       id: 2,
       title: "Acessar restaurantes",
@@ -30,6 +34,45 @@ export default function WalkthroughSlider({ navigation }) {
       title: "Visualizar pratos",
       text: "Acesse os perfis dos restaurantes para visualizar os pratos disponíveis no momento.",
       image: <WalkthroughSvg3 />,
+    },
+    {
+      id: 1,
+      title: "Autorize a sua localização",
+      text: "Precisamos da sua localização para puder dar uma melhor experiencia e mostrar restaurantes próximos a ti",
+      image: <WalkthroughSvg1 />,
+      button: (
+        <View>
+          <Pressable
+            style={{
+              backgroundColor: colors.colors.baseColor.base_01,
+              borderRadius: 100,
+              marginBottom: 25,
+              width: "100%",
+            }}
+            onPress={async () => {
+              Location.requestForegroundPermissionsAsync().then((data) => {
+                console.log(data);
+                if (data.status === "granted") {
+                  navigation.navigate("HomeTab");
+                }
+              });
+            }}
+          >
+            <Text
+              style={{
+                color:
+                  Device.brand == "Apple"
+                    ? colors.colors.neutral02Color.neutral_02
+                    : colors.colors.neutral01Color.neutral_08,
+                textAlign: "center",
+                padding: 10,
+              }}
+            >
+              Ativar Localização
+            </Text>
+          </Pressable>
+        </View>
+      ),
     },
   ];
   return (
@@ -57,7 +100,7 @@ export default function WalkthroughSlider({ navigation }) {
         ref={(c) => setCarouselRef(c)}
         sliderWidth={carouselWidth}
         itemWidth={carouselWidth}
-        windowSize={1}
+        enableMomentum
         onSnapToItem={(index) => setActiveSlide(index)}
         renderItem={({ item }) => {
           return (
@@ -87,6 +130,7 @@ export default function WalkthroughSlider({ navigation }) {
                 <Text style={{ fontSize: 18, textAlign: "center" }}>
                   {item.text}
                 </Text>
+                <View style={{ width: "100%" }}>{item.button}</View>
               </View>
             </View>
           );

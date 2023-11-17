@@ -5,27 +5,9 @@ import Carousel from "react-native-snap-carousel";
 const colors = require("../style/Colors.json");
 
 const countries = [
-  { name: "Italiana", value: "italian" },
-  { name: "Japonesa", value: "Japanese" },
-  { name: "Chinesa", value: "chinese" },
-  { name: "Americana", value: "american" },
-  { name: "Francesa", value: "french" },
-  { name: "Mexicana", value: "mexican" },
-  { name: "Brasileira", value: "brazilian" },
-  { name: "Espanhola", value: "spanish" },
-  { name: "Portuguesa", value: "portuguese" },
-  { name: "Coreana", value: "korean" },
-  { name: "Australiana", value: "australian" },
-  { name: "Indiana", value: "indian" },
-  { name: "Thai", value: "thai" },
-  { name: "Vietnamita", value: "vietnamese" },
-  { name: "Arabe", value: "arabic" },
-  { name: "Turca", value: "turkish" },
-  { name: "Egipcia", value: "egyptian" },
-  { name: "Russa", value: "russian" },
-  { name: "Polonesa", value: "polish" },
-  { name: "Sueca", value: "swedish" },
-  { name: "Irlandesa", value: "irish" },
+  { name: "Peixe", value: "Peixe" },
+  { name: "Carne", value: "Carne" },
+  { name: "Vegetariano", value: "Vegetariano" },
 ];
 
 const FoodFilterCarousel = () => {
@@ -77,7 +59,7 @@ const styles = StyleSheet.create({
     height: 48,
   },
   item: {
-    width: 100,
+    width: 120,
     justifyContent: "center",
     alignItems: "center",
     padding: 13,
@@ -88,7 +70,7 @@ const styles = StyleSheet.create({
   },
   selectedItem: {
     padding: "13px, 18px, 13px, 18px ",
-    width: 100,
+    width: 120,
     height: "100%",
     alignItems: "center",
     justifyContent: "center",

@@ -13,6 +13,7 @@ import {
 import { Svg, Path } from "react-native-svg";
 import { SearchIcon } from "./SearchIcon";
 import { FilterSearch } from "./FilterSearch";
+import ListType from "./ListType";
 import Close from "./SVGs/Close";
 import CheckBox from "./SVGs/CheckBox";
 import UnCheckBox from "./SVGs/UnCheckBox";
@@ -20,11 +21,12 @@ import FoodFilterSlider from "./FoodFilterSlider";
 import DistanceSlider from "./DistanceSlider";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import RBSheet from "react-native-raw-bottom-sheet";
-import * as Device from 'expo-device';
+import * as Device from "expo-device";
+import ListTypeMap from "./ListTypeMap";
 
 const colors = require("../style/Colors.json");
 
-const SearchBar = () => {
+const SearchBar = ({ listType, setListType, isfilter, islistType }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isChecked2, setIsChecked2] = useState(false);
@@ -35,22 +37,45 @@ const SearchBar = () => {
   return (
     <View style={styles.container}>
       <View style={styles.root}>
-        <View style={styles.content}>
-          <SearchIcon onPress={() => { }} />
+        <View
+          style={
+            isfilter === false && islistType === false
+              ? styles.contentWithOutListFilter
+              : styles.content
+          }
+        >
+          <View>
+            <SearchIcon onPress={() => {}} />
+          </View>
+          <View>
+            <TextInput
+              placeholder="Pesquisar"
+              placeholderTextColor={colors.colors.neutral02Color.neutral_1}
+              style={styles.placeholderLabel}
+              
+              selectionColor={colors.colors.neutral02Color.neutral_1}
+              overflow="hidden"
+            ></TextInput>
+          </View>
         </View>
-        <View>
-          <TextInput
-            placeholder="Pesquisar"
-            placeholderTextColor={colors.colors.neutral02Color.neutral_1}
-            style={styles.placeholderLabel}
-            overflow="hidden"
-          ></TextInput>
-        </View>
-      </View>
-      <View style={styles.filterButton}>
-        <Pressable onPress={() => refRBSheet.current.open()}>
-          <FilterSearch />
-        </Pressable>
+        {isfilter === false ? null : (
+          <View style={styles.filterButton}>
+            <Pressable onPress={() => refRBSheet.current.open()}>
+              <FilterSearch />
+            </Pressable>
+          </View>
+        )}
+        {islistType === false ? null : (
+          <View style={styles.filterButton}>
+            <Pressable
+              onPress={() => {
+                setListType(!listType);
+              }}
+            >
+              {listType ? <ListTypeMap /> : <ListType />}
+            </Pressable>
+          </View>
+        )}
       </View>
 
       <RBSheet
@@ -62,14 +87,12 @@ const SearchBar = () => {
         height={Dimensions.get("window").height - 150}
         customStyles={{
           wrapper: {
-            backgroundColor: Device.brand == "Apple" ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0)",
+            backgroundColor:
+              Device.brand == "Apple" ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0)",
             height: "100%",
           },
-          draggableIcon: {
-          },
-          container: {
-          },
-
+          draggableIcon: {},
+          container: {},
         }}
       >
         <View style={styles.containerView}>
@@ -172,7 +195,8 @@ const SearchBar = () => {
                 </Pressable>
                 <Pressable
                   onPress={() => refRBSheet.current.close()}
-                  style={styles.modalButton2}>
+                  style={styles.modalButton2}
+                >
                   <Text style={styles.modalButtonText2}>Ver restaurantes</Text>
                 </Pressable>
               </View>
@@ -180,123 +204,6 @@ const SearchBar = () => {
           </ScrollView>
         </View>
       </RBSheet>
-
-      {/* <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        statusBarTranslucent={true}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={{ height: "100%", width: "100%", position: "absolute", backgroundColor: "rgba(0, 0, 0, 0.3)" }} />
-        <View style={styles.containerView}>
-          <View style={styles.modalContent}>
-            <View
-              style={{
-                flexDirection: "row",
-                borderBottomWidth: 1,
-                borderColor: "#A5A2A6",
-                width: "95%",
-                paddingBottom: 15,
-                gap: 15,
-              }}
-            >
-              <Pressable
-                style={styles.buttonClose}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <Close />
-              </Pressable>
-              <Text style={styles.modalText}>Filtros</Text>
-            </View>
-          </View>
-          <ScrollView
-            vertical={true}
-            showsHorizontalScrollIndicator={false}
-            style={styles.scrollView}
-            contentContainerStyle={styles.contentContainer}
-          >
-            <View style={styles.modalContentAll}>
-              <View style={styles.modalContent2}>
-                <Text style={styles.modalText2}>Status de funcionamento</Text>
-                <Text style={styles.modalText3}>
-                  É possível visualizar todos os restaurantes ou apenas os que
-                  estão abertos no momento.
-                </Text>
-              </View>
-              <View style={styles.modalContent3}>
-                <View style={styles.modalMiniContent3}>
-                  <Text style={styles.modalText4}>Qualquer</Text>
-                  {isChecked === true ? (
-                    <Pressable onPress={() => setIsChecked(!isChecked)}>
-                      <CheckBox />
-                    </Pressable>
-                  ) : (
-                    <Pressable onPress={() => setIsChecked(!isChecked)}>
-                      <UnCheckBox />
-                    </Pressable>
-                  )}
-                </View>
-                <View style={styles.modalMiniContent3}>
-                  <Text style={styles.modalText4}>Aberto</Text>
-                  {isChecked2 === true ? (
-                    <Pressable onPress={() => setIsChecked2(!isChecked2)}>
-                      <CheckBox />
-                    </Pressable>
-                  ) : (
-                    <Pressable onPress={() => setIsChecked2(!isChecked2)}>
-                      <UnCheckBox />
-                    </Pressable>
-                  )}
-                </View>
-                <View style={styles.modalMiniContent3}>
-                  <Text style={styles.modalText4}>Fechado</Text>
-                  {isChecked3 === true ? (
-                    <Pressable onPress={() => setIsChecked3(!isChecked3)}>
-                      <CheckBox />
-                    </Pressable>
-                  ) : (
-                    <Pressable onPress={() => setIsChecked3(!isChecked3)}>
-                      <UnCheckBox />
-                    </Pressable>
-                  )}
-                </View>
-              </View>
-              <View style={styles.line2}></View>
-              <View style={styles.modalContent4}>
-                <Text style={styles.modalText5}>Tipos de comidas</Text>
-                <Text style={styles.modalText6}>
-                  Busque por cozinhas, escolha do seu gosto e jeito.
-                </Text>
-                <View style={styles.modalMiniContent4}>
-                  <FoodFilterSlider />
-                </View>
-              </View>
-              <View style={styles.line3}></View>
-              <View style={styles.modalContent5}>
-                <Text style={styles.modalText7}>Distância</Text>
-                <Text style={styles.modalText8}>
-                  Arrastes para o lado selecionando a distancia máxima desejada.
-                </Text>
-                <View style={styles.modalMiniContent5}>
-                  <DistanceSlider />
-                </View>
-              </View>
-              <View style={styles.line4}></View>
-              <View style={styles.modalContent6}>
-                <Pressable style={styles.modalButton}>
-                  <Text style={styles.modalButtonText}>Limpar Filtros</Text>
-                </Pressable>
-                <Pressable style={styles.modalButton2}>
-                  <Text style={styles.modalButtonText2}>Ver restaurantes</Text>
-                </Pressable>
-              </View>
-            </View>
-          </ScrollView>
-        </View>
-      </Modal> */}
     </View>
   );
 };
@@ -328,16 +235,33 @@ const styles = StyleSheet.create({
 
   root: {
     height: 56,
-    width: 300,
+    width: "100%",
+    paddingHorizontal: 40,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: colors.colors.neutral02Color.neutral_10,
     borderRadius: 32,
     display: "flex",
-    justifyContent: "end",
+    justifyContent: "center",
   },
   content: {
-    marginLeft: 20,
+    borderRadius: 32,
+    height: 56,
+    width: "70%",
+    padding: 20,
+    flexDirection: "row",
+    backgroundColor: colors.colors.neutral02Color.neutral_10,
+    justifyContent: "end",
+    alignItems: "center",
+  },
+  contentWithOutListFilter: {
+    borderRadius: 32,
+    height: 56,
+    width: "100%",
+    padding: 20,
+    flexDirection: "row",
+    backgroundColor: colors.colors.neutral02Color.neutral_10,
+    justifyContent: "end",
+    alignItems: "center",
   },
   placeholderLabel: {
     marginLeft: 20,
@@ -347,8 +271,11 @@ const styles = StyleSheet.create({
   filterButton: {
     marginLeft: 20,
     width: 54,
+    height: 54,
     backgroundColor: colors.colors.neutral02Color.neutral_10,
     borderRadius: 32,
+    justifyContent: "center",
+    alignItems: "center",
   },
   centeredView: {
     justifyContent: "center",
@@ -459,8 +386,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
   },
-  modalButton: { padding: 12, borderRadius: 24, width: 150, alignItems: "center", justifyContent: "center" },
-  modalButton2: { backgroundColor: "black", padding: 12, borderRadius: 24, width: 150, alignItems: "center", justifyContent: "center" },
+  modalButton: {
+    padding: 12,
+    borderRadius: 24,
+    width: 150,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalButton2: {
+    backgroundColor: "black",
+    padding: 12,
+    borderRadius: 24,
+    width: 150,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   modalButtonText: {},
   modalButtonText2: { color: "white" },
 });
