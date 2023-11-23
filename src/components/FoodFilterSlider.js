@@ -11,7 +11,7 @@ const countries = [
 ];
 
 const FoodFilterCarousel = () => {
-  const [selectedTypes, setSelectedTypes] = useState([]);
+  const [selectedTypes, setSelectedTypes] = useState([{value: "Peixe"}]);
 
   const handleItemPress = (selectedType) => {
     setSelectedTypes((prevSelectedTypes) => {
