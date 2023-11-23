@@ -32,8 +32,6 @@ const MyComponent = () => {
 const styles = StyleSheet.create({
     root: {
         width: '100%',
-        marginTop: 20,
-        marginBottom: 20,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -45,8 +43,6 @@ const styles = StyleSheet.create({
     },
     slider: {
         width: '100%',
-        marginTop: 20,
-        marginBottom: 20,
     },
     thumb: {
         width: 28,
@@ -63,7 +59,7 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     ViewText: {
-        marginTop: 38,
+        marginTop: 10,
         borderWidth: 1,
         borderColor: 'black',
         display: "flex",

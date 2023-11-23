@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   },
   ButtonSelectCatergories: {
     padding: 18,
-    width: "100",
+    width: "100px",
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
