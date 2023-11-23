@@ -23,14 +23,12 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 import RBSheet from "react-native-raw-bottom-sheet";
 import * as Device from "expo-device";
 import ListTypeMap from "./ListTypeMap";
+import SwitchOpenOrClose from "./Switch";
 
 const colors = require("../style/Colors.json");
 
 const SearchBar = ({ listType, setListType, isfilter, islistType }) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
-  const [isChecked2, setIsChecked2] = useState(false);
-  const [isChecked3, setIsChecked3] = useState(false);
 
   const refRBSheet = useRef();
 
@@ -45,14 +43,14 @@ const SearchBar = ({ listType, setListType, isfilter, islistType }) => {
           }
         >
           <View>
-            <SearchIcon onPress={() => {}} />
+            <SearchIcon onPress={() => { }} />
           </View>
           <View>
             <TextInput
               placeholder="Pesquisar"
               placeholderTextColor={colors.colors.neutral02Color.neutral_1}
               style={styles.placeholderLabel}
-              
+
               selectionColor={colors.colors.neutral02Color.neutral_1}
               overflow="hidden"
             ></TextInput>
@@ -124,48 +122,15 @@ const SearchBar = ({ listType, setListType, isfilter, islistType }) => {
           >
             <View style={styles.modalContentAll}>
               <View style={styles.modalContent2}>
-                <Text style={styles.modalText2}>Status de funcionamento</Text>
-                <Text style={styles.modalText3}>
+                <Text style={styles.modalText2}>
                   É possível visualizar todos os restaurantes ou apenas os que
                   estão abertos no momento.
                 </Text>
-              </View>
-              <View style={styles.modalContent3}>
-                <View style={styles.modalMiniContent3}>
-                  <Text style={styles.modalText4}>Qualquer</Text>
-                  {isChecked === true ? (
-                    <Pressable onPress={() => setIsChecked(!isChecked)}>
-                      <CheckBox />
-                    </Pressable>
-                  ) : (
-                    <Pressable onPress={() => setIsChecked(!isChecked)}>
-                      <UnCheckBox />
-                    </Pressable>
-                  )}
-                </View>
-                <View style={styles.modalMiniContent3}>
-                  <Text style={styles.modalText4}>Aberto</Text>
-                  {isChecked2 === true ? (
-                    <Pressable onPress={() => setIsChecked2(!isChecked2)}>
-                      <CheckBox />
-                    </Pressable>
-                  ) : (
-                    <Pressable onPress={() => setIsChecked2(!isChecked2)}>
-                      <UnCheckBox />
-                    </Pressable>
-                  )}
-                </View>
-                <View style={styles.modalMiniContent3}>
-                  <Text style={styles.modalText4}>Fechado</Text>
-                  {isChecked3 === true ? (
-                    <Pressable onPress={() => setIsChecked3(!isChecked3)}>
-                      <CheckBox />
-                    </Pressable>
-                  ) : (
-                    <Pressable onPress={() => setIsChecked3(!isChecked3)}>
-                      <UnCheckBox />
-                    </Pressable>
-                  )}
+                <View style={styles.modalContent3}>
+                  <Text style={styles.modalText3}>
+                    Mostrar apenas restaurantes abertos
+                  </Text>
+                  <SwitchOpenOrClose />
                 </View>
               </View>
               <View style={styles.line2}></View>
@@ -324,7 +289,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: colors.colors.neutral01Color.neutral_08,
-    justifyContent: "end",
+    justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
     paddingLeft: 10,
@@ -343,10 +308,12 @@ const styles = StyleSheet.create({
   modalContent3: {
     flex: 1,
   },
-  modalMiniContent3: {
+  modalContent3: {
+    display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    top: 20,
   },
   line2: {
     borderBottomWidth: 1,
