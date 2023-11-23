@@ -228,7 +228,7 @@ export default function App() {
                     navigation.navigate("HomeTab");
                   }}
                 >
-                  <Text style={{ fontSize: 18, fontWeight: 500 }}>Pular</Text>
+                  <Text style={{ fontSize: 18, fontWeight: 500 }}>Avançar</Text>
                 </TouchableOpacity>
               );
             },

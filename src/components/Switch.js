@@ -13,7 +13,7 @@ const SwitchOpenOrClose = () => {
                 ios_backgroundColor="#f9f9f9"
                 onValueChange={toggleSwitch}
                 value={isEnabled}
-                style={{ transform: [{ scaleX: 1.4 }, { scaleY: 1.4 }]}}
+                style={{ transform: [{ scaleX: 1 }, { scaleY: 1 }]}}
             />
         </View>
     );
@@ -22,8 +22,8 @@ const SwitchOpenOrClose = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: 'flex-startr',
+        justifyContent: 'flex-start',
         width: 'auto',
         height: 'auto',
     },
