@@ -37,8 +37,8 @@ export default function WalkthroughSlider({ navigation }) {
     },
     {
       id: 1,
-      title: "Autorize a sua localização",
-      text: "Precisamos da sua localização para puder dar uma melhor experiencia e mostrar restaurantes próximos a ti",
+      title: "Deliziora precisa da tua localização atual",
+      text: "De forma a mostrar os resultados mais próximos de ti com exatidão e te mostrar onde está a comida que procuras, precisamos de ter acesso à tua localização exata",
       image: <WalkthroughSvg1 />,
       button: (
         <View>
