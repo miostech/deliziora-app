@@ -15,9 +15,6 @@ import { SearchIcon } from "./SearchIcon";
 import { FilterSearch } from "./FilterSearch";
 import ListType from "./ListType";
 import Close from "./SVGs/Close";
-import CheckBox from "./SVGs/CheckBox";
-import UnCheckBox from "./SVGs/UnCheckBox";
-import FoodFilterSlider from "./FoodFilterSlider";
 import DistanceSlider from "./DistanceSlider";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import RBSheet from "react-native-raw-bottom-sheet";
@@ -25,6 +22,7 @@ import * as Device from "expo-device";
 import ListTypeMap from "./ListTypeMap";
 import SwitchOpenOrClose from "./Switch";
 import TypeOfSearch from "./TypeOfSearch";
+import CharacteristicsFilter from "./CharacteristicsFilter";
 
 const colors = require("../style/Colors.json");
 
@@ -135,20 +133,21 @@ const SearchBar = ({ listType, setListType, isfilter, islistType }) => {
                 </View>
               </View>
               <View style={styles.line2}></View>
+              <Text style={styles.modalText4}>Tipo de menu</Text>
+              <View style={styles.modalContent6}>
+                <View><TypeOfSearch /></View>
+                </View>
               <View style={styles.modalContent4}>
                 <Text style={styles.modalText5}>Caracteristicas</Text>
                 <Text style={styles.modalText6}>
                   Busque por cozinhas, escolha do seu gosto e jeito.
                 </Text>
                 <View style={styles.modalMiniContent4}>
-                  <FoodFilterSlider />
+                  <CharacteristicsFilter />
                 </View>
               </View>
               <View style={styles.line3}></View>
-              <Text style={styles.modalText4}>Tipo de pesquisa</Text>
-              <View style={styles.modalContent6}>
-                <View><TypeOfSearch /></View>
-                </View>
+
               <View style={styles.modalContent5}>
                 <Text style={styles.modalText7}>Distância</Text>
                 <Text style={styles.modalText8}>
