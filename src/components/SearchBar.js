@@ -140,7 +140,7 @@ const SearchBar = ({ listType, setListType, isfilter, islistType }) => {
               <View style={styles.modalContent4}>
                 <Text style={styles.modalText5}>Caracteristicas</Text>
                 <Text style={styles.modalText6}>
-                  Busque por cozinhas, escolha do seu gosto e jeito.
+                  Busque por Restaurantes, com uma ou mais caracteristicas
                 </Text>
                 <View style={styles.modalMiniContent4}>
                   <CharacteristicsFilter />

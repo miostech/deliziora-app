@@ -222,7 +222,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                     color:
                       Device.brand == "Apple"
                         ? Colors.colors.neutral02Color.neutral_10
-                        : Colors.colors.neutral01Color.neutral_10,
+                        : Colors.colors.neutral02Color.neutral_10,
                     textAlign: "center",
                     padding: 10,
                   }}

@@ -110,20 +110,18 @@ export default function MenuPlatesPage({ route, navigation }) {
         <Text style={{
           color: "#201F23",
           fontFamily: "Roboto",
-          fontSize: 16,
           fontStyle: "normal",
-          fontWeight: 300,
-          lineHeight: "normal"
+          fontWeight: "300",
+          fontSize: 18
         }}>
           {item.food}
         </Text>
         <Text style={{
           color: "#201F23",
           fontFamily: "Roboto",
-          fontSize: 16,
           fontStyle: "normal",
-          fontWeight: 300,
-          lineHeight: "normal"
+          fontWeight: "300",
+          fontSize: 18
         }}>
           €{item.price}
         </Text>
@@ -147,17 +145,15 @@ export default function MenuPlatesPage({ route, navigation }) {
             color: 'var(--neutral-02-color-neutral-01, #201F23)',
             textAlign: 'center',
             fontFamily: 'Roboto',
-            fontSize: '26px',
             fontStyle: 'normal',
             fontWeight: '400',
-            lineHeight: 'normal',
+            fontSize: 20
           }}>{restaurant.title}</Text>
 
           <Divider
             style={{ width: "80%", margin: 20 }}
             color="black"
             insetType="left"
-            subHeaderStyle={{}}
             width={1}
             orientation="horizontal"
           />
