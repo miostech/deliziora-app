@@ -104,10 +104,29 @@ export default function MenuPlatesPage({ route, navigation }) {
           borderBottomWidth: 1,
           flexDirection: "row",
           justifyContent: "space-between",
+          paddingBottom: 15,
         }}
       >
-        <Text style={{ fontSize: 15 }}>{item.food}</Text>
-        <Text style={{ fontSize: 15 }}>€{item.price}</Text>
+        <Text style={{
+          color: "#201F23",
+          fontFamily: "Roboto",
+          fontSize: 16,
+          fontStyle: "normal",
+          fontWeight: 300,
+          lineHeight: "normal"
+        }}>
+          {item.food}
+        </Text>
+        <Text style={{
+          color: "#201F23",
+          fontFamily: "Roboto",
+          fontSize: 16,
+          fontStyle: "normal",
+          fontWeight: 300,
+          lineHeight: "normal"
+        }}>
+          €{item.price}
+        </Text>
       </View>
     );
   };
@@ -123,7 +142,7 @@ export default function MenuPlatesPage({ route, navigation }) {
         behavior={Platform.OS == "android" ? "height" : "padding"}
         keyboardVerticalOffset={Platform.OS == "android" ? -150 : -150}
       >
-        <View style={{ justifyContent: "center", alignItems: "center" , marginTop: 20}}>
+        <View style={{ justifyContent: "center", alignItems: "center", marginTop: 20 }}>
           <Text style={{
             color: 'var(--neutral-02-color-neutral-01, #201F23)',
             textAlign: 'center',
@@ -168,7 +187,6 @@ export default function MenuPlatesPage({ route, navigation }) {
                         justifyContent: "center",
                         alignItems: "center",
                         fontSize: 20
-
                       }}
                     >
 

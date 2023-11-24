@@ -209,7 +209,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
             <View>
               <Pressable
                 style={{
-                  backgroundColor: Colors.colors.baseColor.base_01,
+                  backgroundColor: Colors.colors.neutral02Color.neutral_01,
                   borderRadius: 100,
                   marginBottom: 25,
                 }}
@@ -221,8 +221,8 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                   style={{
                     color:
                       Device.brand == "Apple"
-                        ? Colors.colors.neutral02Color.neutral_02
-                        : Colors.colors.neutral01Color.neutral_08,
+                        ? Colors.colors.neutral02Color.neutral_10
+                        : Colors.colors.neutral01Color.neutral_10,
                     textAlign: "center",
                     padding: 10,
                   }}
