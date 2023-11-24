@@ -10,6 +10,10 @@ import {
   FlatList,
 } from "react-native";
 import Loader from "../components/Loader";
+import MeatIcon from "../components/SVGs/MeatIcon";
+import FishIcon from "../components/SVGs/FishIcon";
+import VegeterianIcon from "../components/SVGs/VegetarianIcon";
+import { Divider } from "@rneui/base";
 const Colors = require("../style/Colors.json");
 
 const DATA = [
@@ -69,6 +73,7 @@ const DATA = [
 export default function MenuPlatesPage({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(false);
   const sectionRef = useRef();
+  const [restaurant, setRestaurant] = useState(route.params.restaurant)
 
   useEffect(() => {
     console.log("OPEN", MenuPlatesPage.name, "SCREEN");
@@ -118,34 +123,76 @@ export default function MenuPlatesPage({ route, navigation }) {
         behavior={Platform.OS == "android" ? "height" : "padding"}
         keyboardVerticalOffset={Platform.OS == "android" ? -150 : -150}
       >
+        <View style={{ justifyContent: "center", alignItems: "center" , marginTop: 20}}>
+          <Text style={{
+            color: 'var(--neutral-02-color-neutral-01, #201F23)',
+            textAlign: 'center',
+            fontFamily: 'Roboto',
+            fontSize: '26px',
+            fontStyle: 'normal',
+            fontWeight: '400',
+            lineHeight: 'normal',
+          }}>{restaurant.title}</Text>
+
+          <Divider
+            style={{ width: "80%", margin: 20 }}
+            color="black"
+            insetType="left"
+            subHeaderStyle={{}}
+            width={1}
+            orientation="horizontal"
+          />
+        </View>
         <View style={[styleSelected.backgroundPrimary, { flex: 1 }]}>
           <SectionList
             sections={DATA}
             stickySectionHeadersEnabled={false}
             renderSectionHeader={({ section }) => (
               <>
-                <Text
-                  style={{
-                    backgroundColor: "#ccc",
-                    padding: 10,
-                    fontWeight: "bold",
-                    textAlign:"center",
-                    fontSize:18
-                  }}
-                >
-                  {section.title}
-                </Text>
+                <View>
+
+                  <View style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}>
+                    <Text>
+                      {section.title === "Carne" && <MeatIcon width={100} height={100} />}
+                      {section.title === "Peixe" && <FishIcon width={100} height={100} />}
+                      {section.title === "Vegetariano" && <VegeterianIcon width={100} height={100} />}
+                    </Text>
+                    <Text
+                      style={{
+                        padding: 10,
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        fontSize: 20
+
+                      }}
+                    >
+
+                      {section.title}
+                    </Text>
+                  </View>
+                </View>
+
+
                 <FlatList
                   data={section.data}
                   renderItem={({ item }) => <Item item={item} />}
                 />
               </>
             )}
-            renderItem={({ item }) => {}}
+            renderItem={({ item }) => { }}
           />
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
-const styleSelected = StyleSheet.create({});
+const styleSelected = StyleSheet.create({
+  backgroundPrimary: {
+    backgroundColor: Colors.colors.neutral02Color.neutral_10,
+  },
+});

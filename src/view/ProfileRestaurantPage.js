@@ -214,7 +214,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                   marginBottom: 25,
                 }}
                 onPress={() => {
-                  navigation.navigate("MenuPlatesPage");
+                  navigation.navigate("MenuPlatesPage",{restaurant: restaurant });
                 }}
               >
                 <Text
