@@ -1999,6 +1999,11 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/slider/-/slider-4.4.2.tgz#1fea0eb3ae31841fe87bd6c4fc67569066e9cf4b"
   integrity sha512-D9bv+3Vd2gairAhnRPAghwccgEmoM7g562pm8i4qB3Esrms5mggF81G3UvCyc0w3jjtFHh8dpQkfEoKiP0NW/Q==
 
+"@react-native-picker/picker@^2.5.1":
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/@react-native-picker/picker/-/picker-2.5.1.tgz#dfa13d5b97bfbedf1f7e7c608181a82f1d58b351"
+  integrity sha512-/sADUfQsosMRYtrqqL3ZYZSECRygj0fXtpRLqxJfwuMEoqfvfn40756R6B1alzusVvDRZFI0ari0iQid56hA/Q==
+
 "@react-native/assets-registry@^0.72.0":
   version "0.72.0"
   resolved "https://registry.npmjs.org/@react-native/assets-registry/-/assets-registry-0.72.0.tgz"
@@ -6433,6 +6438,13 @@ react-native-modal-popover@^2.0.1:
   dependencies:
     lodash ">4.17.0"
     prop-types "^15.8.1"
+
+react-native-picker-select@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-picker-select/-/react-native-picker-select-9.0.0.tgz#4f9725c5f951d0aedf92cae0da21e40e439a4223"
+  integrity sha512-jkG3gpp2oGMSXSBt5zu76Yp5JNzkF1K8BaKH7erf9Q5oTFI80lozsGMc9FkJokzxuy5+jHRCX+pHHBhtl0SI+A==
+  dependencies:
+    lodash.isequal "^4.5.0"
 
 react-native-ratings@8.0.4:
   version "8.0.4"

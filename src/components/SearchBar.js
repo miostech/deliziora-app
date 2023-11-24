@@ -24,6 +24,7 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import * as Device from "expo-device";
 import ListTypeMap from "./ListTypeMap";
 import SwitchOpenOrClose from "./Switch";
+import TypeOfSearch from "./TypeOfSearch";
 
 const colors = require("../style/Colors.json");
 
@@ -144,6 +145,10 @@ const SearchBar = ({ listType, setListType, isfilter, islistType }) => {
                 </View>
               </View>
               <View style={styles.line3}></View>
+              <Text style={styles.modalText4}>Tipo de pesquisa</Text>
+              <View style={styles.modalContent6}>
+                <View><TypeOfSearch /></View>
+                </View>
               <View style={styles.modalContent5}>
                 <Text style={styles.modalText7}>Distância</Text>
                 <Text style={styles.modalText8}>
@@ -304,8 +309,13 @@ const styles = StyleSheet.create({
   modalText2: { fontSize: 18, fontWeight: "bold" },
   modalText3: { fontSize: 16 },
   modalText4: { fontSize: 17, fontWeight: "bold" },
-  modalContent3: {
+  modalContent6: {
     flex: 1,
+    marginTop: 5,
+    display: "flex",
+    justifyContent: "flex-start",
+    flexDirection: "column",
+    backgroundColor: "red",
   },
   modalContent3: {
     display: "flex",

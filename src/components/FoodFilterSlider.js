@@ -2,19 +2,19 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 
 const colors = require("../style/Colors.json");
-const Categories = [
-  { name: "Peixe", value: "Peixe" },
-  { name: "Carne", value: "Carne" },
-  { name: "Vegetariano", value: "Vegetariano" },
+const Characteristics = [
+  { label: "Peixe", name: "Peixe" },
+  { label: "Carne", name: "Carne" },
+  { label: "Vegetariano", name: "Vegetariano" },
 ];
 const FoodFilterCarousel = () => {
-  const [selectedCategories, setSelectedCategories] = useState(Categories.map(category => ({ ...category, isSelected: true })));
-  console.log(selectedCategories);
+  const [selectedCharacteristics, setSelectedCharacteristics] = useState(Characteristics.map(characteristic => ({ ...characteristic, isActive: true })));
+  console.log(selectedCharacteristics);
 
-  const handlePress = (category) => {
-    setSelectedCategories(selectedCategories.map(item => {
-      if (item.value === category.value) {
-        return { ...item, isSelected: !item.isSelected };
+  const handleCharacteristicPress = (characteristic) => {
+    setSelectedCharacteristics(selectedCharacteristics.map(item => {
+      if (item.name === characteristic.name) {
+        return { ...item, isActive: !item.isActive };
       }
       return item;
     }));
@@ -22,33 +22,32 @@ const FoodFilterCarousel = () => {
 
   return (
     <View style={styles.container}>
-      {selectedCategories.map((category, index) => (
+      {selectedCharacteristics.map((characteristic, index) => (
         <Pressable
           key={index}
           style={({ pressed }) => [
-            styles.ButtonSelectCatergories,
+            styles.ButtonSelectCharacteristics,
             {
-              borderWidth: category.isSelected ? 1 : 1,
-              borderColor: category.isSelected ? colors.colors.neutral02Color.neutral_10 : colors.colors.neutral02Color.neutral_02,
+              borderWidth: characteristic.isActive ? 1 : 1,
+              borderColor: characteristic.isActive ? colors.colors.neutral02Color.neutral_10 : colors.colors.neutral02Color.neutral_02,
               opacity: pressed ? 0.5 : 1,
-              backgroundColor: category.isSelected ? colors.colors.neutral02Color.neutral_02 : colors.colors.neutral02Color.neutral_10,
+              backgroundColor: characteristic.isActive ? colors.colors.neutral02Color.neutral_02 : colors.colors.neutral02Color.neutral_10,
             },
           ]}
-          onPress={() => handlePress(category)}
+          onPress={() => handleCharacteristicPress(characteristic)}
         >
           <Text
             style={[
-              styles.TextButtonSelectCatergories,
+              styles.TextButtonSelectCharacteristics,
               {
-                color: category.isSelected ? colors.colors.neutral02Color.neutral_10 : colors.colors.neutral02Color.neutral_02
+                color: characteristic.isActive ? colors.colors.neutral02Color.neutral_10 : colors.colors.neutral02Color.neutral_02
               },
             ]}
           >
-            {category.name}
+            {characteristic.label}
           </Text>
         </Pressable>
       ))}
-
     </View>
   );
 };
@@ -64,16 +63,15 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 'auto',
   },
-  ButtonSelectCatergories: {
+  ButtonSelectCharacteristics: {
     padding: 18,
     width: "100px",
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     border: '1px solid #000',
-
   },
-  TextButtonSelectCatergories: {
+  TextButtonSelectCharacteristics: {
     fontSize: 16,
     fontWeight: 'bold',
   },
