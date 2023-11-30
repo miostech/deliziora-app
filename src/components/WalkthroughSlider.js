@@ -25,13 +25,13 @@ export default function WalkthroughSlider({ navigation }) {
   const items = [
     {
       id: 2,
-      title: "Acessar restaurantes",
+      title: "Consultar restaurantes",
       text: "Toque nos ícones dos restaurantes apresentados no mapa para obter melhores informação sobre o estabelecimento.",
       image: <WalkthroughSvg2 />,
     },
     {
       id: 3,
-      title: "Visualizar pratos",
+      title: "Obter pratos",
       text: "Veja os perfis dos restaurantes para visualizar os pratos disponíveis no momento.",
       image: <WalkthroughSvg3 />,
     },
