@@ -146,7 +146,7 @@ export default function MenuPlatesPage({ route, navigation }) {
             textAlign: 'center',
             fontFamily: 'Roboto',
             fontStyle: 'normal',
-            fontWeight: '400',
+            fontWeight: '800',
             fontSize: 20
           }}>{restaurant.title}</Text>
 

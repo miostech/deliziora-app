@@ -16,9 +16,16 @@ import PhoneIcon from "../components/PhoneIcon";
 import MapSvg from "../components/SVGs/MapSvg/MapSvg";
 import GoogleMapsIcon from "../components/GoogleMapsIcon";
 import WazeIcon from "../components/WazeIcon";
+import StarIcon from "../components/SVGs/StarIcon";
+import { Button } from "react-native-elements";
 const Colors = require("../style/Colors.json");
 
 export default function ProfileRestaurantPage({ route, navigation }) {
+  const [showMore, setShowMore] = useState(false);
+
+  const handleShowMore = () => {
+    setShowMore(!showMore);
+  };
   const [restaurant, setRestaurant] = useState(route.params.restaurant);
   const [location, setLocation] = useState(route.params.location);
   const [modalVisible, setModalVisible] = useState(false);
@@ -84,18 +91,9 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           <Text style={styles.textRestaurantTitleInfo}>{restaurant.title}</Text>
 
           <View
-            style={[{ marginBottom: 15, marginTop: 15, alignItems: "flex-start", justifyContent:"space-around" }]}
+            style={[{ marginBottom: 15, marginTop: 15, alignItems: "flex-start", justifyContent: "flex-start" , width: 330,}]}
           >
             <View style={[styles.row, { alignItems: "center" }]}>
-              <View style={styles.phoneNumberCall}>
-                <Pressable
-                  onPress={() => {
-                    Linking.openURL(addressNavigateWaze);
-                  }}
-                >
-                  <WazeIcon />
-                </Pressable>
-              </View>
               <View style={styles.phoneNumberCall}>
                 <Pressable
                   onPress={() => {
@@ -109,7 +107,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                 {restaurant.address}
               </Text>
             </View>
-            <View style={[styles.row, { alignItems: "center", }]}>
+            <View style={[styles.row, { alignItems: "center",}]}>
               <View style={styles.phoneNumberCall}>
                 <Pressable
                   onPress={() => {
@@ -119,7 +117,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                   <PhoneIcon />
                 </Pressable>
               </View>
-              <Text style={[styles.textRestaurantNormalInfo, {marginLeft:50}]}>
+              <Text style={[styles.textRestaurantNormalInfo, { marginLeft: 50 }]}>
                 {restaurant.contact}
               </Text>
             </View>
@@ -179,8 +177,67 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           >
             Sobre
           </Text>
-          <Text style={styles.textRestaurantNormalInfo}>
-            {restaurant.about}
+          <View style={styles.aboutContent}>
+            <Text style={styles.textRestaurantNormalInfo}>
+              {showMore ? restaurant.about : restaurant.about.slice(0, 50) + '...'}
+            </Text>
+            {!showMore && (
+              <Pressable
+                onPress={handleShowMore}
+                style={{
+                  backgroundColor: Colors.colors.neutral02Color.neutral_01,
+                  borderRadius: 100,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: 5,
+                  width: 330,
+                  padding: 10,
+                }}>
+                <Text style={{ color: 'white' }}>Ver Mais</Text>
+              </Pressable>
+            )}
+            {showMore && (
+              <Pressable
+                onPress={handleShowMore}
+                style={{
+                  backgroundColor: Colors.colors.neutral02Color.neutral_01,
+                  borderRadius: 100,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: 5,
+                  width: 330,
+                  padding: 10,
+                }}>
+                <Text style={{ color: 'white' }}>Ver Menos</Text>
+              </Pressable>
+            )}
+          </View>
+        </View>
+        <View style={{
+          marginBottom: 15,
+          marginTop: 15,
+          alignSelf: 'flex-start',
+        }}>
+          <Text style={{
+            fontWeight: "bold",
+            fontSize: 18,
+            textAlign: "left",
+          }}>
+            Especialidade
+          </Text>
+        </View>
+
+        <View style={styles.specialityContainer}>
+          <StarIcon width={35} height={35} />
+          <Text style={[
+            styles.textRestaurantNormalInfo,
+            {
+              fontWeight: "normal",
+              fontSize: 20,
+              textAlign: "center",
+            },
+          ]}>
+            Prato 1
           </Text>
         </View>
         <View style={styles.platesContainer}>
@@ -191,7 +248,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                 fontWeight: "bold",
                 fontSize: 18,
                 marginBottom: 10,
-                textAlign: "center",
+                textAlign: "left",
               },
             ]}
           >
@@ -214,7 +271,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                   marginBottom: 25,
                 }}
                 onPress={() => {
-                  navigation.navigate("MenuPlatesPage",{restaurant: restaurant });
+                  navigation.navigate("MenuPlatesPage", { restaurant: restaurant });
                 }}
               >
                 <Text
@@ -286,6 +343,15 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     paddingBottom: 50,
   },
+  specialityContainer: {
+    alignSelf: "flex-start",
+    gap: 10,
+    paddingTop: 20,
+    flexDirection: 'row',
+    display: 'flex',
+    justifyContent: "center",
+    alignItems: "center",
+  },
   containerRestaurantInfo: {
     flex: 1,
     backgroundColor: Colors.colors.neutral02Color.neutral_10,
@@ -311,7 +377,7 @@ const styles = StyleSheet.create({
   textRestaurantNormalInfo: { fontSize: 16 },
   restaurantDistanceInfo: {
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
     marginBottom: 35,
     gap: 30,
   },
@@ -346,4 +412,11 @@ const styles = StyleSheet.create({
   AddressButton: {
     margin: 10,
   },
+  aboutContent: {
+    display: "flex",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+
+
 });

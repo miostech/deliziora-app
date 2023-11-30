@@ -122,8 +122,7 @@ const SearchBar = ({ listType, setListType, isfilter, islistType }) => {
             <View style={styles.modalContentAll}>
               <View style={styles.modalContent2}>
                 <Text style={styles.modalText2}>
-                  É possível visualizar todos os restaurantes ou apenas os que
-                  estão abertos no momento.
+                  Status de Funcionamento
                 </Text>
                 <View style={styles.modalContent3}>
                   <Text style={styles.modalText3}>

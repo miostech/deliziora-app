@@ -23,6 +23,7 @@
     "@react-navigation/native-stack": "^6.9.14",
     "@react-navigation/stack": "^6.3.18",
     "@rneui/base": "^4.0.0-rc.8",
+    "@tabler/icons-react": "^2.42.0",
     "expo": "^49.0.20",
     "expo-device": "~5.4.0",
     "expo-font": "~11.4.0",

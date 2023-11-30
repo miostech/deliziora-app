@@ -142,7 +142,7 @@ const RestaurantsCardCarousel = ({ navigation, setRestaurants, location }) => {
                     location: location
                   })
                 }
-                title="Visitar"
+                title="Abrir"
                 color={
                   Device.brand == "Apple"
                     ? Colors.colors.neutral01Color.neutral_08

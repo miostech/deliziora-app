@@ -220,18 +220,6 @@ export default function App() {
             headerShadowVisible: false,
             headerShown: true,
             headerTitle: "",
-
-            headerRight: () => {
-              return (
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("HomeTab");
-                  }}
-                >
-                  <Text style={{ fontSize: 18, fontWeight: 500 }}>Avançar</Text>
-                </TouchableOpacity>
-              );
-            },
           })}
         />
         <Stack.Screen
