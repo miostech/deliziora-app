@@ -31,7 +31,7 @@ export default function WalkthroughSlider({ navigation }) {
     },
     {
       id: 3,
-      title: "Obter pratos",
+      title: "Ver Menu",
       text: "Veja os perfis dos restaurantes para visualizar os pratos disponíveis no momento.",
       image: <WalkthroughSvg3 />,
     },
