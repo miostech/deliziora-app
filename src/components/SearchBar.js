@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
   View,
   TextInput,
@@ -23,12 +23,12 @@ import ListTypeMap from "./ListTypeMap";
 import SwitchOpenOrClose from "./Switch";
 import TypeOfSearch from "./TypeOfSearch";
 import CharacteristicsFilter from "./CharacteristicsFilter";
+import CarouselMapContext from "./CarouselMapContext";
 
 const colors = require("../style/Colors.json");
 
 const SearchBar = ({ listType, setListType, isfilter, islistType }) => {
   const [modalVisible, setModalVisible] = useState(false);
-
   const refRBSheet = useRef();
 
   return (
@@ -62,7 +62,7 @@ const SearchBar = ({ listType, setListType, isfilter, islistType }) => {
             </Pressable>
           </View>
         )}
-        {islistType === false ? null : (
+        {/* {islistType === false ? null : (
           <View style={styles.filterButton}>
             <Pressable
               onPress={() => {
@@ -72,7 +72,7 @@ const SearchBar = ({ listType, setListType, isfilter, islistType }) => {
               {listType ? <ListTypeMap /> : <ListType />}
             </Pressable>
           </View>
-        )}
+        )} */}
       </View>
 
       <RBSheet

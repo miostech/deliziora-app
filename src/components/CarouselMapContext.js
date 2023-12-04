@@ -4,6 +4,7 @@ const CarouselMapContext = createContext(null);
 
 export const CarouselMapProvider = ({ children }) => {
   const [location, setLocation] = useState(null);
+  const [listType, setListType] = useState(true);
   const [pinIndex, setPinIndex] = useState(null);
   const carouselRef = useRef(null);
   const mapRef = useRef(null);
@@ -13,6 +14,11 @@ export const CarouselMapProvider = ({ children }) => {
       carouselRef.current.snapToItem(slideIndex);
     }
   };
+
+  const changeList = () => {
+    setListType(!listType)
+    console.log('changeList', listType)
+  }
 
   const goToMarker = (index, markers) => {
     if (mapRef.current && markers[index]) {
@@ -34,7 +40,10 @@ export const CarouselMapProvider = ({ children }) => {
         goToMarker,
         location,
         setLocation,
-        mapRef
+        mapRef,
+        listType,
+        setListType,
+        changeList,
       }}
     >
       {children}

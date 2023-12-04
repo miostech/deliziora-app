@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useContext } from "react";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -23,6 +24,7 @@ import { CarouselMapProvider } from "./src/components/CarouselMapContext";
 import { useFonts, Roboto_400Regular } from "@expo-google-fonts/roboto";
 import MenuPlatesPage from "./src/view/MenuPlatesPage";
 import RestaurantList from "./src/view/RestaurantList";
+import CarouselMapContext from "./src/components/CarouselMapContext";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -39,8 +41,10 @@ export default function App() {
   }
 
   function HomeTab() {
+    const { listType, setListType, changeList } = useContext(CarouselMapContext);
     return (
-      <Tab.Navigator
+      <CarouselMapProvider>
+        <Tab.Navigator
         initialRouteName="Map"
         options={{ headerShadowVisible: false, headerShown: false }}
       >
@@ -81,8 +85,8 @@ export default function App() {
         />
         <Tab.Screen
           name="Map"
-          component={HomeScreen}
-          options={{
+          component={()=> <HomeScreen listType={listType}/>}
+          options={({ navigation }) => ({
             headerShadowVisible: false,
             tabBarShowLabel: false,
             headerShown: false,
@@ -97,7 +101,28 @@ export default function App() {
                   position: "relative",
                 }}
               >
-                <View
+                {focused ? (<Pressable
+                  style={{
+                    bottom: 24,
+                    backgroundColor: "white",
+                    borderRadius: 100,
+                    width: 60,
+                    height: 60,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderWidth: 3,
+                    borderColor: "#f1f3f4",
+                  }}
+                  /* onPress={(e)=>{
+                      console.log(e)
+                      changeList();
+                      console.log("isfocused ")
+                  }} */
+                  onPress={()=>{console.log("press")}}
+                >
+                  {/* <MapSvg /> */}
+                  <Text>FOCUSED</Text>
+                </Pressable>) : (<View
                   style={{
                     bottom: 24,
                     backgroundColor: "white",
@@ -111,7 +136,26 @@ export default function App() {
                   }}
                 >
                   <MapSvg focused={focused} />
-                </View>
+                </View>)}
+                {/* <Pressable
+                  style={{
+                    bottom: 24,
+                    backgroundColor: "white",
+                    borderRadius: 100,
+                    width: 60,
+                    height: 60,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderWidth: 3,
+                    borderColor: "#f1f3f4",
+                  }}
+                  onPress={()=>{
+                      changeList();
+                      console.log("isfocused ",focused)
+                  }}
+                >
+                  <MapSvg focused={focused} />
+                </Pressable> */}
                 <View>
                   <Text
                     style={{
@@ -126,7 +170,7 @@ export default function App() {
                 </View>
               </View>
             ),
-          }}
+          })}
         />
         <Tab.Screen
           name="Notifications"
@@ -181,6 +225,8 @@ export default function App() {
           })}
         />
       </Tab.Navigator>
+      </CarouselMapProvider>
+      
     );
   }
 

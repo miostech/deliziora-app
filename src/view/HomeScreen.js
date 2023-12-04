@@ -31,14 +31,13 @@ import MarkerCurrentLocationIconComponent from "../components/MarkerCurrentLocat
 import * as Device from "expo-device";
 import ListMapRestaurant from "../components/ListMapRestaurant";
 
-export default function HomeScreen({ route, navigation }) {
-  const { handleMarkerPress, location, setLocation, mapRef } =
+export default function HomeScreen({ listType, route, navigation }) {
+  const { handleMarkerPress, location, setLocation, mapRef,  setListType } =
     useContext(CarouselMapContext);
 
   const [isLoading, setIsLoading] = useState(true);
   const [messageLocation, setMssageLocation] = useState("");
   const [restaurants, setRestaurants] = useState([]);
-  const [listType, setListType] = useState(false);
 
   var colors = require("../style/Colors.json");
 
@@ -65,9 +64,6 @@ export default function HomeScreen({ route, navigation }) {
       let location = await Location.getCurrentPositionAsync({});
       console.log("LOCATION", location);
       setLocation(location);
-      setMessageLocation(
-        location.coords.latitude + " " + location.coords.longitude
-      );
       resolve("sucess");
     });
   }
@@ -81,6 +77,7 @@ export default function HomeScreen({ route, navigation }) {
       setIsLoading(false);
     }
   }, [location]);
+  
 
   const onLayoutRootView = useCallback(async () => {
     if (isLoading) {
@@ -102,9 +99,9 @@ export default function HomeScreen({ route, navigation }) {
             marginTop: Device.brand == "Apple" ? 80 : 35,
           }}
         >
-          <SearchBar listType={listType} setListType={setListType} />
+          <SearchBar  />
         </View>
-        {listType ? (
+        {!listType ? (
           <View
             style={{
               height: Dimensions.get("window").height,
