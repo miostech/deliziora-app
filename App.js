@@ -25,8 +25,7 @@ import { useFonts, Roboto_400Regular } from "@expo-google-fonts/roboto";
 import MenuPlatesPage from "./src/view/MenuPlatesPage";
 import RestaurantList from "./src/view/RestaurantList";
 import CarouselMapContext from "./src/components/CarouselMapContext";
-import { Button } from "@rneui/base";
-import { PureNativeButton } from "react-native-gesture-handler";
+
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -87,10 +86,11 @@ export default function App() {
           />
           <Tab.Screen
             name="Map"
-            component={() => <HomeScreen listType={listType} />}
+            component={(props ) => <HomeScreen listType={listType} navigation={props.navigation}/>}
             options={({ navigation }) => ({
               headerShadowVisible: false,
               tabBarShowLabel: false,
+
               headerShown: false,
               title: "",
               tabBarIcon: ({ focused, color, size }) => (
