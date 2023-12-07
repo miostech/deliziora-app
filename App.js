@@ -25,6 +25,10 @@ import { useFonts, Roboto_400Regular } from "@expo-google-fonts/roboto";
 import MenuPlatesPage from "./src/view/MenuPlatesPage";
 import RestaurantList from "./src/view/RestaurantList";
 import CarouselMapContext from "./src/components/CarouselMapContext";
+import { OpenAPI } from "deliziora-client-module/client-web"
+
+
+OpenAPI.BASE = "https://deliziora-api.azurewebsites.net/";
 
 
 const Stack = createNativeStackNavigator();

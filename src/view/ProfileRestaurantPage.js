@@ -29,8 +29,8 @@ export default function ProfileRestaurantPage({ route, navigation }) {
   const [restaurant, setRestaurant] = useState(route.params.restaurant);
   const [location, setLocation] = useState(route.params.location);
   const [modalVisible, setModalVisible] = useState(false);
-  var addressNavigateWaze = `https://www.waze.com/ul?ll=${restaurant?.coordinates.latitude}%2C${restaurant?.coordinates.longitude}&navigate=yes&zoom=17`;
-  var coordinatesNavigateGoogle = `https://www.google.com/maps/dir/?api=1&origin=${location?.coords.latitude},${location?.coords.longitude}&destination=${restaurant?.coordinates.latitude},${restaurant?.coordinates.longitude}&travelmode=driving`;
+
+  var coordinatesNavigateGoogle = `https://www.google.com/maps/dir/?api=1&origin=${location?.coords.latitude},${location?.coords.longitude}&destination=${restaurant?.latitude},${restaurant?.longitude}&travelmode=driving`;
 
   const image1 = require("../../assets/AccessAnimals.png");
   const image2 = require("../../assets/AccessCard.png");
@@ -59,7 +59,6 @@ export default function ProfileRestaurantPage({ route, navigation }) {
     const itemStyle = styles.item;
     const nameStyle = styles.itemName;
     return (
-      <Pressable style={itemStyle} onPress={() => handleItemPress(index)}>
         <View
           style={{
             marginRight: 10,
@@ -73,7 +72,6 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           <Text style={nameStyle}>{item.name}</Text>
           <Text style={nameStyle}>€{item.price}</Text>
         </View>
-      </Pressable>
     );
   };
   return (
@@ -88,7 +86,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
         contentContainerStyle={styles.contentContainer}
       >
         <View style={styles.restaurantTitleInfo}>
-          <Text style={styles.textRestaurantTitleInfo}>{restaurant.title}</Text>
+          <Text style={styles.textRestaurantTitleInfo}>{restaurant.name}</Text>
 
           <View
             style={[{ marginBottom: 15, marginTop: 15, alignItems: "flex-start", justifyContent: "flex-start" , width: 330,}]}
@@ -179,7 +177,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           </Text>
           <View style={styles.aboutContent}>
             <Text style={styles.textRestaurantNormalInfo}>
-              {showMore ? restaurant.about : restaurant.about.slice(0, 50) + '...'}
+              {showMore ? restaurant.description : restaurant.description.slice(0, 50) + '...'}
             </Text>
             {!showMore && (
               <Pressable
@@ -237,7 +235,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
               textAlign: "center",
             },
           ]}>
-            Prato 1
+            {restaurant.especialty}
           </Text>
         </View>
         <View style={styles.platesContainer}>

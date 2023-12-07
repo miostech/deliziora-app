@@ -22,10 +22,9 @@ export const CarouselMapProvider = ({ children }) => {
 
   const goToMarker = (index, markers) => {
     if (mapRef.current && markers[index]) {
-      const { latitude, longitude } = markers[index].coordinates;
       mapRef.current.animateToRegion({
-        latitude: latitude,
-        longitude: longitude,
+        latitude: markers[index].latitude,
+        longitude: markers[index].longitude,
         latitudeDelta: 0.005,
         longitudeDelta: 0.005,
       });

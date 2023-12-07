@@ -10,9 +10,11 @@ import {
 import Carousel from "react-native-snap-carousel";
 import CarouselMapContext from "./CarouselMapContext";
 import * as Device from "expo-device";
+import { RestaurantService } from "deliziora-client-module/client-web";
 
 const Colors = require("../style/Colors.json");
-const dataRestaurant = [
+
+/* const dataRestaurant = [
   {
     id: 1,
     image: require("../../assets/Restaurant1.png"),
@@ -84,21 +86,30 @@ const dataRestaurant = [
     about:
       "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
   },
-];
+]; */
 
 const RestaurantsCardCarousel = ({ navigation, setRestaurants, location }) => {
   const { carouselRef, goToMarker } = useContext(CarouselMapContext);
-  const [data, setData] = useState(dataRestaurant);
-  const handleFavoriteToggle = (id) => {
+  const [data, setData] = useState([]);
+  /* const handleFavoriteToggle = (id) => {
     const updatedRestaurants = data.map((restaurant) =>
       restaurant.id === id
         ? { ...restaurant, isFavorite: !restaurant.isFavorite }
         : restaurant
     );
     setData(updatedRestaurants);
-  };
+}; TODO - MUDAR PARA GUARDAR OS DADOS DE FAVORITOS PARA LOCALSTORAGE */
+ 
   useEffect(() => {
-    setRestaurants(data);
+    RestaurantService.returnAllRestaurants().then((data) => {
+      setData(data.data);
+      setRestaurants(data.data);
+    }).catch((error) => {
+      console.error(error);
+    })
+  }, []); 
+  useEffect(() => {
+    
   }, []);
 
   const renderItem = ({ item, index }) => {
@@ -106,32 +117,32 @@ const RestaurantsCardCarousel = ({ navigation, setRestaurants, location }) => {
       <View style={styles.carouselItem}>
         <View style={styles.Containers}>
           <View style={styles.containerImageAndTitle}>
-            <Image source={item.image} style={styles.image} />
+            <Image source={item.img} style={styles.image} />
             <View style={styles.containerTitleAndDescription}>
-              <Text style={styles.title}>{item.title}</Text>
+              <Text style={styles.title}>{item.name}</Text>
               <Text style={styles.description}>{item.description}</Text>
             </View>
           </View>
           <View style={styles.dishesAndVisitButton}>
             <View style={styles.dishesContainer}>
               <Pressable
-                onPress={() => {
+                /* onPress={() => {
                   handleFavoriteToggle(item.id);
-                }}
+                }} */
               >
-                {item.isFavorite ? (
+                {/* {item.isFavorite ? (
                   <Image
                     key={index}
                     source={require("../../assets/FavoriteSelected1.png")}
                     style={styles.dishImage}
                   />
-                ) : (
+                ) : ( */}
                   <Image
                     key={index}
                     source={item.dishes}
                     style={styles.dishImage}
                   />
-                )}
+               
               </Pressable>
             </View>
             <View style={styles.visitButton}>

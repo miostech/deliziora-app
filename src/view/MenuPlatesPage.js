@@ -148,7 +148,7 @@ export default function MenuPlatesPage({ route, navigation }) {
             fontStyle: 'normal',
             fontWeight: '800',
             fontSize: 20
-          }}>{restaurant.title}</Text>
+          }}>{restaurant.name}</Text>
 
           <Divider
             style={{ width: "80%", margin: 20 }}
