@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,41 +7,55 @@ import {
   ScrollView,
   FlatList,
   Pressable,
-  Modal,
 } from "react-native";
-import React, { useState } from "react";
-import Close from "../components/SVGs/Close";
 import { Linking } from "react-native";
 import * as Device from "expo-device";
+import moment from "moment";
+import Close from "../components/SVGs/Close";
 import PhoneIcon from "../components/PhoneIcon";
-import MapSvg from "../components/SVGs/MapSvg/MapSvg";
 import GoogleMapsIcon from "../components/GoogleMapsIcon";
-import WazeIcon from "../components/WazeIcon";
 import StarIcon from "../components/SVGs/StarIcon";
 import { Button } from "react-native-elements";
 const Colors = require("../style/Colors.json");
 
 export default function ProfileRestaurantPage({ route, navigation }) {
   const [showMore, setShowMore] = useState(false);
-
-  const handleShowMore = () => {
-    setShowMore(!showMore);
-  };
   const [restaurant, setRestaurant] = useState(route.params.restaurant);
   const [location, setLocation] = useState(route.params.location);
   const [modalVisible, setModalVisible] = useState(false);
 
-  var coordinatesNavigateGoogle = `https://www.google.com/maps/dir/?api=1&origin=${location?.coords.latitude},${location?.coords.longitude}&destination=${restaurant?.latitude},${restaurant?.longitude}&travelmode=driving`;
+  const getOpeningHoursForCurrentDay = () => {
+    const currentDay = moment().format("dddd").toLowerCase();
+    console.log(currentDay);
+    if (restaurant.opening_hours && restaurant.opening_hours[currentDay]) {
+      return restaurant.opening_hours[currentDay];
+    }
+    return "Horário não disponível para o dia atual";
+  };
+
+  const currentOpeningHours = getOpeningHoursForCurrentDay();
+
+  const isRestaurantOpen = () => {
+    const currentTime = moment().format("HH:mm");
+    console.log(currentTime);
+    console.log(currentOpeningHours);
+    const { open, closed } = currentOpeningHours;
+
+    if (currentTime <= closed && currentTime >= open) {
+      return "Aberto";
+    } else {
+      return "Fechado";
+    }
+  };
+
+  const restaurantStatus = isRestaurantOpen();
+
+  const coordinatesNavigateGoogle = `https://www.google.com/maps/dir/?api=1&origin=${location?.coords.latitude},${location?.coords.longitude}&destination=${restaurant?.latitude},${restaurant?.longitude}&travelmode=driving`;
 
   const image1 = require("../../assets/AccessAnimals.png");
   const image2 = require("../../assets/AccessCard.png");
   const image3 = require("../../assets/AccessChair.png");
   const image4 = require("../../assets/AccessGarage.png");
-
-  const plate1 = require("../../assets/PlatesOfTheDay1.png");
-  const plate2 = require("../../assets/PlatesOfTheDay2.png");
-  const plate3 = require("../../assets/PlatesOfTheDay3.png");
-  const plate4 = require("../../assets/PlatesOfTheDay4.png");
 
   const plates = [
     { price: 20, name: "Prato 1" },
@@ -55,25 +70,27 @@ export default function ProfileRestaurantPage({ route, navigation }) {
       namePlate: e,
     });
   };
+
   const RenderItem = ({ item, index }) => {
     const itemStyle = styles.item;
     const nameStyle = styles.itemName;
     return (
-        <View
-          style={{
-            marginRight: 10,
-            justifyContent: "space-between",
-            flexDirection: "row",
-            width: 330,
-            borderBottomWidth: 1,
-            marginBottom: 20,
-          }}
-        >
-          <Text style={nameStyle}>{item.name}</Text>
-          <Text style={nameStyle}>€{item.price}</Text>
-        </View>
+      <View
+        style={{
+          marginRight: 10,
+          justifyContent: "space-between",
+          flexDirection: "row",
+          width: 330,
+          borderBottomWidth: 1,
+          marginBottom: 20,
+        }}
+      >
+        <Text style={nameStyle}>{item.name}</Text>
+        <Text style={nameStyle}>€{item.price}</Text>
+      </View>
     );
   };
+
   return (
     <View style={styles.container}>
       <View>
@@ -87,9 +104,16 @@ export default function ProfileRestaurantPage({ route, navigation }) {
       >
         <View style={styles.restaurantTitleInfo}>
           <Text style={styles.textRestaurantTitleInfo}>{restaurant.name}</Text>
-
           <View
-            style={[{ marginBottom: 15, marginTop: 15, alignItems: "flex-start", justifyContent: "flex-start" , width: 330,}]}
+            style={[
+              {
+                marginBottom: 15,
+                marginTop: 15,
+                alignItems: "flex-start",
+                justifyContent: "flex-start",
+                width: 330,
+              },
+            ]}
           >
             <View style={[styles.row, { alignItems: "center" }]}>
               <View style={styles.phoneNumberCall}>
@@ -105,7 +129,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                 {restaurant.address}
               </Text>
             </View>
-            <View style={[styles.row, { alignItems: "center",}]}>
+            <View style={[styles.row, { alignItems: "center" }]}>
               <View style={styles.phoneNumberCall}>
                 <Pressable
                   onPress={() => {
@@ -115,7 +139,12 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                   <PhoneIcon />
                 </Pressable>
               </View>
-              <Text style={[styles.textRestaurantNormalInfo, { marginLeft: 50 }]}>
+              <Text
+                style={[
+                  styles.textRestaurantNormalInfo,
+                  { marginLeft: 50 },
+                ]}
+              >
                 {restaurant.contact}
               </Text>
             </View>
@@ -130,7 +159,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           </View>
           <View style={styles.restaurantDistanceContent}>
             <Text style={[styles.textRestaurantNormalInfo, styles.bold]}>
-              12h - 13h
+              {currentOpeningHours.open} - {currentOpeningHours.closed}
             </Text>
             <View style={[styles.row]}>
               <Text style={styles.textRestaurantNormalInfo}>Horario</Text>
@@ -138,10 +167,14 @@ export default function ProfileRestaurantPage({ route, navigation }) {
               <Text
                 style={[
                   styles.textRestaurantNormalInfo,
-                  { color: "green", fontWeight: "bold" },
+                  {
+                    color: restaurantStatus === "Aberto" ? "green" : "red",
+                    fontWeight: "bold",
+                  },
                 ]}
               >
-                Aberto
+                {restaurantStatus}
+
               </Text>
             </View>
           </View>
@@ -177,64 +210,73 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           </Text>
           <View style={styles.aboutContent}>
             <Text style={styles.textRestaurantNormalInfo}>
-              {showMore ? restaurant.description : restaurant.description.slice(0, 50) + '...'}
+              {showMore
+                ? restaurant.description
+                : restaurant.description.slice(0, 50) + "..."}
             </Text>
             {!showMore && (
               <Pressable
-                onPress={handleShowMore}
+                onPress={() => setShowMore(!showMore)}
                 style={{
                   backgroundColor: Colors.colors.neutral02Color.neutral_01,
                   borderRadius: 100,
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  alignItems: "center",
+                  justifyContent: "center",
                   marginTop: 5,
                   width: 330,
                   padding: 10,
-                }}>
-                <Text style={{ color: 'white' }}>Ver Mais</Text>
+                }}
+              >
+                <Text style={{ color: "white" }}>Ver Mais</Text>
               </Pressable>
             )}
             {showMore && (
               <Pressable
-                onPress={handleShowMore}
+                onPress={() => setShowMore(!showMore)}
                 style={{
                   backgroundColor: Colors.colors.neutral02Color.neutral_01,
                   borderRadius: 100,
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  alignItems: "center",
+                  justifyContent: "center",
                   marginTop: 5,
                   width: 330,
                   padding: 10,
-                }}>
-                <Text style={{ color: 'white' }}>Ver Menos</Text>
+                }}
+              >
+                <Text style={{ color: "white" }}>Ver Menos</Text>
               </Pressable>
             )}
           </View>
         </View>
-        <View style={{
-          marginBottom: 15,
-          marginTop: 15,
-          alignSelf: 'flex-start',
-        }}>
-          <Text style={{
-            fontWeight: "bold",
-            fontSize: 18,
-            textAlign: "left",
-          }}>
+        <View
+          style={{
+            marginBottom: 15,
+            marginTop: 15,
+            alignSelf: "flex-start",
+          }}
+        >
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontSize: 18,
+              textAlign: "left",
+            }}
+          >
             Especialidade
           </Text>
         </View>
-
         <View style={styles.specialityContainer}>
           <StarIcon width={35} height={35} />
-          <Text style={[
-            styles.textRestaurantNormalInfo,
-            {
-              fontWeight: "normal",
-              fontSize: 20,
-              textAlign: "center",
-            },
-          ]}>
+          <Text
+            style={[
+              styles.textRestaurantNormalInfo,
+              {
+                fontWeight: "normal",
+                fontSize: 20,
+                textAlign: "center",
+              },
+            ]}
+          >
             {restaurant.especialty}
           </Text>
         </View>
@@ -269,7 +311,9 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                   marginBottom: 25,
                 }}
                 onPress={() => {
-                  navigation.navigate("MenuPlatesPage", { restaurant: restaurant });
+                  navigation.navigate("MenuPlatesPage", {
+                    restaurant: restaurant,
+                  });
                 }}
               >
                 <Text
@@ -292,7 +336,87 @@ export default function ProfileRestaurantPage({ route, navigation }) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  contentContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingBottom: 50,
+  },
+  specialityContainer: {
+    alignSelf: "flex-start",
+    gap: 10,
+    paddingTop: 20,
+    flexDirection: "row",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  containerRestaurantInfo: {
+    flex: 1,
+    backgroundColor: Colors.colors.neutral02Color.neutral_10,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    marginTop: 150,
+    height: "100%",
+    padding: 10,
+  },
+  restaurantTitleInfo: {
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    width: "100%",
+    marginBottom: 35,
+    borderBottomColor: "grey",
+  },
+  textRestaurantTitleInfo: { fontSize: 22, fontWeight: "bold" },
+  textRestaurantNormalInfo: { fontSize: 16 },
+  restaurantDistanceInfo: {
+    justifyContent: "center",
+    alignItems: "flex-start",
+    marginBottom: 35,
+    gap: 30,
+  },
+  restaurantDistanceContent: { justifyContent: "center", alignItems: "center" },
+  image: {
+    width: 65,
+    height: 80,
+  },
+  imageRestaurant: {
+    width: "100%",
+    position: "absolute",
+  },
+  imageAccessContainer: {
+    gap: 20,
+  },
+  aboutContainer: {
+    marginTop: 35,
+    gap: 10,
+  },
+  platesContainer: { marginTop: 35, flex: 1 },
+  itemName: {
+    fontWeight: "bold",
+  },
+  item: {},
+  phoneNumberCall: {
+    margin: 10,
+  },
+  AddressButton: {
+    margin: 10,
+  },
+  aboutContent: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  bold: {
+    fontWeight: "bold",
+  },
   modalContainer: {
     backgroundColor: Colors.colors.neutral02Color.neutral_10,
     position: "absolute",
@@ -328,93 +452,4 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
   },
-  bold: {
-    fontWeight: "bold",
-  },
-  container: {
-    flex: 1,
-  },
-  contentContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingBottom: 50,
-  },
-  specialityContainer: {
-    alignSelf: "flex-start",
-    gap: 10,
-    paddingTop: 20,
-    flexDirection: 'row',
-    display: 'flex',
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  containerRestaurantInfo: {
-    flex: 1,
-    backgroundColor: Colors.colors.neutral02Color.neutral_10,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    marginTop: 150,
-    height: "100%",
-    padding: 10,
-  },
-  containerModalInfo: {
-    height: "100%",
-    padding: 10,
-  },
-  restaurantTitleInfo: {
-    justifyContent: "center",
-    alignItems: "center",
-    borderBottomWidth: 1,
-    width: "100%",
-    marginBottom: 35,
-    borderBottomColor: "grey",
-  },
-  textRestaurantTitleInfo: { fontSize: 22, fontWeight: "bold" },
-  textRestaurantNormalInfo: { fontSize: 16 },
-  restaurantDistanceInfo: {
-    justifyContent: "center",
-    alignItems: "flex-start",
-    marginBottom: 35,
-    gap: 30,
-  },
-  restaurantDistanceContent: { justifyContent: "center", alignItems: "center" },
-  image: {
-    width: 65,
-    height: 80,
-  },
-  imagePlates: {
-    width: 100,
-    height: 100,
-  },
-  imageRestaurant: {
-    width: "100%",
-    position: "absolute",
-  },
-  imageAccessContainer: {
-    gap: 20,
-  },
-  aboutContainer: {
-    marginTop: 35,
-    gap: 10,
-  },
-  platesContainer: { marginTop: 35, flex: 1 },
-  itemName: {
-    fontWeight: "bold",
-  },
-  item: {},
-  phoneNumberCall: {
-    margin: 10,
-  },
-  AddressButton: {
-    margin: 10,
-  },
-  aboutContent: {
-    display: "flex",
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-
-
 });

@@ -99,7 +99,7 @@ const RestaurantsCardCarousel = ({ navigation, setRestaurants, location }) => {
     );
     setData(updatedRestaurants);
 }; TODO - MUDAR PARA GUARDAR OS DADOS DE FAVORITOS PARA LOCALSTORAGE */
- 
+
   useEffect(() => {
     RestaurantService.returnAllRestaurants().then((data) => {
       setData(data.data);
@@ -107,9 +107,9 @@ const RestaurantsCardCarousel = ({ navigation, setRestaurants, location }) => {
     }).catch((error) => {
       console.error(error);
     })
-  }, []); 
+  }, []);
   useEffect(() => {
-    
+
   }, []);
 
   const renderItem = ({ item, index }) => {
@@ -126,9 +126,9 @@ const RestaurantsCardCarousel = ({ navigation, setRestaurants, location }) => {
           <View style={styles.dishesAndVisitButton}>
             <View style={styles.dishesContainer}>
               <Pressable
-                /* onPress={() => {
-                  handleFavoriteToggle(item.id);
-                }} */
+              /* onPress={() => {
+                handleFavoriteToggle(item.id);
+              }} */
               >
                 {/* {item.isFavorite ? (
                   <Image
@@ -137,12 +137,11 @@ const RestaurantsCardCarousel = ({ navigation, setRestaurants, location }) => {
                     style={styles.dishImage}
                   />
                 ) : ( */}
-                  <Image
-                    key={index}
-                    source={item.dishes}
-                    style={styles.dishImage}
-                  />
-               
+                <Image
+                  key={index}
+                  source={item.dishes}
+                  style={styles.dishImage}
+                />
               </Pressable>
             </View>
             <View style={styles.visitButton}>
@@ -188,7 +187,6 @@ const styles = {
   carouselItem: {
     width: 290,
     height: 170,
-
     backgroundColor: Colors.colors.neutral02Color.neutral_10,
     borderRadius: 16,
     marginBottom: 20,
@@ -212,6 +210,15 @@ const styles = {
   dishImage: {
     width: 30,
     height: 30,
+  },
+  containerTitleAndDescription: {
+    flexWrap: 'wrap',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: 4,
+    width: "65%",
+    backgroundColor: Colors.colors.neutral02Color.neutral_10,
   },
   title: {
     flexShrink: 0,
