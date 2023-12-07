@@ -20,6 +20,22 @@ export default function WalkthroughSlider({ navigation }) {
   const [carouselWidth, setCarouselWidth] = useState(
     Dimensions.get("window").width
   );
+  
+  //  SE FAZ FAVOR NÃO RETIRAR ISSO 
+
+  /* 
+  const [userDistance, setUserDistance] = useState([]);
+
+useEffect(() => {
+    AnonymousUserLocationService.createNewUserLocation().then((res) => {
+      setUserDistance(res.data);
+    }).catch((err) => {
+      console.error(err)
+    })
+  
+  }, [])
+ */
+
   const [activeSlide, setActiveSlide] = useState(0);
   const [carouselRef, setCarouselRef] = useState(null);
   const items = [

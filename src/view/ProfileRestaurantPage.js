@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -16,13 +16,16 @@ import PhoneIcon from "../components/PhoneIcon";
 import GoogleMapsIcon from "../components/GoogleMapsIcon";
 import StarIcon from "../components/SVGs/StarIcon";
 import { Button } from "react-native-elements";
+import {AnonymousUserLocationService } from "deliziora-client-module/client-web";
 const Colors = require("../style/Colors.json");
 
 export default function ProfileRestaurantPage({ route, navigation }) {
+
   const [showMore, setShowMore] = useState(false);
   const [restaurant, setRestaurant] = useState(route.params.restaurant);
   const [location, setLocation] = useState(route.params.location);
   const [modalVisible, setModalVisible] = useState(false);
+
 
   const getOpeningHoursForCurrentDay = () => {
     const currentDay = moment().format("dddd").toLowerCase();
@@ -37,6 +40,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
 
   const isRestaurantOpen = () => {
     const currentTime = moment().format("HH:mm");
+    console.log(open);
     console.log(currentTime);
     console.log(currentOpeningHours);
     const { open, closed } = currentOpeningHours;
@@ -52,6 +56,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
 
   const coordinatesNavigateGoogle = `https://www.google.com/maps/dir/?api=1&origin=${location?.coords.latitude},${location?.coords.longitude}&destination=${restaurant?.latitude},${restaurant?.longitude}&travelmode=driving`;
 
+
   const image1 = require("../../assets/AccessAnimals.png");
   const image2 = require("../../assets/AccessCard.png");
   const image3 = require("../../assets/AccessChair.png");
@@ -64,12 +69,13 @@ export default function ProfileRestaurantPage({ route, navigation }) {
     { price: 20, name: "Prato 4" },
   ];
 
-  const handleItemPress = (e) => {
-    console.log("PLATE", e);
-    navigation.navigate("MenuPlatesPage", {
-      namePlate: e,
-    });
-  };
+  /*  const handleItemPress = (e) => {
+     console.log("PLATE", e);
+     navigation.navigate("MenuPlatesPage", {
+       namePlate: e,
+     });
+   }; */
+
 
   const RenderItem = ({ item, index }) => {
     const itemStyle = styles.item;
