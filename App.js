@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useContext } from "react";
-
+import { useIsFocused } from '@react-navigation/native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -25,15 +25,12 @@ import { useFonts, Roboto_400Regular } from "@expo-google-fonts/roboto";
 import MenuPlatesPage from "./src/view/MenuPlatesPage";
 import RestaurantList from "./src/view/RestaurantList";
 import CarouselMapContext from "./src/components/CarouselMapContext";
-import { OpenAPI } from "deliziora-client-module/client-web"
-
+import { OpenAPI } from "deliziora-client-module/client-web";
 
 OpenAPI.BASE = "https://deliziora-api.azurewebsites.net/";
 
-
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
 export default function App() {
   const colors = require("./src/style/Colors.json");
 
@@ -47,6 +44,8 @@ export default function App() {
 
   function HomeTab() {
     const { listType, setListType, changeList } = useContext(CarouselMapContext);
+    const isFocused = useIsFocused();
+
     return (
       <CarouselMapProvider>
         <Tab.Navigator
@@ -90,11 +89,10 @@ export default function App() {
           />
           <Tab.Screen
             name="Map"
-            component={(props ) => <HomeScreen listType={listType} navigation={props.navigation}/>}
+            component={(props) => <HomeScreen listType={listType} navigation={props.navigation} />}
             options={({ navigation }) => ({
               headerShadowVisible: false,
               tabBarShowLabel: false,
-
               headerShown: false,
               title: "",
               tabBarIcon: ({ focused, color, size }) => (
@@ -108,6 +106,7 @@ export default function App() {
                   }}
                 >
                   <Pressable
+                    onPress={() => isFocused ? changeList() : navigation.navigate('Map')}
                     style={{
                       bottom: 24,
                       backgroundColor: "white",
@@ -118,10 +117,6 @@ export default function App() {
                       justifyContent: "center",
                       borderWidth: 3,
                       borderColor: "#f1f3f4",
-                    }}
-                    onPress={() => {
-                      changeList();
-                      console.log("isfocused ", focused)
                     }}
                   >
                     <MapSvg focused={focused} />
@@ -196,7 +191,6 @@ export default function App() {
           />
         </Tab.Navigator>
       </CarouselMapProvider>
-
     );
   }
 
