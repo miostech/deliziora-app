@@ -18,84 +18,23 @@ import Loader from "../components/Loader";
 import * as Device from "expo-device";
 const Colors = require("../style/Colors.json");
 
-const dataRestaurant = [
-  {
-    id: 1,
-    image: require("../../assets/Restaurant1.png"),
-    dishes: require("../../assets/Favorite1.png"),
-    isFavorite: false,
-    title: "Restaurant Name 1",
-    description: "Restaurant description",
-    address: "Jl, Raya Yeh gangga - n°65",
-    contact: "911111111",
-    coordinates: { latitude: 38.524319, longitude: -8.889212 },
+import { RestaurantService } from "deliziora-client-module/client-web";
 
-    about:
-      "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
-  },
-  {
-    id: 2,
-    image: require("../../assets/Restaurant1.png"),
-    dishes: require("../../assets/Favorite1.png"),
-    isFavorite: false,
-    title: "Restaurant Name 2",
-    description: "Restaurant description",
-    address: "Jl, Raya Yeh gangga - n°63",
-    contact: "911111444",
-    coordinates: { latitude: 38.526971, longitude: -8.889441 },
-
-    about:
-      "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
-  },
-  {
-    id: 3,
-    image: require("../../assets/Restaurant1.png"),
-    dishes: require("../../assets/Favorite1.png"),
-    isFavorite: false,
-    title: "Restaurant Name 3",
-    description: "Restaurant description",
-    address: "Jl, Raya Yeh gangga - n°61",
-    contact: "911111112",
-    coordinates: { latitude: 38.52981, longitude: -8.895425 },
-
-    about:
-      "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
-  },
-  {
-    id: 4,
-    image: require("../../assets/Restaurant1.png"),
-    dishes: require("../../assets/Favorite1.png"),
-    isFavorite: false,
-    title: "Restaurant Name 4",
-    description: "Restaurant description",
-    address: "Jl, Raya Yeh gangga - n°66",
-    contact: "911111333",
-    coordinates: { latitude: 38.528576, longitude: -8.900009 },
-    about:
-      "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
-  },
-  {
-    id: 5,
-    image: require("../../assets/Restaurant1.png"),
-    dishes: require("../../assets/Favorite1.png"),
-    isFavorite: false,
-    title: "Restaurant Name 5",
-    description: "Restaurant description",
-    address: "Jl, Raya Yeh gangga - n°66",
-    contact: "911111333",
-    coordinates: {
-      latitude: 38.539908,
-      longitude: -8.869396,
-    },
-    about:
-      "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
-  },
-];
 
 export default function ListMapRestaurant({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(true);
-  const [restaurant, setRestaurant] = useState(dataRestaurant);
+  const [restaurant, setRestaurant] = useState(data);
+  const [data, setData] = useState([]);
 
+  useEffect(() => {
+    RestaurantService.returnAllRestaurants().then((data) => {
+      setData(data.data);
+      console.log(data);
+    }).catch((error) => {
+      console.error(error);
+    })
+  }, []);
+  
   const handleFavoriteToggle = (id) => {
     const updatedRestaurants = restaurant.map((restaurant) =>
       restaurant.id === id
@@ -145,13 +84,13 @@ export default function ListMapRestaurant({ route, navigation }) {
           >
             <View>
               <Image
-                source={item.image}
+                source={item.img}
                 style={{ width: 90, height: 80, borderRadius: 10 }}
               />
             </View>
-            <View>
-              <Text style={{ fontSize: 15 }}>{item.title}</Text>
-              <Text style={{ fontSize: 15 }}>{item.description}</Text>
+            <View style={{ display: "flex" }}>
+              <Text style={{ fontSize: 18 , fontWeight: "bold" , marginBottom: 10}}>{item.name}</Text>
+              <Text style={{ fontSize: 14 , flexWrap: "wrap", maxWidth: 200 ,  }}>{item.description.slice(0, 100) + "..."}</Text>
             </View>
             <View style={styleSelected.visitBox}>
               <View style={styleSelected.imageFavorite}>
@@ -211,7 +150,7 @@ export default function ListMapRestaurant({ route, navigation }) {
     >
       <View style={[styleSelected.backgroundPrimary]}>
         <FlatList
-          data={restaurant}
+          data={data}
           renderItem={({ item, index }) => <Item item={item} index={index} />}
         />
       </View>

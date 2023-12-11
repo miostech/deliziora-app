@@ -10,66 +10,24 @@ import {
   FlatList,
   Image,
 } from "react-native";
-
+import { RestaurantService } from "deliziora-client-module/client-web";
 import Loader from "../components/Loader";
 import SearchBar from "../components/SearchBar";
-const data = [
-  {
-    id: 1,
-    image: require("../../assets/Restaurant1.png"),
-    dishes: [
-      require("../../assets/Dishe.png"),
-      require("../../assets/Dishe.png"),
-      require("../../assets/Dishe.png"),
-    ],
-    title: "Restaurant Name 1",
-    description: "Restaurant description",
-    address: "Jl, Raya Yeh gangga - n°65",
-    contact: "911111111",
-    coordinates: { latitude: 38.524319, longitude: -8.889212 },
-
-    about:
-      "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
-  },
-  {
-    id: 2,
-    image: require("../../assets/Restaurant1.png"),
-    dishes: [
-      require("../../assets/Dishe.png"),
-      require("../../assets/Dishe.png"),
-      require("../../assets/Dishe.png"),
-    ],
-    title: "Restaurant Name 2",
-    description: "Restaurant description",
-    address: "Jl, Raya Yeh gangga - n°63",
-    contact: "911111444",
-    coordinates: { latitude: 38.526971, longitude: -8.889441 },
-
-    about:
-      "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
-  },
-  {
-    id: 3,
-    image: require("../../assets/Restaurant1.png"),
-    dishes: [
-      require("../../assets/Dishe.png"),
-      require("../../assets/Dishe.png"),
-      require("../../assets/Dishe.png"),
-    ],
-    title: "Restaurant Name 3",
-    description: "Restaurant description",
-    address: "Jl, Raya Yeh gangga - n°61",
-    contact: "911111112",
-    coordinates: { latitude: 38.52981, longitude: -8.895425 },
-
-    about:
-      "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
-  },
-  
-];
 
 export default function RestaurantList({ route, navigation }) {
+
   const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    RestaurantService.returnAllRestaurants().then((data) => {
+      setData(data.data);
+      console.log(data);
+    }).catch((error) => {
+      console.error(error);
+    })
+  }, []);
+  
   var colors = require("../style/Colors.json");
 
   useEffect(() => {
@@ -113,11 +71,11 @@ export default function RestaurantList({ route, navigation }) {
         }}
       >
         <Image
-          source={item.image}
+          source={item.img}
           style={{ width: 90, height: 80, borderRadius: 10 }}
         />
         <View>
-          <Text style={{ fontSize: 15 }}>{item.title}</Text>
+          <Text style={{ fontSize: 15 }}>{item.name}</Text>
           <Text style={{ fontSize: 15 }}>Xkm de Distancia</Text>
         </View>
         <View>

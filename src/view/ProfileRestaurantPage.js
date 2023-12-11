@@ -16,7 +16,7 @@ import PhoneIcon from "../components/PhoneIcon";
 import GoogleMapsIcon from "../components/GoogleMapsIcon";
 import StarIcon from "../components/SVGs/StarIcon";
 import { Button } from "react-native-elements";
-import {AnonymousUserLocationService } from "deliziora-client-module/client-web";
+import { CharacteristicsService } from "deliziora-client-module/client-web";
 const Colors = require("../style/Colors.json");
 
 export default function ProfileRestaurantPage({ route, navigation }) {
@@ -25,7 +25,18 @@ export default function ProfileRestaurantPage({ route, navigation }) {
   const [restaurant, setRestaurant] = useState(route.params.restaurant);
   const [location, setLocation] = useState(route.params.location);
   const [modalVisible, setModalVisible] = useState(false);
+  const [characteristics, setCharacteristics] = useState([]);
 
+  useEffect(() => {
+    CharacteristicsService.returnAllCharacteristics(restaurant.id)
+      .then((data) => {
+        setCharacteristics(data.data);
+        console.log("characteristics", data);
+      })
+      .catch((error) => {
+        console.error("ERRO", error);
+      });
+  }, [restaurant.id]);
 
   const getOpeningHoursForCurrentDay = () => {
     const currentDay = moment().format("dddd").toLowerCase();
@@ -55,12 +66,6 @@ export default function ProfileRestaurantPage({ route, navigation }) {
   const restaurantStatus = isRestaurantOpen();
 
   const coordinatesNavigateGoogle = `https://www.google.com/maps/dir/?api=1&origin=${location?.coords.latitude},${location?.coords.longitude}&destination=${restaurant?.latitude},${restaurant?.longitude}&travelmode=driving`;
-
-
-  const image1 = require("../../assets/AccessAnimals.png");
-  const image2 = require("../../assets/AccessCard.png");
-  const image3 = require("../../assets/AccessChair.png");
-  const image4 = require("../../assets/AccessGarage.png");
 
   const plates = [
     { price: 20, name: "Prato 1" },
@@ -157,12 +162,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           </View>
         </View>
         <View style={[styles.row, styles.restaurantDistanceInfo]}>
-          <View style={styles.restaurantDistanceContent}>
-            <Text style={[styles.textRestaurantNormalInfo, styles.bold]}>
-              240
-            </Text>
-            <Text style={styles.textRestaurantNormalInfo}>seguidores</Text>
-          </View>
+
           <View style={styles.restaurantDistanceContent}>
             <Text style={[styles.textRestaurantNormalInfo, styles.bold]}>
               {currentOpeningHours.open} - {currentOpeningHours.closed}
@@ -192,19 +192,20 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           </View>
         </View>
         <View style={[styles.row, styles.imageAccessContainer]}>
-          <View>
-            <Image source={image1} style={styles.image} />
+          <View style={styles.row}>
+            {characteristics.map((characteristic) => (
+              <View key={characteristic.id} style={styles.characteristicItem}>
+                {/* Renderizar o ícone da característica (substitua 'iconeDaCaracteristica' pelo ícone real) */}
+                <Image source={characteristic.icon} style={styles.characteristicIcon} />
+
+                {/* Exibir o nome da característica */}
+                <Text style={styles.characteristicName}>{characteristic.name}</Text>
+              </View>
+            ))}
           </View>
-          <View>
-            <Image source={image2} style={styles.image} />
-          </View>
-          <View>
-            <Image source={image3} style={styles.image} />
-          </View>
-          <View>
-            <Image source={image4} style={styles.image} />
-          </View>
+
         </View>
+
         <View style={styles.aboutContainer}>
           <Text
             style={[
@@ -229,7 +230,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                   alignItems: "center",
                   justifyContent: "center",
                   marginTop: 5,
-                  width: 330,
+                  width: "100%",
                   padding: 10,
                 }}
               >
@@ -245,7 +246,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                   alignItems: "center",
                   justifyContent: "center",
                   marginTop: 5,
-                  width: 330,
+                  width: "100%",
                   padding: 10,
                 }}
               >
