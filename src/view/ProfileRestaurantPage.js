@@ -192,11 +192,14 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           </View>
         </View>
         <View style={[styles.row, styles.imageAccessContainer]}>
-          <View style={styles.row}>
+          <View style={styles.column}>
             {characteristics.map((characteristic) => (
-              <View key={characteristic.id} style={styles.characteristicItem}>
-                {/* Renderizar o ícone da característica (substitua 'iconeDaCaracteristica' pelo ícone real) */}
-                <Image source={characteristic.icon} style={styles.characteristicIcon} />
+              <View key={characteristic.id} style={{ display: "flex", flexDirection: "column" }}>
+                {characteristics.map((characteristic) => (
+                  <View key={characteristic.id}>
+                    <Image source={{ uri: characteristic.icon }} style={styles.imageCharacteristic} />
+                  </View>
+                ))}
 
                 {/* Exibir o nome da característica */}
                 <Text style={styles.characteristicName}>{characteristic.name}</Text>
