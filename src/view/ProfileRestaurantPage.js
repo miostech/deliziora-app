@@ -192,19 +192,17 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           </View>
         </View>
         <View style={[styles.row, styles.imageAccessContainer]}>
-          <View style={styles.column}>
-            {characteristics.map((characteristic) => (
-              <View key={characteristic.id} style={{ display: "flex", flexDirection: "column" }}>
-                {characteristics.map((characteristic) => (
-                  <View key={characteristic.id}>
-                    <Image source={{ uri: characteristic.icon }} style={styles.imageCharacteristic} />
-                  </View>
-                ))}
-
-                {/* Exibir o nome da característica */}
-                <Text style={styles.characteristicName}>{characteristic.name}</Text>
-              </View>
-            ))}
+          <View style={styles.row}>
+            <FlatList
+              data={characteristics}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <View style={{ display: "flex", flexDirection: "column", paddingRight: 30 , justifyContent: "center" , alignItems: "center"}}>
+                  <Image style={styles.image} source={{ uri: item.icon }} />
+                  <Text style={styles.characteristicName}>{item.name}</Text>
+                </View>
+              )} />
           </View>
 
         </View>
@@ -460,6 +458,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
+    flexWrap: "wrap",
     gap: 10,
   },
 });
