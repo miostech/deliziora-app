@@ -120,7 +120,7 @@ const RestaurantsCardCarousel = ({ navigation, setRestaurants, location }) => {
             <Image source={item.img} style={styles.image} />
             <View style={styles.containerTitleAndDescription}>
               <Text style={styles.title}>{item.name}</Text>
-              <Text style={styles.description}>{item.description}</Text>
+              <Text style={styles.description}>{item.description.slice(0, 60)} ...</Text>
             </View>
           </View>
           <View style={styles.dishesAndVisitButton}>
