@@ -16,70 +16,32 @@ import VegeterianIcon from "../components/SVGs/VegetarianIcon";
 import { Divider } from "@rneui/base";
 const Colors = require("../style/Colors.json");
 
-const DATA = [
-  {
-    title: "Carne",
-    data: [
-      {
-        food: "Carne",
-        price: "10",
-      },
-      {
-        food: "Carne",
-        price: "10",
-      },
-      {
-        food: "Carne",
-        price: "10",
-      },
-    ],
-  },
-  {
-    title: "Peixe",
-    data: [
-      {
-        food: "Peixe",
-        price: "10",
-      },
-      {
-        food: "Peixe",
-        price: "10",
-      },
-      {
-        food: "Peixe",
-        price: "10",
-      },
-    ],
-  },
-  {
-    title: "Vegetariano",
-    data: [
-      {
-        food: "Vegetariano",
-        price: "10",
-      },
-      {
-        food: "Vegetariano",
-        price: "10",
-      },
-      {
-        food: "Vegetariano",
-        price: "10",
-      },
-    ],
-  },
-];
-
 export default function MenuPlatesPage({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(false);
   const sectionRef = useRef();
-  const [restaurant, setRestaurant] = useState(route.params.restaurant)
+  const [restaurant, setRestaurant] = useState(route.params.restaurant);
+  const [plates, setPlates] = useState(route.params.plates);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     console.log("OPEN", MenuPlatesPage.name, "SCREEN");
+    const categorizedPlates = {};
+    plates.forEach((plate) => {
+      const category = plate.category;
+      if (!categorizedPlates[category]) {
+        categorizedPlates[category] = {
+          title: category,
+          data: [],
+        };
+      }
+      categorizedPlates[category].data.push({
+        name: plate.name,
+        price: plate.price,
+      });
+    });
+    const result = Object.values(categorizedPlates);
 
-    /* console.log("PLATE",route.params.namePlate) */
-    /* console.log("PLATE",sectionRef) */
+    setData(result);
     setTimeout(() => {
       setIsLoading(true);
     }, 1000);
@@ -95,6 +57,18 @@ export default function MenuPlatesPage({ route, navigation }) {
   if (!isLoading) {
     return <Loader />;
   }
+  const styles = {
+    sectionHeaderContainer: {
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    sectionHeaderText: {
+      padding: 10,
+      fontWeight: "bold",
+      textAlign: "center",
+      fontSize: 20,
+    },
+  };
   const Item = ({ item }) => {
     return (
       <View
@@ -107,22 +81,26 @@ export default function MenuPlatesPage({ route, navigation }) {
           paddingBottom: 15,
         }}
       >
-        <Text style={{
-          color: "#201F23",
-          fontFamily: "Roboto",
-          fontStyle: "normal",
-          fontWeight: "300",
-          fontSize: 18
-        }}>
-          {item.food}
+        <Text
+          style={{
+            color: "#201F23",
+            fontFamily: "Roboto",
+            fontStyle: "normal",
+            fontWeight: "300",
+            fontSize: 18,
+          }}
+        >
+          {item.name}
         </Text>
-        <Text style={{
-          color: "#201F23",
-          fontFamily: "Roboto",
-          fontStyle: "normal",
-          fontWeight: "300",
-          fontSize: 18
-        }}>
+        <Text
+          style={{
+            color: "#201F23",
+            fontFamily: "Roboto",
+            fontStyle: "normal",
+            fontWeight: "300",
+            fontSize: 18,
+          }}
+        >
           €{item.price}
         </Text>
       </View>
@@ -140,15 +118,25 @@ export default function MenuPlatesPage({ route, navigation }) {
         behavior={Platform.OS == "android" ? "height" : "padding"}
         keyboardVerticalOffset={Platform.OS == "android" ? -150 : -150}
       >
-        <View style={{ justifyContent: "center", alignItems: "center", marginTop: 20 }}>
-          <Text style={{
-            color: 'var(--neutral-02-color-neutral-01, #201F23)',
-            textAlign: 'center',
-            fontFamily: 'Roboto',
-            fontStyle: 'normal',
-            fontWeight: '800',
-            fontSize: 20
-          }}>{restaurant.name}</Text>
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: 20,
+          }}
+        >
+          <Text
+            style={{
+              color: "var(--neutral-02-color-neutral-01, #201F23)",
+              textAlign: "center",
+              fontFamily: "Roboto",
+              fontStyle: "normal",
+              fontWeight: "800",
+              fontSize: 20,
+            }}
+          >
+            {restaurant.name}
+          </Text>
 
           <Divider
             style={{ width: "80%", margin: 20 }}
@@ -158,49 +146,38 @@ export default function MenuPlatesPage({ route, navigation }) {
             orientation="horizontal"
           />
         </View>
-        <View style={[styleSelected.backgroundPrimary, { flex: 1 }]}>
-          <SectionList
-            sections={DATA}
-            stickySectionHeadersEnabled={false}
-            renderSectionHeader={({ section }) => (
-              <>
-                <View>
-
-                  <View style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}>
-                    <Text>
-                      {section.title === "Carne" && <MeatIcon width={100} height={100} />}
-                      {section.title === "Peixe" && <FishIcon width={100} height={100} />}
-                      {section.title === "Vegetariano" && <VegeterianIcon width={100} height={100} />}
-                    </Text>
-                    <Text
-                      style={{
-                        padding: 10,
-                        fontWeight: "bold",
-                        textAlign: "center",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        fontSize: 20
-                      }}
-                    >
-
+        {data.length > 0 && (
+          <View style={[styleSelected.backgroundPrimary, { flex: 1 }]}>
+            <SectionList
+              sections={data}
+              stickySectionHeadersEnabled={false}
+              renderSectionHeader={({ section }) => (
+                <>
+                  <View style={styles.sectionHeaderContainer}>
+                    {section.title === "Carne" && (
+                      <MeatIcon width={100} height={100} />
+                    )}
+                    {section.title === "Peixe" && (
+                      <FishIcon width={100} height={100} />
+                    )}
+                    {section.title === "Vegetariano" && (
+                      <VegeterianIcon width={100} height={100} />
+                    )}
+                    <Text style={styles.sectionHeaderText}>
                       {section.title}
                     </Text>
                   </View>
-                </View>
-
-
-                <FlatList
-                  data={section.data}
-                  renderItem={({ item }) => <Item item={item} />}
-                />
-              </>
-            )}
-            renderItem={({ item }) => { }}
-          />
-        </View>
+                  <FlatList
+                    data={section.data}
+                    renderItem={({ item }) => <Item item={item} />}
+                  />
+                </>
+              )}
+              renderItem={({ item }) => {}}
+            />
+          </View>
+        )}
+        {data.length === 0 && <Text>Sem Menu Disponivel</Text>}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

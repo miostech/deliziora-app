@@ -21,10 +21,11 @@ export const CarouselMapProvider = ({ children }) => {
   }
 
   const goToMarker = (index, markers) => {
+    console.log(Number(markers[index].latitude))
     if (mapRef.current && markers[index]) {
       mapRef.current.animateToRegion({
-        latitude: markers[index].latitude,
-        longitude: markers[index].longitude,
+        latitude: Number(markers[index].latitude),
+        longitude: Number(markers[index].longitude),
         latitudeDelta: 0.005,
         longitudeDelta: 0.005,
       });

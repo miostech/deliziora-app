@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -16,31 +16,116 @@ import PhoneIcon from "../components/PhoneIcon";
 import GoogleMapsIcon from "../components/GoogleMapsIcon";
 import StarIcon from "../components/SVGs/StarIcon";
 import { Button } from "react-native-elements";
-import { CharacteristicsService } from "deliziora-client-module/client-web";
+import {
+  CharacteristicsService,
+  MenuOfTheDayService,
+  MenuService,
+  RestaurantService,
+} from "deliziora-client-module/client-web";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Loader from "../components/Loader";
 const Colors = require("../style/Colors.json");
 
 export default function ProfileRestaurantPage({ route, navigation }) {
-
+  console.log(route.params.restaurant.img);
+  const [isLoading, setIsLoading] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [restaurant, setRestaurant] = useState(route.params.restaurant);
   const [location, setLocation] = useState(route.params.location);
   const [modalVisible, setModalVisible] = useState(false);
+  const [menuItems, setMenuItems] = useState([]);
+  const [plates, setPlates] = useState([]);
+  const [day, setDay] = useState(0);
   const [characteristics, setCharacteristics] = useState([]);
+  const currentDay = moment().format("dddd").toLowerCase();
+  const daysMap = {
+    monday: 1,
+    tuesday: 2,
+    wednesday: 3,
+    thursday: 4,
+    friday: 5,
+    saturday: 6,
+    sunday: 7,
+  };
 
   useEffect(() => {
-    CharacteristicsService.returnAllCharacteristics(restaurant.id)
-      .then((data) => {
-        setCharacteristics(data.data);
-        console.log("characteristics", data);
+    MenuService.returnAllMenu()
+      .then((res) => {
+        const filteredDataByRestaurantId = res.data.filter(
+          (item) => item.id_Restaurants === restaurant._id.$oid
+        );
+        setPlates(filteredDataByRestaurantId);
+      })
+      .catch((err) => {
+        console.error("ERROR ", err);
+      });
+  }, []);
+
+  useEffect(() => {
+    console.log("OPEN", ProfileRestaurantPage.name, "SCREEN");
+    setRestaurant(route.params.restaurant);
+    CharacteristicsService.returnAllCharacteristics()
+      .then((dataCharacteristics) => {
+        RestaurantService.returnRestaurantById(restaurant._id.$oid)
+          .then((dataRes) => {
+            const filteredRestaurantIds = dataCharacteristics.data
+              .map((chacItem) => chacItem)
+              .filter((item) =>
+                dataRes.data.characteristics.includes(item._id.$oid)
+              );
+            setCharacteristics(filteredRestaurantIds);
+          })
+          .catch((err) => console.error(err));
       })
       .catch((error) => {
         console.error("ERRO", error);
       });
-  }, [restaurant.id]);
+    const fetchData = async () => {
+      const numericDay = daysMap[currentDay];
+      if (numericDay !== undefined && numericDay !== day) {
+        setDay(numericDay);
+      }
+      try {
+        const [resMenuDay, res] = await Promise.all([
+          MenuOfTheDayService.returnAllMenuOfDayByRestaurant(
+            restaurant._id.$oid
+          ),
+          MenuService.returnAllMenu(),
+        ]);
+
+        const matchingMenuItems = new Set();
+
+        resMenuDay.data.forEach((itemDay) => {
+          const matchingItemsForDay = res.data.filter(
+            (item) => itemDay.id_menu === item._id.$oid && itemDay.day === day
+          );
+          console.log(matchingItemsForDay);
+          matchingItemsForDay.forEach((matchingItem) => {
+            matchingMenuItems.add(matchingItem);
+          });
+        });
+
+        setMenuItems(Array.from(matchingMenuItems));
+        console.log("aquii", menuItems);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+    setTimeout(() => {
+      setIsLoading(true);
+    }, 2000);
+    return () => {
+      console.log("SCREEN", ProfileRestaurantPage.name, "CLOSE");
+      setMenuItems([])
+      setPlates([])
+    };
+  }, [restaurant._id.$oid, day]);
 
   const getOpeningHoursForCurrentDay = () => {
     const currentDay = moment().format("dddd").toLowerCase();
-    console.log(currentDay);
+    console.log("aqui", currentDay);
     if (restaurant.opening_hours && restaurant.opening_hours[currentDay]) {
       return restaurant.opening_hours[currentDay];
     }
@@ -67,20 +152,12 @@ export default function ProfileRestaurantPage({ route, navigation }) {
 
   const coordinatesNavigateGoogle = `https://www.google.com/maps/dir/?api=1&origin=${location?.coords.latitude},${location?.coords.longitude}&destination=${restaurant?.latitude},${restaurant?.longitude}&travelmode=driving`;
 
-  const plates = [
-    { price: 20, name: "Prato 1" },
-    { price: 20, name: "Prato 2" },
-    { price: 20, name: "Prato 3" },
-    { price: 20, name: "Prato 4" },
-  ];
-
   /*  const handleItemPress = (e) => {
      console.log("PLATE", e);
      navigation.navigate("MenuPlatesPage", {
        namePlate: e,
      });
    }; */
-
 
   const RenderItem = ({ item, index }) => {
     const itemStyle = styles.item;
@@ -102,11 +179,32 @@ export default function ProfileRestaurantPage({ route, navigation }) {
     );
   };
 
+  const onLayoutRootView = useCallback(async () => {
+    if (isLoading) {
+    }
+  }, [isLoading]);
+  if (!isLoading) {
+    return <Loader />;
+  }
+
   return (
-    <View style={styles.container}>
-      <View>
-        <Image source={restaurant.image} style={styles.imageRestaurant} />
+    <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
+      <View style={{ flex: 0.3 }}>
+        <Image
+          resizeMode="cover"
+          source={{ uri: restaurant.img }}
+          style={styles.imageRestaurant}
+        />
       </View>
+      <View
+        style={{
+          width: "100%",
+          height: 30,
+          backgroundColor: "white",
+          borderRadius: 24,
+          marginTop: -10,
+        }}
+      ></View>
       <ScrollView
         vertical={true}
         showsHorizontalScrollIndicator={false}
@@ -151,10 +249,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                 </Pressable>
               </View>
               <Text
-                style={[
-                  styles.textRestaurantNormalInfo,
-                  { marginLeft: 50 },
-                ]}
+                style={[styles.textRestaurantNormalInfo, { marginLeft: 50 }]}
               >
                 {restaurant.contact}
               </Text>
@@ -162,7 +257,6 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           </View>
         </View>
         <View style={[styles.row, styles.restaurantDistanceInfo]}>
-
           <View style={styles.restaurantDistanceContent}>
             <Text style={[styles.textRestaurantNormalInfo, styles.bold]}>
               {currentOpeningHours.open} - {currentOpeningHours.closed}
@@ -180,7 +274,6 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                 ]}
               >
                 {restaurantStatus}
-
               </Text>
             </View>
           </View>
@@ -198,13 +291,21 @@ export default function ProfileRestaurantPage({ route, navigation }) {
               horizontal
               showsHorizontalScrollIndicator={false}
               renderItem={({ item }) => (
-                <View style={{ display: "flex", flexDirection: "column", paddingRight: 30 , justifyContent: "center" , alignItems: "center"}}>
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    paddingRight: 30,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
                   <Image style={styles.image} source={{ uri: item.icon }} />
                   <Text style={styles.characteristicName}>{item.name}</Text>
                 </View>
-              )} />
+              )}
+            />
           </View>
-
         </View>
 
         <View style={styles.aboutContainer}>
@@ -302,52 +403,61 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           >
             Pratos do Dia
           </Text>
+
           <View style={{}}>
-            <FlatList
-              vertical
-              data={plates}
-              renderItem={({ item, index }) => (
-                <RenderItem item={item} index={index} />
-              )}
-              showsHorizontalScrollIndicator={false}
-            />
-            <View>
-              <Pressable
-                style={{
-                  backgroundColor: Colors.colors.neutral02Color.neutral_01,
-                  borderRadius: 100,
-                  marginBottom: 25,
-                }}
-                onPress={() => {
-                  navigation.navigate("MenuPlatesPage", {
-                    restaurant: restaurant,
-                  });
-                }}
-              >
-                <Text
-                  style={{
-                    color:
-                      Device.brand == "Apple"
-                        ? Colors.colors.neutral02Color.neutral_10
-                        : Colors.colors.neutral02Color.neutral_10,
-                    textAlign: "center",
-                    padding: 10,
-                  }}
-                >
-                  Ver Menu Completo
-                </Text>
-              </Pressable>
-            </View>
+            {menuItems.length > 0 ? (
+              <>
+                <FlatList
+                  vertical
+                  data={menuItems}
+                  renderItem={({ item, index }) => (
+                    <RenderItem item={item} index={index} />
+                  )}
+                  showsHorizontalScrollIndicator={false}
+                />
+                <View>
+                  <Pressable
+                    style={{
+                      backgroundColor: Colors.colors.neutral02Color.neutral_01,
+                      borderRadius: 100,
+                      marginBottom: 25,
+                    }}
+                    onPress={() => {
+                      navigation.navigate("MenuPlatesPage", {
+                        restaurant: restaurant,
+                        plates: plates,
+                      });
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color:
+                          Device.brand == "Apple"
+                            ? Colors.colors.neutral02Color.neutral_10
+                            : Colors.colors.neutral02Color.neutral_10,
+                        textAlign: "center",
+                        padding: 10,
+                      }}
+                    >
+                      Ver Menu Completo
+                    </Text>
+                  </Pressable>
+                </View>
+              </>
+            ) : (
+              <Text>Sem pratos do dia disponivel</Text>
+            )}
           </View>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.colors.neutral02Color.neutral_10,
   },
   contentContainer: {
     justifyContent: "center",
@@ -370,8 +480,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.colors.neutral02Color.neutral_10,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    marginTop: 150,
-    height: "100%",
     padding: 10,
   },
   restaurantTitleInfo: {
@@ -392,12 +500,12 @@ const styles = StyleSheet.create({
   },
   restaurantDistanceContent: { justifyContent: "center", alignItems: "center" },
   image: {
-    width: 65,
-    height: 80,
+    width: 100,
+    height: 100,
   },
   imageRestaurant: {
     width: "100%",
-    position: "absolute",
+    height: "100%",
   },
   imageAccessContainer: {
     gap: 20,

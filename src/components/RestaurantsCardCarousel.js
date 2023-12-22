@@ -11,137 +11,93 @@ import Carousel from "react-native-snap-carousel";
 import CarouselMapContext from "./CarouselMapContext";
 import * as Device from "expo-device";
 import { RestaurantService } from "deliziora-client-module/client-web";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Colors = require("../style/Colors.json");
-
-/* const dataRestaurant = [
-  {
-    id: 1,
-    image: require("../../assets/Restaurant1.png"),
-    dishes: require("../../assets/Favorite1.png"),
-    isFavorite: false,
-    title: "Restaurant Name 1",
-    description: "Restaurant description",
-    address: "Jl, Raya Yeh gangga - n°65",
-    contact: "911111111",
-    coordinates: { latitude: 38.524319, longitude: -8.889212 },
-
-    about:
-      "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
-  },
-  {
-    id: 2,
-    image: require("../../assets/Restaurant1.png"),
-    dishes: require("../../assets/Favorite1.png"),
-    isFavorite: false,
-    title: "Restaurant Name 2",
-    description: "Restaurant description",
-    address: "Jl, Raya Yeh gangga - n°63",
-    contact: "911111444",
-    coordinates: { latitude: 38.526971, longitude: -8.889441 },
-
-    about:
-      "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
-  },
-  {
-    id: 3,
-    image: require("../../assets/Restaurant1.png"),
-    dishes: require("../../assets/Favorite1.png"),
-    isFavorite: false,
-    title: "Restaurant Name 3",
-    description: "Restaurant description",
-    address: "Jl, Raya Yeh gangga - n°61",
-    contact: "911111112",
-    coordinates: { latitude: 38.52981, longitude: -8.895425 },
-
-    about:
-      "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
-  },
-  {
-    id: 4,
-    image: require("../../assets/Restaurant1.png"),
-    dishes: require("../../assets/Favorite1.png"),
-    isFavorite: false,
-    title: "Restaurant Name 4",
-    description: "Restaurant description",
-    address: "Jl, Raya Yeh gangga - n°66",
-    contact: "911111333",
-    coordinates: { latitude: 38.528576, longitude: -8.900009 },
-    about:
-      "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
-  },
-  {
-    id: 5,
-    image: require("../../assets/Restaurant1.png"),
-    dishes: require("../../assets/Favorite1.png"),
-    isFavorite: false,
-    title: "Restaurant Name 5",
-    description: "Restaurant description",
-    address: "Jl, Raya Yeh gangga - n°66",
-    contact: "911111333",
-    coordinates: {
-      latitude: 38.539908,
-      longitude: -8.869396,
-    },
-    about:
-      "Lorem ipsum dolor sit amet consectetur. Unc ullamcorper donec felis tincidunt sit.  Amet pulvinar aliquet donec non vitae accumsan amet fringilla. Venenatis proin elementum enim sed ut eu sit. Id vel dictu.",
-  },
-]; */
 
 const RestaurantsCardCarousel = ({ navigation, setRestaurants, location }) => {
   const { carouselRef, goToMarker } = useContext(CarouselMapContext);
   const [data, setData] = useState([]);
-  /* const handleFavoriteToggle = (id) => {
-    const updatedRestaurants = data.map((restaurant) =>
-      restaurant.id === id
-        ? { ...restaurant, isFavorite: !restaurant.isFavorite }
-        : restaurant
-    );
-    setData(updatedRestaurants);
-}; TODO - MUDAR PARA GUARDAR OS DADOS DE FAVORITOS PARA LOCALSTORAGE */
+  const [favoritesSelected, setFavorites] = useState([]);
 
   useEffect(() => {
-    RestaurantService.returnAllRestaurants().then((data) => {
-      setData(data.data);
-      setRestaurants(data.data);
-    }).catch((error) => {
-      console.error(error);
-    })
-  }, []);
-  useEffect(() => {
+    // Fetch the favorites array from AsyncStorage and update the state
+    const fetchFavorites = async () => {
+      try {
+        const favoritesString = await AsyncStorage.getItem('@favorites');
+        const favoritesArray = favoritesString ? JSON.parse(favoritesString) : [];
+        setFavorites(favoritesArray);
+      } catch (error) {
+        console.error('Error fetching favorites:', error);
+      }
+    };
 
+    fetchFavorites();
+  }, []); 
+  const handleFavoriteToggle = async (id) => {
+    try {
+      const favoritesString = await AsyncStorage.getItem('@favorites');
+      const favorites = favoritesString ? JSON.parse(favoritesString) : [];
+      const index = favorites.indexOf(id);
+      if (index === -1) {
+        favorites.push(id);
+      } else {
+        favorites.splice(index, 1);
+      }
+      await AsyncStorage.setItem('@favorites', JSON.stringify(favorites));
+      setFavorites(favorites);
+      console.log('Favorites updated:', favorites);
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
+  };
+
+  useEffect(() => {
+    RestaurantService.returnAllRestaurants()
+      .then((data) => {
+        setData(data.data);
+        setRestaurants(data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, []);
+  useEffect(() => {}, []);
 
   const renderItem = ({ item, index }) => {
+    const isFavorite = favoritesSelected.includes(item._id.$oid);
     return (
       <View style={styles.carouselItem}>
         <View style={styles.Containers}>
           <View style={styles.containerImageAndTitle}>
-            <Image source={item.img} style={styles.image} />
+            <Image source={{ uri: item.img }} style={styles.image} />
             <View style={styles.containerTitleAndDescription}>
               <Text style={styles.title}>{item.name}</Text>
-              <Text style={styles.description}>{item.description.slice(0, 60)} ...</Text>
+              <Text style={styles.description}>
+                {item.description.slice(0, 60)} ...
+              </Text>
             </View>
           </View>
           <View style={styles.dishesAndVisitButton}>
             <View style={styles.dishesContainer}>
               <Pressable
-              /* onPress={() => {
-                handleFavoriteToggle(item.id);
-              }} */
+                onPress={() => {
+                  handleFavoriteToggle(item._id.$oid);
+                }}
               >
-                {/* {item.isFavorite ? (
+                {isFavorite ? (
                   <Image
                     key={index}
                     source={require("../../assets/FavoriteSelected1.png")}
                     style={styles.dishImage}
                   />
-                ) : ( */}
-                <Image
-                  key={index}
-                  source={item.dishes}
-                  style={styles.dishImage}
-                />
+                ) : (
+                  <Image
+                    key={index}
+                    source={require("../../assets/Favorite1.png")}
+                    style={styles.dishImage}
+                  />
+                )}
               </Pressable>
             </View>
             <View style={styles.visitButton}>
@@ -149,7 +105,7 @@ const RestaurantsCardCarousel = ({ navigation, setRestaurants, location }) => {
                 onPress={() =>
                   navigation.navigate("ProfileRestaurantPage", {
                     restaurant: item,
-                    location: location
+                    location: location,
                   })
                 }
                 title="Abrir"
@@ -186,7 +142,7 @@ const RestaurantsCardCarousel = ({ navigation, setRestaurants, location }) => {
 const styles = {
   carouselItem: {
     width: 290,
-    height: 170,
+    height: "100%",
     backgroundColor: Colors.colors.neutral02Color.neutral_10,
     borderRadius: 16,
     marginBottom: 20,
@@ -212,7 +168,7 @@ const styles = {
     height: 30,
   },
   containerTitleAndDescription: {
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
@@ -242,7 +198,7 @@ const styles = {
     width: "100%",
     justifyContent: "space-between",
     marginTop: 8,
-    gap: 8,
+
     alignItems: "center",
   },
   dishesContainer: {
@@ -264,7 +220,6 @@ const styles = {
     display: "inline-flex",
     justifyContent: "center",
     alignItems: "center",
-    gap: 8,
     flexDirection: "row",
     paddingVertical: 5,
     paddingHorizontal: 24,

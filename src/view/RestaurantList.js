@@ -9,25 +9,51 @@ import {
   StyleSheet,
   FlatList,
   Image,
+  Pressable,
 } from "react-native";
 import { RestaurantService } from "deliziora-client-module/client-web";
 import Loader from "../components/Loader";
 import SearchBar from "../components/SearchBar";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function RestaurantList({ route, navigation }) {
-
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [favoritesSelected, setFavorites] = useState([]);
 
-  useEffect(() => {
-    RestaurantService.returnAllRestaurants().then((data) => {
-      setData(data.data);
-      console.log(data);
-    }).catch((error) => {
-      console.error(error);
-    })
-  }, []);
-  
+  const fetchData = async () => {
+    try {
+      // Concurrently fetch favorites and restaurant data
+      const [favoritesString, restaurantResponse] = await Promise.all([
+        AsyncStorage.getItem("@favorites"),
+        RestaurantService.returnAllRestaurants(),
+      ]);
+
+      const favoritesArray = favoritesString ? JSON.parse(favoritesString) : [];
+      setFavorites(favoritesArray);
+
+      const allRestaurants = restaurantResponse.data;
+      const filteredData = allRestaurants.filter((restaurant) =>
+        favoritesArray.includes(restaurant._id.$oid)
+      );
+
+      setData(filteredData);
+      console.log(filteredData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+      return () => {
+        setData([]);
+      };
+    }, [])
+  );
+
   var colors = require("../style/Colors.json");
 
   useEffect(() => {
@@ -38,6 +64,8 @@ export default function RestaurantList({ route, navigation }) {
     }, 1000);
     return () => {
       console.log("SCREEN", RestaurantList.name, "CLOSE");
+      setFavorites([]);
+      setData([]);
     };
   }, []);
   const onLayoutRootView = useCallback(async () => {
@@ -49,7 +77,7 @@ export default function RestaurantList({ route, navigation }) {
   }
   const Item = ({ item, index }) => {
     return (
-      <View
+      <Pressable
         style={{
           marginVertical: 8,
           marginHorizontal: 20,
@@ -69,9 +97,14 @@ export default function RestaurantList({ route, navigation }) {
 
           elevation: 6,
         }}
+        onPress={() =>
+          navigation.navigate("ProfileRestaurantPage", {
+            restaurant: item,
+          })
+        }
       >
         <Image
-          source={item.img}
+          source={{ uri: item.img }}
           style={{ width: 90, height: 80, borderRadius: 10 }}
         />
         <View>
@@ -85,7 +118,7 @@ export default function RestaurantList({ route, navigation }) {
             style={styleSelected.dishImage}
           />
         </View>
-      </View>
+      </Pressable>
     );
   };
   return (
