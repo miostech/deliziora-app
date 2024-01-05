@@ -118,8 +118,8 @@ export default function ProfileRestaurantPage({ route, navigation }) {
     }, 2000);
     return () => {
       console.log("SCREEN", ProfileRestaurantPage.name, "CLOSE");
-      setMenuItems([])
-      setPlates([])
+      setMenuItems([]);
+      setPlates([]);
     };
   }, [restaurant._id.$oid, day]);
 
@@ -181,6 +181,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
 
   const onLayoutRootView = useCallback(async () => {
     if (isLoading) {
+      
     }
   }, [isLoading]);
   if (!isLoading) {
@@ -273,7 +274,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                   },
                 ]}
               >
-                {restaurantStatus}
+                {restaurant.isOpen ? "Aberto" : "Fechado"}
               </Text>
             </View>
           </View>

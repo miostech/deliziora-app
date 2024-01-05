@@ -3,11 +3,12 @@ import React, { Component, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Slider } from 'react-native-elements';
 // create a component
-const MyComponent = () => {
-    const [selectedRange, setSelectedRange] = useState(0);
+const MyComponent = ({distance, setDistance, updateFilteredSearch}) => {
+
 
     const handleRangeChange = (value) => {
-        setSelectedRange(value);
+        setDistance(value);
+        updateFilteredSearch()
     };
 
     return (
@@ -18,12 +19,12 @@ const MyComponent = () => {
                     minimumValue={1} // updated minimum value to 1 km
                     maximumValue={100}
                     step={1}
-                    value={selectedRange}
+                    value={distance}
                     onValueChange={handleRangeChange}
                     thumbStyle={styles.thumb}
                 />
             </View>
-            <View style={styles.ViewText}><Text style={styles.text}>{`${selectedRange} km - 100 km`}</Text></View></View>
+            <View style={styles.ViewText}><Text style={styles.text}>{`${distance} km - 100 km`}</Text></View></View>
 
     );
 };

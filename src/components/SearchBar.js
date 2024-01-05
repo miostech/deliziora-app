@@ -27,9 +27,37 @@ import CarouselMapContext from "./CarouselMapContext";
 
 const colors = require("../style/Colors.json");
 
-const SearchBar = ({ listType, setListType, isfilter, islistType }) => {
+const SearchBar = ({
+  listType,
+  setListType,
+  isfilter,
+  islistType,
+  setFilteredSearch,
+  filteredSearch,
+}) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedCharacteristics, setSelectedCharacteristics] = useState([]);
+  const [distance, setDistance] = useState(0);
+  const [isOpen, setIsOpen] = useState(null);
+  const [typeOfMenu, setTypeOfMenu] = useState({});
   const refRBSheet = useRef();
+
+  useEffect(() => {
+    console.log("banana", filteredSearch);
+
+    console.log(filteredSearch);
+  }, [selectedCharacteristics, isOpen, typeOfMenu, distance]);
+
+  const updateFilteredSearch = () => {
+    setFilteredSearch(
+      {
+        characteristics: selectedCharacteristics,
+        isOpen: isOpen,
+        typeOfMenu: typeOfMenu,
+        distance: distance,
+      }
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -42,14 +70,13 @@ const SearchBar = ({ listType, setListType, isfilter, islistType }) => {
           }
         >
           <View>
-            <SearchIcon onPress={() => { }} />
+            <SearchIcon onPress={() => {}} />
           </View>
           <View>
             <TextInput
               placeholder="Pesquisar"
               placeholderTextColor={colors.colors.neutral02Color.neutral_1}
               style={styles.placeholderLabel}
-
               selectionColor={colors.colors.neutral02Color.neutral_1}
               overflow="hidden"
             ></TextInput>
@@ -57,7 +84,11 @@ const SearchBar = ({ listType, setListType, isfilter, islistType }) => {
         </View>
         {isfilter === false ? null : (
           <View style={styles.filterButton}>
-            <Pressable onPress={() => refRBSheet.current.open()}>
+            <Pressable
+              onPress={() => {
+                refRBSheet.current.open();
+              }}
+            >
               <FilterSearch />
             </Pressable>
           </View>
@@ -121,28 +152,40 @@ const SearchBar = ({ listType, setListType, isfilter, islistType }) => {
           >
             <View style={styles.modalContentAll}>
               <View style={styles.modalContent2}>
-                <Text style={styles.modalText2}>
-                  Status de Funcionamento
-                </Text>
+                <Text style={styles.modalText2}>Status de Funcionamento</Text>
                 <View style={styles.modalContent3}>
                   <Text style={styles.modalText3}>
                     Mostrar apenas restaurantes abertos
                   </Text>
-                  <SwitchOpenOrClose />
+                  <SwitchOpenOrClose
+                    setIsOpen={setIsOpen}
+                    isOpen={isOpen}
+                    updateFilteredSearch={updateFilteredSearch}
+                  />
                 </View>
               </View>
               <View style={styles.line2}></View>
               <Text style={styles.modalText4}>Tipo de menu</Text>
               <View style={styles.modalContent6}>
-                <View><TypeOfSearch /></View>
+                <View>
+                  <TypeOfSearch
+                    typeOfMenu={typeOfMenu}
+                    setTypeOfMenu={setTypeOfMenu}
+                    updateFilteredSearch={updateFilteredSearch}
+                  />
                 </View>
+              </View>
               <View style={styles.modalContent4}>
                 <Text style={styles.modalText5}>Caracteristicas</Text>
                 <Text style={styles.modalText6}>
                   Busque por Restaurantes, com uma ou mais caracteristicas
                 </Text>
                 <View style={styles.modalMiniContent4}>
-                  <CharacteristicsFilter />
+                  <CharacteristicsFilter
+                    setSelectedCharacteristics={setSelectedCharacteristics}
+                    selectedCharacteristics={selectedCharacteristics}
+                    updateFilteredSearch={updateFilteredSearch}
+                  />
                 </View>
               </View>
               <View style={styles.line3}></View>
@@ -153,12 +196,25 @@ const SearchBar = ({ listType, setListType, isfilter, islistType }) => {
                   Arrastes para o lado selecionando a distancia máxima desejada.
                 </Text>
                 <View style={styles.modalMiniContent5}>
-                  <DistanceSlider />
+                  <DistanceSlider
+                    setDistance={setDistance}
+                    distance={distance}
+                    updateFilteredSearch={updateFilteredSearch}
+                  />
                 </View>
               </View>
               <View style={styles.line4}></View>
               <View style={styles.modalContent6}>
-                <Pressable style={styles.modalButton}>
+                <Pressable
+                  style={styles.modalButton}
+                  onPress={() => {
+                    setFilteredSearch({});
+                    setSelectedCharacteristics([]);
+                    setDistance(0);
+                    setIsOpen(false);
+                    setTypeOfMenu(null);
+                  }}
+                >
                   <Text style={styles.modalButtonText}>Limpar Filtros</Text>
                 </Pressable>
                 <Pressable

@@ -12,60 +12,191 @@ import CarouselMapContext from "./CarouselMapContext";
 import * as Device from "expo-device";
 import { RestaurantService } from "deliziora-client-module/client-web";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import moment from "moment";
+import Loader from "./Loader";
 
 const Colors = require("../style/Colors.json");
 
-const RestaurantsCardCarousel = ({ navigation, setRestaurants, location }) => {
+const RestaurantsCardCarousel = ({
+  navigation,
+  setRestaurants,
+  location,
+  filteredSearch,
+}) => {
   const { carouselRef, goToMarker } = useContext(CarouselMapContext);
   const [data, setData] = useState([]);
-  const [favoritesSelected, setFavorites] = useState([]);
+  const [loading, setIsLoading] = useState(false);
+  const [favoriteIds, setFavoriteIds] = useState([]);
 
   useEffect(() => {
-    // Fetch the favorites array from AsyncStorage and update the state
+    let isMounted = true; // Flag to track component mount state
+
     const fetchFavorites = async () => {
       try {
-        const favoritesString = await AsyncStorage.getItem('@favorites');
+        // Simulate a loading state while fetching
+        setIsLoading(true);
+    
+        const favoritesString = await AsyncStorage.getItem("@favorites");
         const favoritesArray = favoritesString ? JSON.parse(favoritesString) : [];
-        setFavorites(favoritesArray);
+    
+        // Only update the state if the component is still mounted
+        if (isMounted) {
+          setFavoriteIds((prevFavoritesArray) => [...prevFavoritesArray, ...favoritesArray]);
+          setIsLoading(false)
+        }
       } catch (error) {
-        console.error('Error fetching favorites:', error);
+        console.error("Error fetching favorites:", error);
+        // Handle error state or log it if necessary
+      } finally {
+        // Ensure loading state is set to false regardless of success or error
+        setIsLoading(false);
       }
     };
 
     fetchFavorites();
-  }, []); 
+    console.log(favoriteIds);
+    // Cleanup function to set the isMounted flag to false when the component unmounts
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const handleFavoriteToggle = async (id) => {
     try {
-      const favoritesString = await AsyncStorage.getItem('@favorites');
-      const favorites = favoritesString ? JSON.parse(favoritesString) : [];
-      const index = favorites.indexOf(id);
-      if (index === -1) {
-        favorites.push(id);
+      const favorites = new Set(favoriteIds);
+      if (favorites.has(id)) {
+        favorites.delete(id);
       } else {
-        favorites.splice(index, 1);
+        favorites.add(id);
       }
-      await AsyncStorage.setItem('@favorites', JSON.stringify(favorites));
-      setFavorites(favorites);
-      console.log('Favorites updated:', favorites);
+
+      await AsyncStorage.setItem("@favorites", JSON.stringify([...favorites]));
+      setFavoriteIds(prevFavorites => {
+        const updatedFavorites = new Set(prevFavorites);
+        if (updatedFavorites.has(id)) {
+          updatedFavorites.delete(id);
+        } else {
+          updatedFavorites.add(id);
+        }
+        return [...updatedFavorites];
+      });
+      console.log("Favorites updated:", [...favorites]);
     } catch (error) {
-      console.error('Error toggling favorite:', error);
+      console.error("Error toggling favorite:", error);
     }
   };
 
   useEffect(() => {
-    RestaurantService.returnAllRestaurants()
-      .then((data) => {
-        setData(data.data);
-        setRestaurants(data.data);
-      })
-      .catch((error) => {
+    const fetchData = async () => {
+      try {
+        const response = await RestaurantService.returnAllRestaurants();
+        const allData = response.data;
+
+        // Check if filteredSearch has any criteria
+        if (Object.keys(filteredSearch).length === 0) {
+          setRestaurants(allData);
+          setData(allData);
+          return;
+        }
+
+        // Apply filters based on filteredSearch
+        const filteredRestaurants = allData.filter((restaurant) => {
+          // Check isOpen
+          if (
+            filteredSearch.isOpen !== undefined &&
+            restaurant.isOpen !== filteredSearch.isOpen
+          ) {
+            return false;
+          }
+
+          // Check characteristics
+          if (
+            filteredSearch.characteristics &&
+            filteredSearch.characteristics.length > 0 &&
+            !filteredSearch.characteristics.some((char) =>
+              restaurant.characteristics.includes(char)
+            )
+          ) {
+            return false;
+          }
+
+          // Check especiality
+          if (
+            filteredSearch.typeOfMenu &&
+            filteredSearch.typeOfMenu.especiality !== undefined &&
+            restaurant.especiality !== filteredSearch.typeOfMenu.especiality
+          ) {
+            return false;
+          }
+          if (
+            filteredSearch.typeOfMenu &&
+            filteredSearch.typeOfMenu.complete_menu !== undefined &&
+            restaurant.complete_menu !== filteredSearch.typeOfMenu.complete_menu
+          ) {
+            return false;
+          }
+
+          return true;
+        });
+
+        setRestaurants(filteredRestaurants);
+        setData(filteredRestaurants);
+
+        console.log("Filtered Restaurants:", filteredRestaurants);
+      } catch (error) {
         console.error(error);
+      }
+    };
+
+    fetchData();
+    updateOpenStatus(data);
+  }, [filteredSearch]);
+
+  const getOpeningHoursForCurrentDay = (restaurant) => {
+    const currentDay = moment().format("dddd").toLowerCase();
+    return restaurant.opening_hours && restaurant.opening_hours[currentDay]
+      ? restaurant.opening_hours[currentDay]
+      : "Horário não disponível para o dia atual";
+  };
+
+  const isRestaurantOpen = (currentTime, { open, closed }) => {
+    return currentTime >= open && currentTime <= closed ? "Aberto" : "Fechado";
+  };
+
+  const updateOpenStatus = async (data) => {
+    const currentTime = moment().format("HH:mm");
+
+    const updatedRestaurants = data.map(async (restaurant) => {
+      const openingHours = getOpeningHoursForCurrentDay(restaurant);
+      const isOpen = isRestaurantOpen(currentTime, openingHours) === "Aberto";
+      await RestaurantService.updateRestaurantById({
+        id_restaurant: restaurant._id.$oid,
+        isOpen: isOpen,
+        updated_at: "",
+        opening_hours: restaurant.opening_hours,
+        address: restaurant.address,
+        categories: restaurant.categories,
+        characteristics: restaurant.characteristics,
+        complete_menu: restaurant.complete_menu,
+        contact: restaurant.contact,
+        description: restaurant.description,
+        email: restaurant.email,
+        especialty: restaurant.especialty,
+        img: restaurant.img,
+        latitude: restaurant.latitude,
+        longitude: restaurant.latitude,
+        name: restaurant.name,
       });
-  }, []);
-  useEffect(() => {}, []);
+
+      return { ...restaurant, isOpen };
+    });
+    const updatedRestaurantsData = await Promise.all(updatedRestaurants);
+    setRestaurants(updatedRestaurantsData);
+    setData(updatedRestaurantsData);
+  };
 
   const renderItem = ({ item, index }) => {
-    const isFavorite = favoritesSelected.includes(item._id.$oid);
+    const isFavorite = favoriteIds.includes(item._id.$oid);
     return (
       <View style={styles.carouselItem}>
         <View style={styles.Containers}>
@@ -121,6 +252,7 @@ const RestaurantsCardCarousel = ({ navigation, setRestaurants, location }) => {
       </View>
     );
   };
+  
 
   return (
     <Carousel

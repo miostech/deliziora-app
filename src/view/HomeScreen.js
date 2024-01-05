@@ -36,6 +36,7 @@ export default function HomeScreen({ listType, route, navigation }) {
     useContext(CarouselMapContext);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [filteredSearch, setFilteredSearch] = useState({});
   const [messageLocation, setMssageLocation] = useState("");
   const [restaurants, setRestaurants] = useState([]);
 
@@ -99,7 +100,7 @@ export default function HomeScreen({ listType, route, navigation }) {
             marginTop: Device.brand == "Apple" ? 80 : 35,
           }}
         >
-          <SearchBar  />
+          <SearchBar  filteredSearch={filteredSearch} setFilteredSearch={setFilteredSearch}/>
         </View>
         {!listType ? (
           <View
@@ -156,6 +157,7 @@ export default function HomeScreen({ listType, route, navigation }) {
                 navigation={navigation}
                 setRestaurants={setRestaurants}
                 location={location}
+                filteredSearch={filteredSearch}
               />
             </View>
           </>
