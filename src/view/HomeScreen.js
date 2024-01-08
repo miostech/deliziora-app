@@ -38,6 +38,7 @@ export default function HomeScreen({ listType, route, navigation }) {
   const [isLoading, setIsLoading] = useState(true);
   const [filteredSearch, setFilteredSearch] = useState({});
   const [messageLocation, setMssageLocation] = useState("");
+  const [search, setSearch] = useState('');
   const [restaurants, setRestaurants] = useState([]);
 
   var colors = require("../style/Colors.json");
@@ -100,7 +101,7 @@ export default function HomeScreen({ listType, route, navigation }) {
             marginTop: Device.brand == "Apple" ? 80 : 35,
           }}
         >
-          <SearchBar  filteredSearch={filteredSearch} setFilteredSearch={setFilteredSearch}/>
+          <SearchBar  filteredSearch={filteredSearch} setFilteredSearch={setFilteredSearch} setSearch={setSearch}/>
         </View>
         {!listType ? (
           <View
@@ -158,6 +159,7 @@ export default function HomeScreen({ listType, route, navigation }) {
                 setRestaurants={setRestaurants}
                 location={location}
                 filteredSearch={filteredSearch}
+                search={search}
               />
             </View>
           </>

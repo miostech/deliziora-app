@@ -34,6 +34,7 @@ const SearchBar = ({
   islistType,
   setFilteredSearch,
   filteredSearch,
+  setSearch
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCharacteristics, setSelectedCharacteristics] = useState([]);
@@ -79,6 +80,7 @@ const SearchBar = ({
               style={styles.placeholderLabel}
               selectionColor={colors.colors.neutral02Color.neutral_1}
               overflow="hidden"
+              onEndEditing={(e)=> setSearch(e.nativeEvent.text)}
             ></TextInput>
           </View>
         </View>

@@ -22,11 +22,13 @@ const RestaurantsCardCarousel = ({
   setRestaurants,
   location,
   filteredSearch,
+  search,
 }) => {
   const { carouselRef, goToMarker } = useContext(CarouselMapContext);
   const [data, setData] = useState([]);
   const [loading, setIsLoading] = useState(false);
   const [favoriteIds, setFavoriteIds] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
     let isMounted = true; // Flag to track component mount state
@@ -35,14 +37,19 @@ const RestaurantsCardCarousel = ({
       try {
         // Simulate a loading state while fetching
         setIsLoading(true);
-    
+
         const favoritesString = await AsyncStorage.getItem("@favorites");
-        const favoritesArray = favoritesString ? JSON.parse(favoritesString) : [];
-    
+        const favoritesArray = favoritesString
+          ? JSON.parse(favoritesString)
+          : [];
+
         // Only update the state if the component is still mounted
         if (isMounted) {
-          setFavoriteIds((prevFavoritesArray) => [...prevFavoritesArray, ...favoritesArray]);
-          setIsLoading(false)
+          setFavoriteIds((prevFavoritesArray) => [
+            ...prevFavoritesArray,
+            ...favoritesArray,
+          ]);
+          setIsLoading(false);
         }
       } catch (error) {
         console.error("Error fetching favorites:", error);
@@ -71,7 +78,7 @@ const RestaurantsCardCarousel = ({
       }
 
       await AsyncStorage.setItem("@favorites", JSON.stringify([...favorites]));
-      setFavoriteIds(prevFavorites => {
+      setFavoriteIds((prevFavorites) => {
         const updatedFavorites = new Set(prevFavorites);
         if (updatedFavorites.has(id)) {
           updatedFavorites.delete(id);
@@ -93,23 +100,30 @@ const RestaurantsCardCarousel = ({
         const allData = response.data;
 
         // Check if filteredSearch has any criteria
-        if (Object.keys(filteredSearch).length === 0) {
+        if (Object.keys(filteredSearch).length === 0 && search.length === 0) {
           setRestaurants(allData);
           setData(allData);
           return;
         }
+        const filtered = allData.filter((item) =>
+          item.name.toLowerCase().includes(search.toLowerCase())
+        );
+
+        setFilteredData(filtered);
+        setRestaurants(filtered);
+        goToMarker(0, filtered)
 
         // Apply filters based on filteredSearch
-        const filteredRestaurants = allData.filter((restaurant) => {
+        // const filteredRestaurants = allData.filter((restaurant) => {
           // Check isOpen
-          if (
-            filteredSearch.isOpen !== undefined &&
-            restaurant.isOpen !== filteredSearch.isOpen
-          ) {
-            return false;
-          }
+          // if (
+          //   filteredSearch.isOpen !== undefined &&
+          //   restaurant.isOpen !== filteredSearch.isOpen
+          // ) {
+          //   return false;
+          // }
 
-          // Check characteristics
+          /* // Check characteristics
           if (
             filteredSearch.characteristics &&
             filteredSearch.characteristics.length > 0 &&
@@ -134,15 +148,15 @@ const RestaurantsCardCarousel = ({
             restaurant.complete_menu !== filteredSearch.typeOfMenu.complete_menu
           ) {
             return false;
-          }
+          } */
 
-          return true;
-        });
+        //   return true;
+        // });
 
-        setRestaurants(filteredRestaurants);
-        setData(filteredRestaurants);
+        // setRestaurants(filteredRestaurants);
+        // setData(filteredRestaurants);
 
-        console.log("Filtered Restaurants:", filteredRestaurants);
+        //  console.log("Filtered Restaurants:", filteredRestaurants);
       } catch (error) {
         console.error(error);
       }
@@ -150,7 +164,7 @@ const RestaurantsCardCarousel = ({
 
     fetchData();
     updateOpenStatus(data);
-  }, [filteredSearch]);
+  }, [filteredSearch, search]);
 
   const getOpeningHoursForCurrentDay = (restaurant) => {
     const currentDay = moment().format("dddd").toLowerCase();
@@ -198,7 +212,9 @@ const RestaurantsCardCarousel = ({
   const renderItem = ({ item, index }) => {
     const isFavorite = favoriteIds.includes(item._id.$oid);
     return (
-      <View style={styles.carouselItem}>
+      <Pressable
+        style={styles.carouselItem}
+      >
         <View style={styles.Containers}>
           <View style={styles.containerImageAndTitle}>
             <Image source={{ uri: item.img }} style={styles.image} />
@@ -249,15 +265,14 @@ const RestaurantsCardCarousel = ({
             </View>
           </View>
         </View>
-      </View>
+      </Pressable>
     );
   };
-  
 
   return (
     <Carousel
       ref={carouselRef}
-      data={data}
+      data={search ? filteredData : data}
       renderItem={renderItem}
       sliderWidth={350} // Largura do slider
       itemWidth={290} // Largura de cada item
@@ -266,6 +281,7 @@ const RestaurantsCardCarousel = ({
       enableMomentum
       onSnapToItem={(e) => {
         goToMarker(e, data);
+        console.log(e, data);
       }}
     />
   );

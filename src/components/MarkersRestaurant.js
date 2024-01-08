@@ -27,7 +27,7 @@ export default function MarkersRestaurant() {
           <Marker
             key={item.name}
             identifier="restaurant"
-            draggable={true}
+            draggable={false}
             onDrag={false}
             onPress={(e) => {
               handleChangeSlide(e._dispatchInstances._debugOwner.index, );
