@@ -110,19 +110,21 @@ export default function App() {
                   <Pressable
                     onPress={() => {
                       console.log("Clicamos")
-                      if (isFocused) {
-                        if (changeList() === false) {
+                      switch (true) {
+                        case isFocused && changeList() === false:
                           changeList();
-                          console.log("Entramos no if")
-                        } else {
+                          console.log("Entramos no if");
+                          break;
+                        case isFocused:
                           navigation.navigate('Map');
-                          changeList(false); // Define changeList como false se a navegação ocorrer
-                          console.log("entramos no Else que faz change list false")
-                        }
-                      } else {
-                        navigation.navigate('Map');
-                        changeList(false); // Define changeList como false se isFocused for falso
-                        console.log("entramos no Else que faz change list false se focused for false")
+                          changeList(false);
+                          console.log("entramos no Else que faz change list false");
+                          break;
+                        default:
+                          navigation.navigate('Map');
+                          changeList(false);
+                          console.log("entramos no Else que faz change list false se focused for false");
+                          break;
                       }
                     }}
                     style={{
