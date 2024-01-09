@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useContext } from "react";
 import { useIsFocused } from '@react-navigation/native';
 import { NavigationContainer } from "@react-navigation/native";
@@ -88,7 +88,7 @@ export default function App() {
               ),
             }}
           />
-          
+
           <Tab.Screen
             name="Map"
             component={(props) => <HomeScreen listType={listType} navigation={props.navigation} />}
@@ -108,7 +108,23 @@ export default function App() {
                   }}
                 >
                   <Pressable
-                    onPress={() => isFocused ? changeList() : navigation.navigate('Map')}
+                    onPress={() => {
+                      console.log("Clicamos")
+                      if (isFocused) {
+                        if (changeList() === false) {
+                          changeList();
+                          console.log("Entramos no if")
+                        } else {
+                          navigation.navigate('Map');
+                          changeList(false); // Define changeList como false se a navegação ocorrer
+                          console.log("entramos no Else que faz change list false")
+                        }
+                      } else {
+                        navigation.navigate('Map');
+                        changeList(false); // Define changeList como false se isFocused for falso
+                        console.log("entramos no Else que faz change list false se focused for false")
+                      }
+                    }}
                     style={{
                       bottom: 24,
                       backgroundColor: "white",
