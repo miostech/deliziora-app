@@ -1,11 +1,10 @@
 import { View, Text, Image } from "react-native";
 import React from "react";
-import { Path, Svg } from "react-native-svg";
 
-export default function HomeSvg({ focused }) {
+export default function FavoriteSvg({ focused }) {
   const colors = require("../../../style/Colors.json");
-  const png = require("../../../../assets/Home_IconNavigationBar.png");
-  const pngFocused = require("../../../../assets/Home_IconNavigationBarFocused.png");
+  const png = require("../../../../assets/Favorite1.png");
+  const pngFocused = require("../../../../assets/FavoriteSelected1.png");
   if(focused){
     return <Image  source={pngFocused} style={{ width:28, height:28}}/>
   }else{

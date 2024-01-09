@@ -26,6 +26,7 @@ import MenuPlatesPage from "./src/view/MenuPlatesPage";
 import RestaurantList from "./src/view/RestaurantList";
 import CarouselMapContext from "./src/components/CarouselMapContext";
 import { OpenAPI } from "deliziora-client-module/client-web";
+import FavoriteSvg from "./src/components/SVGs/HomeSvg/HomeSvg";
 
 OpenAPI.BASE = "https://deliziora-api.azurewebsites.net/";
 
@@ -70,7 +71,7 @@ export default function App() {
                   }}
                 >
                   <View style={{}}>
-                    <HomeSvg focused={focused} />
+                    <FavoriteSvg focused={focused} />
                   </View>
                   <View>
                     <Text
@@ -80,13 +81,14 @@ export default function App() {
                           : "black",
                       }}
                     >
-                      Inicio
+                      Favoritos
                     </Text>
                   </View>
                 </View>
               ),
             }}
           />
+          
           <Tab.Screen
             name="Map"
             component={(props) => <HomeScreen listType={listType} navigation={props.navigation} />}
