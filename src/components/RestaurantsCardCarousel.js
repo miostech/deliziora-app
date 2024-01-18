@@ -23,6 +23,7 @@ const RestaurantsCardCarousel = ({
   location,
   filteredSearch,
   search,
+  listRestaurants
 }) => {
   const { carouselRef, goToMarker } = useContext(CarouselMapContext);
   const [data, setData] = useState([]);
@@ -96,59 +97,61 @@ const RestaurantsCardCarousel = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await RestaurantService.returnAllRestaurants();
-        const allData = response.data;
+        // const response = await RestaurantService.returnAllRestaurants();
+
+        // setRestaurants(response.data);
+        // const allData = listRestaurants
 
         // Check if filteredSearch has any criteria
-        if (Object.keys(filteredSearch).length === 0 && search.length === 0) {
-          setRestaurants(allData);
-          setData(allData);
-          return;
-        }
-        const filtered = allData.filter((item) =>
-          item.name.toLowerCase().includes(search.toLowerCase())
-        );
+        // if (Object.keys(filteredSearch).length === 0 && search.length === 0) {
+        //   setRestaurants(allData);
+        //   setData(allData);
+        //   return;
+        // }
+        // const filtered = allData.filter((item) =>
+        //   item.name.toLowerCase().includes(search.toLowerCase())
+        // );
 
         setFilteredData(filtered);
-        setRestaurants(filtered);
+        // setRestaurants(filtered);
         goToMarker(0, filtered)
 
         // Apply filters based on filteredSearch
         // const filteredRestaurants = allData.filter((restaurant) => {
-          // Check isOpen
-          // if (
-          //   filteredSearch.isOpen !== undefined &&
-          //   restaurant.isOpen !== filteredSearch.isOpen
-          // ) {
-          //   return false;
-          // }
+        // Check isOpen
+        // if (
+        //   filteredSearch.isOpen !== undefined &&
+        //   restaurant.isOpen !== filteredSearch.isOpen
+        // ) {
+        //   return false;
+        // }
 
-          /* // Check characteristics
-          if (
-            filteredSearch.characteristics &&
-            filteredSearch.characteristics.length > 0 &&
-            !filteredSearch.characteristics.some((char) =>
-              restaurant.characteristics.includes(char)
-            )
-          ) {
-            return false;
-          }
+        /* // Check characteristics
+        if (
+          filteredSearch.characteristics &&
+          filteredSearch.characteristics.length > 0 &&
+          !filteredSearch.characteristics.some((char) =>
+            restaurant.characteristics.includes(char)
+          )
+        ) {
+          return false;
+        }
 
-          // Check especiality
-          if (
-            filteredSearch.typeOfMenu &&
-            filteredSearch.typeOfMenu.especiality !== undefined &&
-            restaurant.especiality !== filteredSearch.typeOfMenu.especiality
-          ) {
-            return false;
-          }
-          if (
-            filteredSearch.typeOfMenu &&
-            filteredSearch.typeOfMenu.complete_menu !== undefined &&
-            restaurant.complete_menu !== filteredSearch.typeOfMenu.complete_menu
-          ) {
-            return false;
-          } */
+        // Check especiality
+        if (
+          filteredSearch.typeOfMenu &&
+          filteredSearch.typeOfMenu.especiality !== undefined &&
+          restaurant.especiality !== filteredSearch.typeOfMenu.especiality
+        ) {
+          return false;
+        }
+        if (
+          filteredSearch.typeOfMenu &&
+          filteredSearch.typeOfMenu.complete_menu !== undefined &&
+          restaurant.complete_menu !== filteredSearch.typeOfMenu.complete_menu
+        ) {
+          return false;
+        } */
 
         //   return true;
         // });
@@ -205,7 +208,7 @@ const RestaurantsCardCarousel = ({
       return { ...restaurant, isOpen };
     });
     const updatedRestaurantsData = await Promise.all(updatedRestaurants);
-    setRestaurants(updatedRestaurantsData);
+    // setRestaurants(updatedRestaurantsData);
     setData(updatedRestaurantsData);
   };
 
@@ -272,7 +275,7 @@ const RestaurantsCardCarousel = ({
   return (
     <Carousel
       ref={carouselRef}
-      data={search ? filteredData : data}
+      data={listRestaurants}
       renderItem={renderItem}
       sliderWidth={350} // Largura do slider
       itemWidth={290} // Largura de cada item

@@ -58,6 +58,7 @@ const SearchBar = ({
         distance: distance,
       }
     );
+    console.warn("AQUI OSCAR", filteredSearch);
   };
 
   return (
@@ -71,7 +72,7 @@ const SearchBar = ({
           }
         >
           <View>
-            <SearchIcon onPress={() => {}} />
+            <SearchIcon onPress={() => { }} />
           </View>
           <View>
             <TextInput
@@ -80,7 +81,7 @@ const SearchBar = ({
               style={styles.placeholderLabel}
               selectionColor={colors.colors.neutral02Color.neutral_1}
               overflow="hidden"
-              onEndEditing={(e)=> setSearch(e.nativeEvent.text)}
+              onEndEditing={(e) => setSearch(e.nativeEvent.text)}
             ></TextInput>
           </View>
         </View>

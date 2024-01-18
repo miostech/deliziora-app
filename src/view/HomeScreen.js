@@ -30,9 +30,10 @@ import CurrentLocationMarker from "../components/CurrentLocationMarker";
 import MarkerCurrentLocationIconComponent from "../components/MarkerCurrentLocationIconComponent";
 import * as Device from "expo-device";
 import ListMapRestaurant from "../components/ListMapRestaurant";
+import { RestaurantService } from "deliziora-client-module/client-web";
 
 export default function HomeScreen({ listType, route, navigation }) {
-  const { handleMarkerPress, location, setLocation, mapRef,  setListType } =
+  const { handleMarkerPress, location, setLocation, mapRef, setListType } =
     useContext(CarouselMapContext);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -40,6 +41,7 @@ export default function HomeScreen({ listType, route, navigation }) {
   const [messageLocation, setMssageLocation] = useState("");
   const [search, setSearch] = useState('');
   const [restaurants, setRestaurants] = useState([]);
+  const [allRestaurant, setAllRestaurants] = useState([])
 
   var colors = require("../style/Colors.json");
 
@@ -52,6 +54,21 @@ export default function HomeScreen({ listType, route, navigation }) {
       console.log("SCREEN", HomeScreen.name, "CLOSE");
     };
   }, []);
+
+  useEffect(() => {
+    RestaurantService.returnAllRestaurants().then(res => {
+      setRestaurants(res.data);
+      setAllRestaurants(res.data);
+    }).catch(err => {
+      console.log("ERROR", err)
+    });
+  }, []);
+
+  useEffect(() => {
+    console.warn("AQUII", restaurants)
+    var filterList = allRestaurant.filter((f) => f.isOpen == filteredSearch.isOpen)
+    setRestaurants(filterList)
+  }, [filteredSearch]);
 
   function GetLocation() {
     return new Promise(async (resolve, reject) => {
@@ -79,7 +96,7 @@ export default function HomeScreen({ listType, route, navigation }) {
       setIsLoading(false);
     }
   }, [location]);
-  
+
 
   const onLayoutRootView = useCallback(async () => {
     if (isLoading) {
@@ -101,7 +118,7 @@ export default function HomeScreen({ listType, route, navigation }) {
             marginTop: Device.brand == "Apple" ? 80 : 35,
           }}
         >
-          <SearchBar  filteredSearch={filteredSearch} setFilteredSearch={setFilteredSearch} setSearch={setSearch}/>
+          <SearchBar filteredSearch={filteredSearch} setFilteredSearch={setFilteredSearch} setSearch={setSearch} />
         </View>
         {!listType ? (
           <View
@@ -160,6 +177,7 @@ export default function HomeScreen({ listType, route, navigation }) {
                 location={location}
                 filteredSearch={filteredSearch}
                 search={search}
+                listRestaurants={restaurants}
               />
             </View>
           </>
