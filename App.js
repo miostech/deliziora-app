@@ -1,7 +1,6 @@
 import { StatusBar } from "expo-status-bar";
-import { Alert, Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useContext } from "react";
-import { useIsFocused } from '@react-navigation/native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -13,204 +12,140 @@ import ArrowLeft from "./src/components/SVGs/ArrowLeft/ArrowLeft";
 import HomeScreen from "./src/view/HomeScreen";
 import NotificationSvg from "./src/components/SVGs/NotificationSvg/NotificationSvg";
 import HomeSvg from "./src/components/SVGs/HomeSvg/HomeSvg";
+import MapScreen from "./src/view/MapScreen";
 import MapSvg from "./src/components/SVGs/MapSvg/MapSvg";
 import SearchErrorScreen from "./src/view/SearchErrorScreen";
 import SearchPostalCodeScreen from "./src/view/SearchPostalCodeScreen";
 import NotificationNotFoundScreen from "./src/view/NotificationNotFoundScreen";
 import LoadingPageScreen from "./src/view/LoadingPageScreen";
 import HomeLoading from "./src/view/HomeLoading";
-import ProfileRestaurantPage from "./src/view/ProfileRestaurantPage";
-import { CarouselMapProvider } from "./src/components/CarouselMapContext";
-import { useFonts, Roboto_400Regular } from "@expo-google-fonts/roboto";
-import MenuPlatesPage from "./src/view/MenuPlatesPage";
-import RestaurantList from "./src/view/RestaurantList";
-import CarouselMapContext from "./src/components/CarouselMapContext";
-import { OpenAPI } from "deliziora-client-module/client-web";
-import FavoriteSvg from "./src/components/SVGs/HomeSvg/HomeSvg";
-
-OpenAPI.BASE = "https://deliziora-api.azurewebsites.net/";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
 export default function App() {
   const colors = require("./src/style/Colors.json");
-
-  let [fontsLoaded, fontError] = useFonts({
-    Roboto_400Regular,
-  });
-
-  if (!fontsLoaded && !fontError) {
-    return null;
-  }
-
   function HomeTab() {
-    const { listType, setListType, changeList } = useContext(CarouselMapContext);
-    const isFocused = useIsFocused();
-
     return (
-      <CarouselMapProvider>
-        <Tab.Navigator
-          initialRouteName="Map"
-          options={{ headerShadowVisible: false, headerShown: false }}
-        >
-          <Tab.Screen
-            name="Home"
-            component={RestaurantList}
-            options={{
-              headerShadowVisible: false,
-              tabBarShowLabel: false,
-              headerShown: false,
-              title: "Inicio",
-              tabBarIcon: ({ focused, color, size }) => (
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <View style={{}}>
-                    <FavoriteSvg focused={focused} />
-                  </View>
-                  <View>
-                    <Text
-                      style={{
-                        color: focused
-                          ? colors.colors.baseColor.base_01
-                          : "black",
-                      }}
-                    >
-                      Favoritos
-                    </Text>
-                  </View>
+      <Tab.Navigator
+        initialRouteName="Home"
+        options={{ headerShadowVisible: false, headerShown: false }}
+      >
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            headerShadowVisible: false,
+            tabBarShowLabel: false,
+            headerShown: false,
+            title: "",
+            tabBarIcon: ({ focused, color, size }) => (
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <View style={{}}>
+                  <HomeSvg focused={focused} />
                 </View>
-              ),
-            }}
-          />
-
-          <Tab.Screen
-            name="Map"
-            component={(props) => <HomeScreen listType={listType} navigation={props.navigation} />}
-            options={({ navigation }) => ({
-              headerShadowVisible: false,
-              tabBarShowLabel: false,
-              headerShown: false,
-              title: "",
-              tabBarIcon: ({ focused, color, size }) => (
-                <Pressable
-                  onPress={() => {
-                    switch (true) {
-                      case isFocused && changeList() === false:
-                        changeList();
-                        console.log("Entramos no if");
-                        break;
-                      case isFocused:
-                        navigation.navigate('Map');
-                        changeList(false);
-                        console.log("entramos no Else que faz change list false");
-                        break;
-                      default:
-                        navigation.navigate('Map');
-                        changeList(false);
-                        console.log("entramos no Else que faz change list false se focused for false");
-                        break;
-                    }
-                  }}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    position: "relative",
-                  }}
-                >
-                  <View
+                <View>
+                  <Text
                     style={{
-                      bottom: 24,
-                      backgroundColor: "white",
-                      borderRadius: 100,
-                      width: 60,
-                      height: 60,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderWidth: 3,
-                      borderColor: "#f1f3f4",
+                      color: focused ? colors.colors.baseColor.base_01 : "",
                     }}
                   >
-                    <MapSvg focused={focused} />
-                  </View>
-                  <View>
-                    <Text
-                      style={{
-                        bottom: 17,
-                        color: focused
-                          ? colors.colors.baseColor.base_01
-                          : "black",
-                      }}
-                    >
-                      Mapa
-                    </Text>
-                  </View>
-                </Pressable>
-              ),
-            })}
-          />
-          <Tab.Screen
-            name="Notifications"
-            component={Notifications}
-            screenoptions={{ headerShadowVisible: false, animation: "fade" }}
-            options={({ navigation }) => ({
-              headerShadowVisible: true,
-              tabBarShowLabel: false,
-              headerShown: false,
-              headerTitle: "Quadro de notificações",
-              tabBarIcon: ({ focused, color, size }) => (
+                    Inicio
+                  </Text>
+                </View>
+              </View>
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Map"
+          component={MapScreen}
+          options={{
+            headerShadowVisible: false,
+            tabBarShowLabel: false,
+            headerShown: false,
+            title: "",
+            tabBarIcon: ({ focused, color, size }) => (
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  position: "relative",
+                }}
+              >
                 <View
                   style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
+                    bottom: 24,
+                    backgroundColor: "white",
+                    borderRadius: 100,
+                    width: 60,
+                    height: 60,
                     alignItems: "center",
+                    justifyContent: "center",
+                    borderWidth: 3,
+                    borderColor: "#e9e9e9",
                   }}
                 >
-                  <View>
-                    <NotificationSvg focused={focused} />
-                  </View>
-                  <View>
-                    <Text
-                      style={{
-                        color: focused
-                          ? colors.colors.baseColor.base_01
-                          : "black",
-                      }}
-                    >
-                      Notificações
-                    </Text>
-                  </View>
+                  <MapSvg focused={focused} />
                 </View>
-              ),
-              headerLeft: () => {
-                return (
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.goBack();
-                    }}
+                <View>
+                  <Text
                     style={{
-                      height: "100%",
-                      width: "100%",
-                      justifyContent: "center",
-                      marginLeft: 10,
+                      bottom: 17,
+                      color: focused ? colors.colors.baseColor.base_01 : "",
                     }}
                   >
-                    <ArrowLeft />
-                  </TouchableOpacity>
-                );
-              },
-            })}
-          />
-        </Tab.Navigator>
-      </CarouselMapProvider>
+                    Mapa
+                  </Text>
+                </View>
+              </View>
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Notifications"
+          component={Notifications}
+          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
+          options={{
+            tabBarShowLabel: false,
+            headerShadowVisible: true,
+            headerShown: false,
+            headerTitle: "",
+            tabBarIcon: ({ focused, color, size }) => (
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <View>
+                  <NotificationSvg focused={focused} />
+                </View>
+                <View>
+                  <Text
+                    style={{
+                      color: focused ? colors.colors.baseColor.base_01 : "",
+                    }}
+                  >
+                    Notificações
+                  </Text>
+                </View>
+              </View>
+            ),
+          }}
+        />
+      </Tab.Navigator>
     );
   }
 
@@ -235,12 +170,6 @@ export default function App() {
           screenoptions={{ headerShadowVisible: false, animation: "fade" }}
           options={{ headerShadowVisible: false, headerShown: false }}
         />
-        <Stack.Screen
-          name="RestaurantList"
-          component={RestaurantList}
-          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
-          options={{ headerShadowVisible: false, headerShown: false }}
-        />
 
         <Stack.Screen
           name="Walkthrough"
@@ -250,6 +179,17 @@ export default function App() {
             headerShadowVisible: false,
             headerShown: true,
             headerTitle: "",
+            headerRight: () => {
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("HomeTab");
+                  }}
+                >
+                  <Text style={{ fontSize: 18, fontWeight: 500 }}>Pular</Text>
+                </TouchableOpacity>
+              );
+            },
           })}
         />
         <Stack.Screen
@@ -276,57 +216,6 @@ export default function App() {
           options={{ headerShadowVisible: false, headerShown: false }}
         />
         <Stack.Screen
-          name="MenuPlatesPage"
-          component={MenuPlatesPage}
-          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
-          options={({ navigation }) => ({
-            headerShadowVisible: false,
-            headerShown: true,
-            headerTitle: "Menu",
-            headerLeft: () => {
-              return (
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.goBack();
-                  }}
-                  style={{
-                    justifyContent: "center",
-                    marginLeft: 10,
-                    marginRight: 15,
-                  }}
-                >
-                  <ArrowLeft />
-                </TouchableOpacity>
-              );
-            },
-          })}
-        />
-        <Stack.Screen
-          name="ProfileRestaurantPage"
-          component={ProfileRestaurantPage}
-          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
-          options={({ navigation }) => ({
-            headerShadowVisible: false,
-            headerShown: true,
-            headerTitle: "",
-            headerLeft: () => {
-              return (
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("HomeTab");
-                  }}
-                  style={{ flexDirection: "row", gap: 80 }}
-                >
-                  <ArrowLeft />
-                  <Text style={{ fontSize: 18, fontWeight: 500 }}>
-                    Perfil do Restaurante
-                  </Text>
-                </TouchableOpacity>
-              );
-            },
-          })}
-        />
-        <Stack.Screen
           name="NotificationNotFoundScreen"
           component={NotificationNotFoundScreen}
           screenoptions={{ headerShadowVisible: false, animation: "fade" }}
@@ -343,11 +232,9 @@ export default function App() {
   }
 
   return (
-    <CarouselMapProvider>
-      <NavigationContainer>
-        <StackApp />
-      </NavigationContainer>
-    </CarouselMapProvider>
+    <NavigationContainer>
+      <StackApp />
+    </NavigationContainer>
   );
 }
 
