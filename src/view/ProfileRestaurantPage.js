@@ -189,7 +189,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
   }
 
   return (
-    <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
+    <View style={styles.container} onLayout={onLayoutRootView}>
       <View style={{ flex: 0.3 }}>
         <Image
           resizeMode="cover"
@@ -451,7 +451,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -501,8 +501,8 @@ const styles = StyleSheet.create({
   },
   restaurantDistanceContent: { justifyContent: "center", alignItems: "center" },
   image: {
-    width: 100,
-    height: 100,
+    width: 50,
+    height: 50,
   },
   imageRestaurant: {
     width: "100%",

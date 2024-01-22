@@ -16,6 +16,7 @@ import Loader from "../components/Loader";
 import SearchBar from "../components/SearchBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import * as Device from "expo-device";
 
 export default function RestaurantList({ route, navigation }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -123,7 +124,7 @@ export default function RestaurantList({ route, navigation }) {
   };
   return (
     <SafeAreaView
-      style={[styleSelected.backgroundPrimary, { flex: 1 }]}
+      style={[styleSelected.backgroundPrimary, { flex: 1, marginTop: Device.brand == "Apple" ? 0 : 45 }]}
       onLayout={onLayoutRootView}
     >
       <StatusBar translucent={true} backgroundColor={"transparent"} />
@@ -134,10 +135,11 @@ export default function RestaurantList({ route, navigation }) {
         keyboardVerticalOffset={Platform.OS == "android" ? -150 : -150}
       >
         <View
-          style={[styleSelected.backgroundPrimary, { flex: 1, paddingTop: 40 }]}
+          style={[styleSelected.backgroundPrimary, { flex: 1 }]}
         >
-          <View style={{}}>
-            <SearchBar isfilter={false} islistType={false} />
+          <View style={{ alignItems: "center" }}>
+            {/* <SearchBar isfilter={false} islistType={false} /> */}
+            <Text style={{ fontSize: 15 }}>Meus favoritos</Text>
           </View>
           <View style={{ marginTop: 10 }}>
             <FlatList

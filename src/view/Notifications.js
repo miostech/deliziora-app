@@ -4,9 +4,10 @@ import {
   TouchableOpacity,
   ScrollView,
   TouchableWithoutFeedback,
+  SafeAreaView,
 } from "react-native";
 import React from "react";
-import ArrowLeft from "../components/SVGs/ArrowLeft/ArrowLeft";
+import * as Device from "expo-device";
 
 export default function Notifications() {
   const colors = require("../style/Colors.json");
@@ -33,13 +34,16 @@ export default function Notifications() {
   ];
 
   return (
-    <View
+    <SafeAreaView
       style={{
-        backgroundColor: colors.colors.neutral01Color.neutral_08,
         height: "100%",
         width: "100%",
+        marginTop: Device.brand === "Apple" ? 0 : 45,
       }}
     >
+      <View style={{alignItems: "center"}}>
+        <Text>Notificações</Text>
+      </View>
       {/* <View
         style={{
           display: "flex",
@@ -88,14 +92,14 @@ export default function Notifications() {
                   margin: 20,
                 }}
               >
-                <Text style={{fontSize:18, marginBottom:7}}>{item.title}</Text>
-                <Text style={{fontSize:12, marginBottom:7}}>{item.date}</Text>
-                <Text style={{fontSize:16 }}>{item.text}</Text>
+                <Text style={{ fontSize: 18, marginBottom: 7 }}>{item.title}</Text>
+                <Text style={{ fontSize: 12, marginBottom: 7 }}>{item.date}</Text>
+                <Text style={{ fontSize: 16 }}>{item.text}</Text>
               </View>
             </TouchableWithoutFeedback>
           ))}
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }

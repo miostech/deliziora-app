@@ -21,19 +21,8 @@ const Colors = require("../style/Colors.json");
 import { RestaurantService } from "deliziora-client-module/client-web";
 
 
-export default function ListMapRestaurant({ route, navigation }) {
+export default function ListMapRestaurant({ route, navigation, restaurants }) {
   const [isLoading, setIsLoading] = useState(true);
-  const [restaurant, setRestaurant] = useState(data);
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    RestaurantService.returnAllRestaurants().then((data) => {
-      setData(data.data);
-      console.log(data);
-    }).catch((error) => {
-      console.error(error);
-    })
-  }, []);
   
   const handleFavoriteToggle = (id) => {
     const updatedRestaurants = restaurant.map((restaurant) =>
@@ -84,7 +73,7 @@ export default function ListMapRestaurant({ route, navigation }) {
           >
             <View>
               <Image
-                source={item.img}
+                source={{uri: item.img}}
                 style={{ width: 90, height: 80, borderRadius: 10 }}
               />
             </View>
@@ -150,7 +139,7 @@ export default function ListMapRestaurant({ route, navigation }) {
     >
       <View style={[styleSelected.backgroundPrimary]}>
         <FlatList
-          data={data}
+          data={restaurants}
           renderItem={({ item, index }) => <Item item={item} index={index} />}
         />
       </View>
@@ -158,7 +147,7 @@ export default function ListMapRestaurant({ route, navigation }) {
   );
 }
 const styleSelected = StyleSheet.create({
-  backgroundPrimary: { marginTop: 45 },
+  backgroundPrimary: { marginTop: Device.brand === "Apple" ? 70 : 55, marginBottom: Device.brand === "Apple" ? 40 : 10 },
   visitButtonBox:{
     flexDirection:"row",
     justifyContent:"space-between",

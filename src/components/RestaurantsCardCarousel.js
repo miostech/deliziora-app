@@ -14,6 +14,7 @@ import { RestaurantService } from "deliziora-client-module/client-web";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
 import Loader from "./Loader";
+import { set } from "date-fns";
 
 const Colors = require("../style/Colors.json");
 
@@ -103,18 +104,18 @@ const RestaurantsCardCarousel = ({
         // const allData = listRestaurants
 
         // Check if filteredSearch has any criteria
-        // if (Object.keys(filteredSearch).length === 0 && search.length === 0) {
-        //   setRestaurants(allData);
-        //   setData(allData);
+        // if (search.length === 0) {
+        //   setRestaurants(listRestaurants);
         //   return;
         // }
-        // const filtered = allData.filter((item) =>
+        // const filtered = listRestaurants.filter((item) =>
         //   item.name.toLowerCase().includes(search.toLowerCase())
         // );
-
-        setFilteredData(filtered);
         // setRestaurants(filtered);
-        goToMarker(0, filtered)
+
+        // setFilteredData(filtered);
+        // setRestaurants(filtered);
+        // goToMarker(0, listRestaurants)
 
         // Apply filters based on filteredSearch
         // const filteredRestaurants = allData.filter((restaurant) => {
@@ -166,7 +167,7 @@ const RestaurantsCardCarousel = ({
     };
 
     fetchData();
-    updateOpenStatus(data);
+    // updateOpenStatus(data);
   }, [filteredSearch, search]);
 
   const getOpeningHoursForCurrentDay = (restaurant) => {
@@ -180,37 +181,37 @@ const RestaurantsCardCarousel = ({
     return currentTime >= open && currentTime <= closed ? "Aberto" : "Fechado";
   };
 
-  const updateOpenStatus = async (data) => {
-    const currentTime = moment().format("HH:mm");
+  // const updateOpenStatus = async (data) => {
+  //   const currentTime = moment().format("HH:mm");
 
-    const updatedRestaurants = data.map(async (restaurant) => {
-      const openingHours = getOpeningHoursForCurrentDay(restaurant);
-      const isOpen = isRestaurantOpen(currentTime, openingHours) === "Aberto";
-      await RestaurantService.updateRestaurantById({
-        id_restaurant: restaurant._id.$oid,
-        isOpen: isOpen,
-        updated_at: "",
-        opening_hours: restaurant.opening_hours,
-        address: restaurant.address,
-        categories: restaurant.categories,
-        characteristics: restaurant.characteristics,
-        complete_menu: restaurant.complete_menu,
-        contact: restaurant.contact,
-        description: restaurant.description,
-        email: restaurant.email,
-        especialty: restaurant.especialty,
-        img: restaurant.img,
-        latitude: restaurant.latitude,
-        longitude: restaurant.latitude,
-        name: restaurant.name,
-      });
+  //   const updatedRestaurants = data.map(async (restaurant) => {
+  //     const openingHours = getOpeningHoursForCurrentDay(restaurant);
+  //     const isOpen = isRestaurantOpen(currentTime, openingHours) === "Aberto";
+  //     await RestaurantService.updateRestaurantById({
+  //       id_restaurant: restaurant._id.$oid,
+  //       isOpen: isOpen,
+  //       updated_at: "",
+  //       opening_hours: restaurant.opening_hours,
+  //       address: restaurant.address,
+  //       categories: restaurant.categories,
+  //       characteristics: restaurant.characteristics,
+  //       complete_menu: restaurant.complete_menu,
+  //       contact: restaurant.contact,
+  //       description: restaurant.description,
+  //       email: restaurant.email,
+  //       especialty: restaurant.especialty,
+  //       img: restaurant.img,
+  //       latitude: restaurant.latitude,
+  //       longitude: restaurant.latitude,
+  //       name: restaurant.name,
+  //     });
 
-      return { ...restaurant, isOpen };
-    });
-    const updatedRestaurantsData = await Promise.all(updatedRestaurants);
-    // setRestaurants(updatedRestaurantsData);
-    setData(updatedRestaurantsData);
-  };
+  //     return { ...restaurant, isOpen };
+  //   });
+  //   const updatedRestaurantsData = await Promise.all(updatedRestaurants);
+  //   // setRestaurants(updatedRestaurantsData);
+  //   setData(updatedRestaurantsData);
+  // };
 
   const renderItem = ({ item, index }) => {
     const isFavorite = favoriteIds.includes(item._id.$oid);
@@ -283,8 +284,8 @@ const RestaurantsCardCarousel = ({
       style={styles.carousel}
       enableMomentum
       onSnapToItem={(e) => {
-        goToMarker(e, data);
-        console.log(e, data);
+        goToMarker(e, listRestaurants);
+        console.log(e, listRestaurants);
       }}
     />
   );

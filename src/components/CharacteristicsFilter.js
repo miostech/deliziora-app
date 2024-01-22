@@ -11,7 +11,7 @@ import {
 import Modal from "react-native-modal";
 import Close from "./SVGs/Close";
 
-const CharacteristicsFilter = ({selectedCharacteristics, setSelectedCharacteristics, updateFilteredSearch}) => {
+const CharacteristicsFilter = ({selectedCharacteristics, setSelectedCharacteristics}) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [allchar, setAllchar] = useState([]);
   useEffect(() => {
@@ -53,7 +53,7 @@ const CharacteristicsFilter = ({selectedCharacteristics, setSelectedCharacterist
 
       return Array.from(updatedCharacteristics);
     });
-    updateFilteredSearch()
+    // updateFilteredSearch()
   };
 
   useEffect(() => {

@@ -6,6 +6,7 @@ export const CarouselMapProvider = ({ children }) => {
   const [location, setLocation] = useState(null);
   const [listType, setListType] = useState(true);
   const [pinIndex, setPinIndex] = useState(null);
+  const [userLocation, setUserLocation] = useState(null); // [latitude, longitude]
   const carouselRef = useRef(null);
   const mapRef = useRef(null);
 
@@ -44,6 +45,8 @@ export const CarouselMapProvider = ({ children }) => {
         listType,
         setListType,
         changeList,
+        userLocation,
+        setUserLocation,
       }}
     >
       {children}

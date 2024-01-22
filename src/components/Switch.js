@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { View, Switch, StyleSheet } from "react-native";
 
-const SwitchOpenOrClose = ({ isOpen, setIsOpen, updateFilteredSearch }) => {
-  const toggleSwitch = () => {
-    setIsOpen((previousState) => !previousState);
-    updateFilteredSearch();
+const SwitchOpenOrClose = ({ isOpen, setIsOpen }) => {
+  const toggleSwitch = (value) => {
+    console.warn("Switch is: " + value);
+    setIsOpen(value);
+    // updateFilteredSearch();
   };
 
   return (

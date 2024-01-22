@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "owner": "mios-tech",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -49,7 +50,8 @@
         "googleMaps": {
           "apiKey": "AIzaSyD6fOT8rSbECcaRqpKQL94QKtgtDss4jbw"
         }
-      }
+      },
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -63,6 +65,11 @@
           "isIosBackgroundLocationEnabled": true
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "584dd59b-ee48-43c8-bfdf-ccdb7dba421f"
+      }
+    }
   }
 }

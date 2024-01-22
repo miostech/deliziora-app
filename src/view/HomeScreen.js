@@ -33,7 +33,7 @@ import ListMapRestaurant from "../components/ListMapRestaurant";
 import { RestaurantService } from "deliziora-client-module/client-web";
 
 export default function HomeScreen({ listType, route, navigation }) {
-  const { handleMarkerPress, location, setLocation, mapRef, setListType } =
+  const { handleMarkerPress, location, setLocation, mapRef, setListType, setUserLocation } =
     useContext(CarouselMapContext);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -65,9 +65,8 @@ export default function HomeScreen({ listType, route, navigation }) {
   }, []);
 
   useEffect(() => {
-    console.warn("AQUII", restaurants)
-    var filterList = allRestaurant.filter((f) => f.isOpen == filteredSearch.isOpen)
-    setRestaurants(filterList)
+    // var filterList = allRestaurant.filter((f) => f.isOpen == filteredSearch.isOpen)
+    // setRestaurants(filterList)
   }, [filteredSearch]);
 
   function GetLocation() {
@@ -83,6 +82,7 @@ export default function HomeScreen({ listType, route, navigation }) {
       let location = await Location.getCurrentPositionAsync({});
       console.log("LOCATION", location);
       setLocation(location);
+      setUserLocation(location.coords);
       resolve("sucess");
     });
   }
@@ -118,7 +118,7 @@ export default function HomeScreen({ listType, route, navigation }) {
             marginTop: Device.brand == "Apple" ? 80 : 35,
           }}
         >
-          <SearchBar filteredSearch={filteredSearch} setFilteredSearch={setFilteredSearch} setSearch={setSearch} />
+          <SearchBar filteredSearch={filteredSearch} setFilteredSearch={setFilteredSearch} setSearch={setSearch} setListRestaurant={setRestaurants} listRestaurant={allRestaurant} filteredRestaurants={restaurants} search={search}/>
         </View>
         {!listType ? (
           <View

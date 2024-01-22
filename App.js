@@ -98,7 +98,25 @@ export default function App() {
               headerShown: false,
               title: "",
               tabBarIcon: ({ focused, color, size }) => (
-                <View
+                <Pressable
+                  onPress={() => {
+                    switch (true) {
+                      case isFocused && changeList() === false:
+                        changeList();
+                        console.log("Entramos no if");
+                        break;
+                      case isFocused:
+                        navigation.navigate('Map');
+                        changeList(false);
+                        console.log("entramos no Else que faz change list false");
+                        break;
+                      default:
+                        navigation.navigate('Map');
+                        changeList(false);
+                        console.log("entramos no Else que faz change list false se focused for false");
+                        break;
+                    }
+                  }}
                   style={{
                     display: "flex",
                     flexDirection: "column",
@@ -107,26 +125,7 @@ export default function App() {
                     position: "relative",
                   }}
                 >
-                  <Pressable
-                    onPress={() => {
-                      console.log("Clicamos")
-                      switch (true) {
-                        case isFocused && changeList() === false:
-                          changeList();
-                          console.log("Entramos no if");
-                          break;
-                        case isFocused:
-                          navigation.navigate('Map');
-                          changeList(false);
-                          console.log("entramos no Else que faz change list false");
-                          break;
-                        default:
-                          navigation.navigate('Map');
-                          changeList(false);
-                          console.log("entramos no Else que faz change list false se focused for false");
-                          break;
-                      }
-                    }}
+                  <View
                     style={{
                       bottom: 24,
                       backgroundColor: "white",
@@ -140,7 +139,7 @@ export default function App() {
                     }}
                   >
                     <MapSvg focused={focused} />
-                  </Pressable>
+                  </View>
                   <View>
                     <Text
                       style={{
@@ -153,7 +152,7 @@ export default function App() {
                       Mapa
                     </Text>
                   </View>
-                </View>
+                </Pressable>
               ),
             })}
           />
@@ -164,6 +163,7 @@ export default function App() {
             options={({ navigation }) => ({
               headerShadowVisible: true,
               tabBarShowLabel: false,
+              headerShown: false,
               headerTitle: "Quadro de notificações",
               tabBarIcon: ({ focused, color, size }) => (
                 <View

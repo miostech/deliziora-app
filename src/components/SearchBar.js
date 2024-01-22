@@ -34,8 +34,15 @@ const SearchBar = ({
   islistType,
   setFilteredSearch,
   filteredSearch,
-  setSearch
+  setSearch,
+  search,
+  setListRestaurant,
+  listRestaurant,
+  filteredRestaurants
 }) => {
+  const { userLocation } =
+    useContext(CarouselMapContext);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCharacteristics, setSelectedCharacteristics] = useState([]);
   const [distance, setDistance] = useState(0);
@@ -43,23 +50,109 @@ const SearchBar = ({
   const [typeOfMenu, setTypeOfMenu] = useState({});
   const refRBSheet = useRef();
 
-  useEffect(() => {
-    console.log("banana", filteredSearch);
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Radius of the Earth in km
+    const dLat = degreesToRadians(lat2 - lat1);
+    const dLon = degreesToRadians(lon2 - lon1);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(degreesToRadians(lat1)) * Math.cos(degreesToRadians(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in km
+  }
 
-    console.log(filteredSearch);
+  function degreesToRadians(degrees) {
+    return degrees * (Math.PI / 180);
+  }
+
+  function filters() {
+    // isOpen
+    var filter = listRestaurant
+
+    if (isOpen != null) {
+      filter = listRestaurant.filter((item) => {
+        if (item.isOpen == isOpen) {
+          return item;
+        }
+      });
+    }
+
+    if (Object.keys(typeOfMenu).length > 0) {
+      console.warn("typeOfMenu ENTROU", typeOfMenu);
+
+      if (typeOfMenu.especiality) {
+        filter = filter.filter((item) => {
+          if (item.especialty.length > 0) {
+            return item;
+          }
+        });
+      }
+
+      // typeOfMenu complete_menu
+      else if (typeOfMenu.complete_menu) {
+        filter = filter.filter((item) => {
+          if (item.complete_menu == typeOfMenu.complete_menu) {
+            return item;
+          }
+        });
+      }
+
+      // typeOfMenu complete_menu and especiality
+      else if (typeOfMenu.complete_menu && typeOfMenu.especiality) {
+        console.warn("typeOfMenu complete_menu and especiality", typeOfMenu);
+        filter = filter.filter((item) => {
+          if (item.complete_menu == typeOfMenu.complete_menu && item.especialty.length > 0) {
+            return item;
+          }
+        });
+      } else if (typeOfMenu.all) {
+        filter = filter
+      }
+    }
+
+    if (selectedCharacteristics.length > 0) {
+      filter = filter.filter((item) => {
+        console.warn("item", item);
+        return selectedCharacteristics.some((characteristic) => {
+          return item.characteristics.includes(characteristic);
+        });
+      });
+    }
+
+    if (distance > 0) {
+      filter = filter.filter((item) => {
+        const distanceBetween = calculateDistance(
+          userLocation.latitude,
+          userLocation.longitude,
+          item.latitude,
+          item.longitude
+        );
+        console.warn("distanceBetween", distanceBetween);
+        if (distanceBetween <= distance) {
+          return item;
+        }
+      });
+    }
+    setListRestaurant(filter);
+    console.warn(filteredSearch);
+    return filter;
+  }
+
+  useEffect(() => {
+    filters()
   }, [selectedCharacteristics, isOpen, typeOfMenu, distance]);
 
-  const updateFilteredSearch = () => {
-    setFilteredSearch(
-      {
-        characteristics: selectedCharacteristics,
-        isOpen: isOpen,
-        typeOfMenu: typeOfMenu,
-        distance: distance,
-      }
-    );
-    console.warn("AQUI OSCAR", filteredSearch);
-  };
+  useEffect(() => {
+    var filterNew = filters()
+    if (search.length > 0) {
+      var filter = filterNew.filter((item) => {
+        if (item.name.toLowerCase().includes(search.toLowerCase())) {
+          return item;
+        }
+      });
+      setListRestaurant(filter);
+    }
+  }, [search]);
 
   return (
     <View style={styles.container}>
@@ -155,7 +248,7 @@ const SearchBar = ({
           >
             <View style={styles.modalContentAll}>
               <View style={styles.modalContent2}>
-                <Text style={styles.modalText2}>Status de Funcionamento</Text>
+                <Text style={styles.modalText2}>{"Status de Funcionamento " + filteredRestaurants?.length}</Text>
                 <View style={styles.modalContent3}>
                   <Text style={styles.modalText3}>
                     Mostrar apenas restaurantes abertos
@@ -163,7 +256,7 @@ const SearchBar = ({
                   <SwitchOpenOrClose
                     setIsOpen={setIsOpen}
                     isOpen={isOpen}
-                    updateFilteredSearch={updateFilteredSearch}
+                  // updateFilteredSearch={updateFilteredSearch}
                   />
                 </View>
               </View>
@@ -174,7 +267,7 @@ const SearchBar = ({
                   <TypeOfSearch
                     typeOfMenu={typeOfMenu}
                     setTypeOfMenu={setTypeOfMenu}
-                    updateFilteredSearch={updateFilteredSearch}
+                  // updateFilteredSearch={updateFilteredSearch}
                   />
                 </View>
               </View>
@@ -187,7 +280,7 @@ const SearchBar = ({
                   <CharacteristicsFilter
                     setSelectedCharacteristics={setSelectedCharacteristics}
                     selectedCharacteristics={selectedCharacteristics}
-                    updateFilteredSearch={updateFilteredSearch}
+                  // updateFilteredSearch={updateFilteredSearch}
                   />
                 </View>
               </View>
@@ -202,7 +295,7 @@ const SearchBar = ({
                   <DistanceSlider
                     setDistance={setDistance}
                     distance={distance}
-                    updateFilteredSearch={updateFilteredSearch}
+                  // updateFilteredSearch={updateFilteredSearch}
                   />
                 </View>
               </View>
@@ -211,11 +304,12 @@ const SearchBar = ({
                 <Pressable
                   style={styles.modalButton}
                   onPress={() => {
-                    setFilteredSearch({});
-                    setSelectedCharacteristics([]);
-                    setDistance(0);
-                    setIsOpen(false);
-                    setTypeOfMenu(null);
+                    // setFilteredSearch({});
+                    // setSelectedCharacteristics([]);
+                    // setDistance(0);
+                    // setIsOpen(false);
+                    // setTypeOfMenu(null);
+                    setListRestaurant(listRestaurant);
                   }}
                 >
                   <Text style={styles.modalButtonText}>Limpar Filtros</Text>
@@ -395,7 +489,10 @@ const styles = StyleSheet.create({
     borderColor: "#A5A2A6",
     marginTop: 5,
   },
-  modalMiniContent4: { paddingTop: 10 },
+  modalMiniContent4: {
+    paddingTop: 10,
+    alignItems: "center"
+  },
   modalContent5: {
     flex: 1,
   },

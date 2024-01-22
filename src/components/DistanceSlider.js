@@ -3,12 +3,12 @@ import React, { Component, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Slider } from 'react-native-elements';
 // create a component
-const MyComponent = ({distance, setDistance, updateFilteredSearch}) => {
+const MyComponent = ({distance, setDistance}) => {
 
 
     const handleRangeChange = (value) => {
         setDistance(value);
-        updateFilteredSearch()
+        // updateFilteredSearch()
     };
 
     return (

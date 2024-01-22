@@ -2,7 +2,7 @@ import React, { Component, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 
-const TypeOfSearch = ({ setTypeOfMenu, typeOfMenu, updateFilteredSearch }) => {
+const TypeOfSearch = ({ setTypeOfMenu, typeOfMenu }) => {
   const dropdownOptions = [
     { label: "Menu completo + prato do dia", value: "option1" },
     { label: "Especialidade apenas", value: "option2" },
@@ -16,15 +16,15 @@ const TypeOfSearch = ({ setTypeOfMenu, typeOfMenu, updateFilteredSearch }) => {
     switch (value) {
       case "option1":
         setTypeOfMenu({ complete_menu: true });
-        updateFilteredSearch()
+        // updateFilteredSearch()
         break;
       case "option2":
         setTypeOfMenu({ especiality: true });
-        updateFilteredSearch()
+        // updateFilteredSearch()
         break;
       case "option3":
         setTypeOfMenu({ complete_menu: true, especiality: true });
-        updateFilteredSearch()
+        // updateFilteredSearch()
         break;
 
       default:
@@ -36,7 +36,7 @@ const TypeOfSearch = ({ setTypeOfMenu, typeOfMenu, updateFilteredSearch }) => {
     <View style={styles.container}>
       <RNPickerSelect
         items={dropdownOptions}
-        placeholder={{ label: "Selecione uma opção", value: null }}
+        placeholder={{ label: "Selecione uma opção", value: { all: true } }}
         onValueChange={handleValueChange}
         style={pickerSelectStyles}
         value={selectedOption}
