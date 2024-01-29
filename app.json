@@ -2,7 +2,7 @@
   "expo": {
     "name": "Deliziora",
     "slug": "Deliziora",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -51,7 +51,7 @@
           "apiKey": "AIzaSyD6fOT8rSbECcaRqpKQL94QKtgtDss4jbw"
         }
       },
-      "versionCode": 2
+      "versionCode": 3
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -70,6 +70,12 @@
       "eas": {
         "projectId": "584dd59b-ee48-43c8-bfdf-ccdb7dba421f"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/584dd59b-ee48-43c8-bfdf-ccdb7dba421f"
     }
   }
 }
