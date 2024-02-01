@@ -49,7 +49,11 @@ export default function HomeScreen({ listType, route, navigation }) {
 
   useEffect(() => {
     console.log("OPEN", HomeScreen.name, "SCREEN");
-    GetLocation();
+    GetLocation().then((res) => {
+      setIsLoading(false);
+    }).catch(err => {
+      console.log("ERROR", err)
+    });
     return () => {
       console.log("SCREEN", HomeScreen.name, "CLOSE");
     };
@@ -72,6 +76,7 @@ export default function HomeScreen({ listType, route, navigation }) {
   function GetLocation() {
     return new Promise(async (resolve, reject) => {
       let { status } = await Location.requestForegroundPermissionsAsync();
+      console.log("STATUS", status);
       if (status !== "granted") {
         setErrorMsg("Permission to access location was denied");
         reject("Permission to access location was denied");
@@ -79,11 +84,15 @@ export default function HomeScreen({ listType, route, navigation }) {
       }
       console.log("DEVICE", Device.brand);
       console.log("GET LOCATION");
-      let location = await Location.getCurrentPositionAsync({});
-      console.log("LOCATION", location);
-      setLocation(location);
-      setUserLocation(location.coords);
-      resolve("sucess");
+      Location.getLastKnownPositionAsync().then((location) => {
+        console.log("LOCATION", location);
+        setLocation(location);
+        setUserLocation(location.coords);
+        resolve("sucess");
+      }).catch(err => {
+        console.log("ERROR", err)
+        reject(err);
+      });
     });
   }
 
@@ -100,7 +109,11 @@ export default function HomeScreen({ listType, route, navigation }) {
 
   const onLayoutRootView = useCallback(async () => {
     if (isLoading) {
-      GetLocation();
+      GetLocation().then((res) => {
+        setIsLoading(false);
+      }).catch(err => {
+        console.log("ERROR", err)
+      });
     }
   }, [isLoading]);
   if (isLoading) {
@@ -118,7 +131,7 @@ export default function HomeScreen({ listType, route, navigation }) {
             marginTop: Device.brand == "Apple" ? 80 : 35,
           }}
         >
-          <SearchBar filteredSearch={filteredSearch} setFilteredSearch={setFilteredSearch} setSearch={setSearch} setListRestaurant={setRestaurants} listRestaurant={allRestaurant} filteredRestaurants={restaurants} search={search}/>
+          <SearchBar filteredSearch={filteredSearch} setFilteredSearch={setFilteredSearch} setSearch={setSearch} setListRestaurant={setRestaurants} listRestaurant={allRestaurant} filteredRestaurants={restaurants} search={search} />
         </View>
         {!listType ? (
           <View
