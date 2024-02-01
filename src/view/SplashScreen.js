@@ -5,6 +5,9 @@ import "react-native-get-random-values";
 import { v4 as uuid4 } from "uuid";
 import * as Device from "expo-device";
 import { Image, SafeAreaView, Text, View } from "react-native";
+
+import { BackHandler } from 'react-native';
+
 const gif = require("../../assets/SplashDelizioragif.gif");
 export default function SplashScreen({ navigation }) {
   const [storedData, setStoredData] = useState("");
@@ -55,6 +58,26 @@ export default function SplashScreen({ navigation }) {
       }
     });
   }, []);
+
+
+  /* Bloco modificado para testar solução de bug  */
+
+  // Using BackHandler to navigate to a specific screen when the hardware back button is pressed
+
+  useEffect(() => {
+    const onBackPress = () => {
+      // Replace 'HomeTab' with the name of the screen you want to navigate to
+      navigation.navigate('HomeTab');
+      return true; // Prevent default behavior (going back)
+    };
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+    return () => backHandler.remove(); // Clean up the event listener
+
+  }, [navigation]);
+
+  /* Bloco modificado para testar solução de bug  */
   return (
     <View>
       <Image
