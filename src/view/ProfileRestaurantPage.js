@@ -29,6 +29,7 @@ import Loader from "../components/Loader";
 import { IconInfoCircle, IconInfoOctagon } from "@tabler/icons-react";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import Info from "../components/SVGs/Info/Info";
+import ReactNativeModal from "react-native-modal";
 const Colors = require("../style/Colors.json");
 
 export default function ProfileRestaurantPage({ route, navigation }) {
@@ -279,76 +280,94 @@ export default function ProfileRestaurantPage({ route, navigation }) {
               </Text>
             </View>
           </View>
-          <View style={[styles.row, { alignItems: "center", marginLeft: 20 }]}>
-            {characteristics.length > 3 && (
-              <Pressable onPress={() => setIsModalVisible(true)}>
-                <Info />
-              </Pressable>
-            )}
+          <View style={[styles.row, { alignItems: "center", marginLeft: 20, width: 330, justifyContent: "flex-start" }]}>
+            <Pressable onPress={() => setIsModalVisible(true)}>
+              <Info />
+            </Pressable>
             <FlatList
-              data={characteristics.slice(0, 3)}
+              data={characteristics.slice(0, 6)}
               horizontal
               showsHorizontalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    padding: 5,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image style={styles.image} source={{ uri: item.icon }} />
-                  <Text style={styles.characteristicName}>{item.name}</Text>
-                </View>
+              style={{
+                width: "auto"
+              }}
+
+              renderItem={({ item, index }) => (
+                <>
+                  {
+                    index < 5 ? (
+                      <View
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginRight: 20,
+
+                        }}
+                      >
+                        <Image style={styles.image} source={{ uri: item.icon }} />
+
+                      </View>
+                    ) : (
+
+                      characteristics.length > 5 && (
+                        <View style={{
+                          alignItems: "center",
+                          justifyContent: "center"
+                        }}>
+                          <Text style={{ font: 22 }}>...</Text>
+                        </View>
+                      )
+
+                    )
+                  }
+                </>
+
               )}
             />
-            <Modal
+            <ReactNativeModal
               isVisible={isModalVisible}
+              coverScreen={true}
               onBackdropPress={() => setIsModalVisible(false)}
-              animationIn="slideInUp"
-              animationOut="slideOutDown"
-              backdropTransitionInTiming={500}
-              backdropTransitionOutTiming={500}
+              style={
+                {
+                  backgroundColor: "white",
+                  alignSelf: "center",
+                  alignItems: "flex-start",
+                  justifyContent: "flex-start",
+                  paddingLeft: 20,
+                  paddingRight: 20,
+                  paddingTop: 20,
+                  justifySelf: "center",
+                  marginTop: 100,
+                  width: "100%",
+                  maxHeight: "100%",
+                  borderRadius: 15,
+                  gap: 40
+                }
+              }
+
             >
-              <View>
-                <View style={{
-                  margin
-                }}>
-                  <Pressable onPress={() => setIsModalVisible(false)}>
-                    <Close />
-                  </Pressable>
-                </View>
-                <FlatList
-                  data={characteristics}
-                  renderItem={({ item }) => (
-                    <View style={styles.modalContentMenuBox}>
-                      <Image style={styles.image} source={{ uri: item.icon }} />
-                      <Text style={styles.textRestaurantNormalInfo}>{item.name}</Text>
-                    </View>
-                  )}
-                  keyExtractor={(item) => item._id.$oid}
-                  showsVerticalScrollIndicator={false}
-                />
+              <Pressable onPress={() => setIsModalVisible(false)} style={{
+                alignSelf: "flex-start",
+                justifySelf: "flex-start",
+              }}>
+                <Close />
+              </Pressable>
+              <View style={{ flexDirection: 'column', flexWrap: 'wrap', justifyContent: 'flex-start', gap: 10, alignItems: "flex-start" }}>
+                {characteristics.map((item) => (
+                  <View key={item._id.$oid} style={{ width: '100%', marginVertical: '2%', flexDirection: "row", alignItems: "center", gap: 10 }}>
+                    <Image style={styles.image} source={{ uri: item.icon }} />
+                    <Text style={styles.textRestaurantNormalInfo}>{item.name}</Text>
+                  </View>
+                ))}
               </View>
-            </Modal>
+            </ReactNativeModal>
 
           </View>
-        </View >
-
-
-        <View style={styles.aboutContainer}>
-          <Text
-            style={[
-              styles.textRestaurantNormalInfo,
-              { fontWeight: "bold", fontSize: 18 },
-            ]}
-          >
-            Sobre
-          </Text>
           <View style={styles.aboutContent}>
-            <Text style={styles.textRestaurantNormalInfo}>
+            <Text style={[styles.staurantNormalInfotextRe, { marginTop: 20 }]}>
               {showMore
                 ? restaurant.description
                 : restaurant.description.slice(0, 50) + "..."}
@@ -386,6 +405,19 @@ export default function ProfileRestaurantPage({ route, navigation }) {
               </Pressable>
             )}
           </View>
+        </View >
+
+
+        <View style={styles.aboutContainer}>
+          {/* <Text
+            style={[
+              styles.textRestaurantNormalInfo,
+              { fontWeight: "bold", fontSize: 18 },
+            ]}
+          >
+            Sobre
+          </Text> */}
+
         </View>
         <View
           style={{
@@ -516,8 +548,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderBottomWidth: 1,
+    paddingBottom: 10,
     width: "100%",
-    marginBottom: 35,
+    marginBottom: 10,
     borderBottomColor: "grey",
   },
   textRestaurantTitleInfo: { fontSize: 22, fontWeight: "bold" },
@@ -530,8 +563,8 @@ const styles = StyleSheet.create({
   },
   restaurantDistanceContent: { justifyContent: "center", alignItems: "center" },
   image: {
-    width: 50,
-    height: 50,
+    width: 30,
+    height: 30,
   },
   imageRestaurant: {
     width: "100%",
@@ -541,7 +574,6 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   aboutContainer: {
-    marginTop: 35,
     gap: 10,
   },
   platesContainer: { marginTop: 35, flex: 1 },
