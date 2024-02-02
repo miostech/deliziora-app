@@ -7,6 +7,7 @@ import {
   ScrollView,
   FlatList,
   Pressable,
+  Modal
 } from "react-native";
 import { Linking } from "react-native";
 import * as Device from "expo-device";
@@ -15,7 +16,8 @@ import Close from "../components/SVGs/Close";
 import PhoneIcon from "../components/PhoneIcon";
 import GoogleMapsIcon from "../components/GoogleMapsIcon";
 import StarIcon from "../components/SVGs/StarIcon";
-import { Button } from "react-native-elements";
+import { Button, Icon } from "react-native-elements";
+import Clock from './../components/SVGs/Clock/Clock'
 import {
   CharacteristicsService,
   MenuOfTheDayService,
@@ -24,10 +26,15 @@ import {
 } from "deliziora-client-module/client-web";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Loader from "../components/Loader";
+import { IconInfoCircle, IconInfoOctagon } from "@tabler/icons-react";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import Info from "../components/SVGs/Info/Info";
 const Colors = require("../style/Colors.json");
 
 export default function ProfileRestaurantPage({ route, navigation }) {
   console.log(route.params.restaurant.img);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [restaurant, setRestaurant] = useState(route.params.restaurant);
@@ -181,7 +188,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
 
   const onLayoutRootView = useCallback(async () => {
     if (isLoading) {
-      
+
     }
   }, [isLoading]);
   if (!isLoading) {
@@ -197,15 +204,6 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           style={styles.imageRestaurant}
         />
       </View>
-      <View
-        style={{
-          width: "100%",
-          height: 30,
-          backgroundColor: "white",
-          borderRadius: 24,
-          marginTop: -10,
-        }}
-      ></View>
       <ScrollView
         vertical={true}
         showsHorizontalScrollIndicator={false}
@@ -213,7 +211,6 @@ export default function ProfileRestaurantPage({ route, navigation }) {
         contentContainerStyle={styles.contentContainer}
       >
         <View style={styles.restaurantTitleInfo}>
-          <Text style={styles.textRestaurantTitleInfo}>{restaurant.name}</Text>
           <View
             style={[
               {
@@ -235,10 +232,19 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                   <GoogleMapsIcon />
                 </Pressable>
               </View>
-              <Text style={styles.textRestaurantNormalInfo}>
-                {restaurant.address}
-              </Text>
+              <View>
+                <Text style={styles.textRestaurantNormalInfo}>
+                  {restaurant.address}
+                </Text>
+                <View style={[styles.row, { textAlign: "center", alignItems: "center", justifyContent: "center" }]}>
+                  <Text style={[styles.textRestaurantNormalInfo, styles.bold]}>
+                    1km
+                  </Text>
+                  <Text style={styles.textRestaurantNormalInfo}>Distancia</Text></View>
+
+              </View>
             </View>
+
             <View style={[styles.row, { alignItems: "center" }]}>
               <View style={styles.phoneNumberCall}>
                 <Pressable
@@ -255,16 +261,11 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                 {restaurant.contact}
               </Text>
             </View>
-          </View>
-        </View>
-        <View style={[styles.row, styles.restaurantDistanceInfo]}>
-          <View style={styles.restaurantDistanceContent}>
-            <Text style={[styles.textRestaurantNormalInfo, styles.bold]}>
-              {currentOpeningHours.open} - {currentOpeningHours.closed}
-            </Text>
-            <View style={[styles.row]}>
-              <Text style={styles.textRestaurantNormalInfo}>Horario</Text>
-              <Text style={styles.textRestaurantNormalInfo}>-</Text>
+            <View style={[styles.row, { alignItems: "center", marginLeft: 10 }]}>
+              <Clock />
+              <Text style={[styles.textRestaurantNormalInfo, styles.bold]}>
+                {currentOpeningHours.open} - {currentOpeningHours.closed}
+              </Text>
               <Text
                 style={[
                   styles.textRestaurantNormalInfo,
@@ -278,17 +279,14 @@ export default function ProfileRestaurantPage({ route, navigation }) {
               </Text>
             </View>
           </View>
-          <View style={styles.restaurantDistanceContent}>
-            <Text style={[styles.textRestaurantNormalInfo, styles.bold]}>
-              1km
-            </Text>
-            <Text style={styles.textRestaurantNormalInfo}>Distancia</Text>
-          </View>
-        </View>
-        <View style={[styles.row, styles.imageAccessContainer]}>
-          <View style={styles.row}>
+          <View style={[styles.row, { alignItems: "center", marginLeft: 20 }]}>
+            {characteristics.length > 3 && (
+              <Pressable onPress={() => setIsModalVisible(true)}>
+                <Info />
+              </Pressable>
+            )}
             <FlatList
-              data={characteristics}
+              data={characteristics.slice(0, 3)}
               horizontal
               showsHorizontalScrollIndicator={false}
               renderItem={({ item }) => (
@@ -296,7 +294,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    paddingRight: 30,
+                    padding: 5,
                     justifyContent: "center",
                     alignItems: "center",
                   }}
@@ -306,8 +304,39 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                 </View>
               )}
             />
+            <Modal
+              isVisible={isModalVisible}
+              onBackdropPress={() => setIsModalVisible(false)}
+              animationIn="slideInUp"
+              animationOut="slideOutDown"
+              backdropTransitionInTiming={500}
+              backdropTransitionOutTiming={500}
+            >
+              <View>
+                <View style={{
+                  margin
+                }}>
+                  <Pressable onPress={() => setIsModalVisible(false)}>
+                    <Close />
+                  </Pressable>
+                </View>
+                <FlatList
+                  data={characteristics}
+                  renderItem={({ item }) => (
+                    <View style={styles.modalContentMenuBox}>
+                      <Image style={styles.image} source={{ uri: item.icon }} />
+                      <Text style={styles.textRestaurantNormalInfo}>{item.name}</Text>
+                    </View>
+                  )}
+                  keyExtractor={(item) => item._id.$oid}
+                  showsVerticalScrollIndicator={false}
+                />
+              </View>
+            </Modal>
+
           </View>
-        </View>
+        </View >
+
 
         <View style={styles.aboutContainer}>
           <Text
@@ -450,8 +479,8 @@ export default function ProfileRestaurantPage({ route, navigation }) {
             )}
           </View>
         </View>
-      </ScrollView>
-    </View>
+      </ScrollView >
+    </View >
   );
 }
 
