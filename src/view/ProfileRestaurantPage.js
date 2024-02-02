@@ -421,9 +421,10 @@ export default function ProfileRestaurantPage({ route, navigation }) {
         </View>
         <View
           style={{
-            marginBottom: 15,
             marginTop: 15,
             alignSelf: "flex-start",
+            justifyContent: "flex-start",
+            alignItems: "flex-start"
           }}
         >
           <Text
@@ -437,79 +438,77 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           </Text>
         </View>
         <View style={styles.specialityContainer}>
-          <StarIcon width={35} height={35} />
           <Text
             style={[
               styles.textRestaurantNormalInfo,
               {
                 fontWeight: "normal",
                 fontSize: 20,
-                textAlign: "center",
+                textAlign: "left",
               },
             ]}
           >
             {restaurant.especialty}
           </Text>
         </View>
-        <View style={styles.platesContainer}>
-          <Text
-            style={[
-              styles.textRestaurantNormalInfo,
-              {
-                fontWeight: "bold",
-                fontSize: 18,
-                marginBottom: 10,
-                textAlign: "left",
-              },
-            ]}
-          >
-            Pratos do Dia
-          </Text>
+        <Text
+          style={[
+            styles.textRestaurantNormalInfo,
+            {
+              fontWeight: "bold",
+              fontSize: 18,
+              marginBottom: 10,
+              marginTop:10,
+              textAlign: "left",
+            },
+          ]}
+        >
+          Pratos do Dia
+        </Text>
 
-          <View style={{}}>
-            {menuItems.length > 0 ? (
-              <>
-                <FlatList
-                  vertical
-                  data={menuItems}
-                  renderItem={({ item, index }) => (
-                    <RenderItem item={item} index={index} />
-                  )}
-                  showsHorizontalScrollIndicator={false}
-                />
-                <View>
-                  <Pressable
+        <View style={{}}>
+          {menuItems.length > 0 ? (
+            <>
+              <FlatList
+                vertical
+                data={menuItems}
+                renderItem={({ item, index }) => (
+                  <RenderItem item={item} index={index} />
+                )}
+                showsHorizontalScrollIndicator={false}
+              />
+              <View>
+                <Pressable
+                  style={{
+                    backgroundColor: Colors.colors.neutral02Color.neutral_01,
+                    borderRadius: 100,
+                    marginBottom: 25,
+                  }}
+                  onPress={() => {
+                    navigation.navigate("MenuPlatesPage", {
+                      restaurant: restaurant,
+                      plates: plates,
+                    });
+                  }}
+                >
+                  <Text
                     style={{
-                      backgroundColor: Colors.colors.neutral02Color.neutral_01,
-                      borderRadius: 100,
-                      marginBottom: 25,
-                    }}
-                    onPress={() => {
-                      navigation.navigate("MenuPlatesPage", {
-                        restaurant: restaurant,
-                        plates: plates,
-                      });
+                      color:
+                        Device.brand == "Apple"
+                          ? Colors.colors.neutral02Color.neutral_10
+                          : Colors.colors.neutral02Color.neutral_10,
+                      textAlign: "center",
+                      padding: 10,
                     }}
                   >
-                    <Text
-                      style={{
-                        color:
-                          Device.brand == "Apple"
-                            ? Colors.colors.neutral02Color.neutral_10
-                            : Colors.colors.neutral02Color.neutral_10,
-                        textAlign: "center",
-                        padding: 10,
-                      }}
-                    >
-                      Ver Menu Completo
-                    </Text>
-                  </Pressable>
-                </View>
-              </>
-            ) : (
-              <Text>Sem pratos do dia disponivel</Text>
-            )}
-          </View>
+                    Ver Menu Completo
+                  </Text>
+                </Pressable>
+              </View>
+            </>
+          ) : (
+            <Text>Sem pratos do dia disponivel</Text>
+          )}
         </View>
       </ScrollView >
     </View >
@@ -522,8 +521,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.colors.neutral02Color.neutral_10,
   },
   contentContainer: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
     paddingLeft: 15,
     paddingRight: 15,
     paddingBottom: 50,
@@ -534,8 +533,8 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     flexDirection: "row",
     display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "flex-start",
+    alignItems: "flex",
   },
   containerRestaurantInfo: {
     flex: 1,
@@ -629,6 +628,6 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 10,
+    gap: 30,
   },
 });
