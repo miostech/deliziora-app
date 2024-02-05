@@ -13,7 +13,9 @@ export default function PhoneIcon() {
 
 const styles = StyleSheet.create({
     root: {
-        width: 27,
-        height: 30,
+        minWidth: 30,
+        minHeight: 30,
+        maxWidth: 30,
+        maxHeight:30
     },
 });

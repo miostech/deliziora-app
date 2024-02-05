@@ -177,7 +177,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           marginRight: 10,
           justifyContent: "space-between",
           flexDirection: "row",
-          width: 330,
+          width: 300,
           borderBottomWidth: 1,
           marginBottom: 20,
         }}
@@ -199,7 +199,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      <View style={{ flex: 0.3 }}>
+      <View style={{ flex: 1, minHeight:200 }}>
         <Image
           resizeMode="cover"
           source={{ uri: restaurant.img }}
@@ -318,7 +318,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                           justifyContent: "center"
                         }}>
                           <Text style={{ font: 22 }}>
-                          <Arrow/></Text>
+                            <Arrow /></Text>
                         </View>
                       )
 
@@ -383,7 +383,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                   alignItems: "center",
                   justifyContent: "center",
                   marginTop: 5,
-                  width: "100%",
+                  width: 300,
                   padding: 10,
                 }}
               >
@@ -460,7 +460,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
               fontWeight: "bold",
               fontSize: 18,
               marginBottom: 10,
-              marginTop:10,
+              marginTop: 10,
               textAlign: "left",
             },
           ]}
@@ -468,7 +468,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           Pratos do Dia
         </Text>
 
-        <View style={{}}>
+        <View style={{height:200, gap:10 , width:330}}>
           {menuItems.length > 0 ? (
             <>
               <FlatList
@@ -478,13 +478,14 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                   <RenderItem item={item} index={index} />
                 )}
                 showsHorizontalScrollIndicator={false}
+                style={{paddingBottom:10, width:"100%"}}
               />
-              <View>
+              <View style={{minWidth: 100 }}>
                 <Pressable
                   style={{
                     backgroundColor: Colors.colors.neutral02Color.neutral_01,
                     borderRadius: 100,
-                    marginBottom: 25,
+                    width:300
                   }}
                   onPress={() => {
                     navigation.navigate("MenuPlatesPage", {
@@ -539,7 +540,6 @@ const styles = StyleSheet.create({
     alignItems: "flex",
   },
   containerRestaurantInfo: {
-    flex: 1,
     backgroundColor: Colors.colors.neutral02Color.neutral_10,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
@@ -559,7 +559,7 @@ const styles = StyleSheet.create({
   restaurantDistanceInfo: {
     justifyContent: "center",
     alignItems: "flex-start",
-    flexWrap:"wrap",
+    flexWrap: "wrap",
     marginBottom: 35,
     gap: 30,
   },
@@ -578,7 +578,7 @@ const styles = StyleSheet.create({
   aboutContainer: {
     gap: 10,
   },
-  platesContainer: { marginTop: 35, flex: 1 },
+  platesContainer: { marginTop: 35 },
   itemName: {
     fontWeight: "bold",
   },

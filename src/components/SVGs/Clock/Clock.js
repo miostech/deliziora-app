@@ -11,7 +11,9 @@ export default function Clock() {
 
 const styles = StyleSheet.create({
   root: {
-    width: 30,
-    height: 30,
+    minWidth: 30,
+    minHeight: 30,
+    maxWidth: 30,
+    maxHeight: 30
   },
 });
