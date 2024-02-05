@@ -115,7 +115,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
         });
 
         setMenuItems(Array.from(matchingMenuItems));
-        console.log("aquii", menuItems);
+        console.log(menuItems);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -235,7 +235,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                 </Pressable>
               </View>
               <View>
-                <Text style={styles.textRestaurantNormalInfo}>
+                <Text>
                   {restaurant.address}
                 </Text>
                 <View style={[styles.row, { textAlign: "center", alignItems: "center", justifyContent: "center" }]}>
@@ -272,12 +272,12 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                 style={[
                   styles.textRestaurantNormalInfo,
                   {
-                    color: restaurantStatus === "Aberto" ? "green" : "red",
+                    color: restaurantStatus == "Aberto" ? "green" : "red",
                     fontWeight: "bold",
                   },
                 ]}
               >
-                {restaurant.isOpen ? "Aberto" : "Fechado"}
+                {restaurantStatus === "Aberto" ? "Aberto" : "Fechado"}
               </Text>
             </View>
           </View>
@@ -559,6 +559,7 @@ const styles = StyleSheet.create({
   restaurantDistanceInfo: {
     justifyContent: "center",
     alignItems: "flex-start",
+    flexWrap:"wrap",
     marginBottom: 35,
     gap: 30,
   },
