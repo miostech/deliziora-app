@@ -30,6 +30,7 @@ import { IconInfoCircle, IconInfoOctagon } from "@tabler/icons-react";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import Info from "../components/SVGs/Info/Info";
 import ReactNativeModal from "react-native-modal";
+import Arrow from "../components/Arrow";
 const Colors = require("../style/Colors.json");
 
 export default function ProfileRestaurantPage({ route, navigation }) {
@@ -316,7 +317,8 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                           alignItems: "center",
                           justifyContent: "center"
                         }}>
-                          <Text style={{ font: 22 }}>...</Text>
+                          <Text style={{ font: 22 }}>
+                          <Arrow/></Text>
                         </View>
                       )
 

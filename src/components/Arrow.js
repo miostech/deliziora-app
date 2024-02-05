@@ -1,12 +1,8 @@
 import { Image, StyleSheet, View } from 'react-native';
-import { Svg, Path } from 'react-native-svg';
-
-const colors = require("../style/Colors.json");
 
 
-
-export default function PhoneIcon() {
-    const Img = require("../../assets/Waze.png")
+export default function Arrow() {
+    const Img = require("../../assets/ArrowRight.png")
     return (
      
             <Image source={Img} style={styles.root}/>
