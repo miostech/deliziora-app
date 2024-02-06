@@ -9,6 +9,7 @@ export const CarouselMapProvider = ({ children }) => {
   const [userLocation, setUserLocation] = useState(null); // [latitude, longitude]
   const carouselRef = useRef(null);
   const mapRef = useRef(null);
+  const [renderItemData, setRenderItemData] = useState(null); // Adicione esta linha
 
   const changeSlide = (slideIndex) => {
     if (carouselRef.current) {
@@ -47,6 +48,8 @@ export const CarouselMapProvider = ({ children }) => {
         changeList,
         userLocation,
         setUserLocation,
+        renderItemData, // Adicione esta linha
+        setRenderItemData, // Adicione esta linha
       }}
     >
       {children}

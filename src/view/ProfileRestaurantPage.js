@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -31,6 +31,7 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 import Info from "../components/SVGs/Info/Info";
 import ReactNativeModal from "react-native-modal";
 import Arrow from "../components/Arrow";
+import CarouselMapContext from "../components/CarouselMapContext";
 const Colors = require("../style/Colors.json");
 
 export default function ProfileRestaurantPage({ route, navigation }) {
@@ -168,6 +169,8 @@ export default function ProfileRestaurantPage({ route, navigation }) {
      });
    }; */
 
+  const carouselContext = useContext(CarouselMapContext);
+   const { setRenderItemData } = carouselContext;
   const RenderItem = ({ item, index }) => {
     const itemStyle = styles.item;
     const nameStyle = styles.itemName;
@@ -186,6 +189,10 @@ export default function ProfileRestaurantPage({ route, navigation }) {
         <Text style={nameStyle}>€{item.price}</Text>
       </View>
     );
+    setRenderItemData({
+      restaurantId: item._id.$oid,
+      // outras informações que você deseja compartilhar globalmente
+    });
   };
 
   const onLayoutRootView = useCallback(async () => {

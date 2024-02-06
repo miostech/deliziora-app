@@ -215,130 +215,137 @@ export default function App() {
   }
 
   function StackApp() {
+    
+    const carouselContext = useContext(CarouselMapContext);
+    const { renderItemData } = carouselContext;
+    const  restaurantId  = renderItemData;
+    console.warn(restaurantId)
     return (
-      <Stack.Navigator
-        initialRouteName="Splash"
-        screenptions={{
-          headerShadowVisible: false,
-          animation: "timing",
-        }}
-      >
-        <Stack.Screen
-          name="Splash"
-          component={SplashScreen}
-          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
-          options={{ headerShadowVisible: false, headerShown: false }}
-        />
-        <Stack.Screen
-          name="HomeTab"
-          component={HomeTab}
-          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
-          options={{ headerShadowVisible: false, headerShown: false }}
-        />
-        <Stack.Screen
-          name="RestaurantList"
-          component={RestaurantList}
-          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
-          options={{ headerShadowVisible: false, headerShown: false }}
-        />
+      <CarouselMapProvider>
+        <Stack.Navigator
+          initialRouteName="Splash"
+          screenptions={{
+            headerShadowVisible: false,
+            animation: "timing",
+          }}
+        >
+          <Stack.Screen
+            name="Splash"
+            component={SplashScreen}
+            screenoptions={{ headerShadowVisible: false, animation: "fade" }}
+            options={{ headerShadowVisible: false, headerShown: false }}
+          />
+          <Stack.Screen
+            name="HomeTab"
+            component={HomeTab}
+            screenoptions={{ headerShadowVisible: false, animation: "fade" }}
+            options={{ headerShadowVisible: false, headerShown: false }}
+          />
+          <Stack.Screen
+            name="RestaurantList"
+            component={RestaurantList}
+            screenoptions={{ headerShadowVisible: false, animation: "fade" }}
+            options={{ headerShadowVisible: false, headerShown: false }}
+          />
 
-        <Stack.Screen
-          name="Walkthrough"
-          component={Walkthrough}
-          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
-          options={({ navigation }) => ({
-            headerShadowVisible: false,
-            headerShown: true,
-            headerTitle: "",
-          })}
-        />
-        <Stack.Screen
-          name="HomeScreen"
-          component={HomeScreen}
-          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
-          options={{ headerShadowVisible: false, headerShown: false }}
-        />
-        <Stack.Screen
-          name="HomeLoading"
-          component={HomeLoading}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="SearchErrorScreen"
-          component={SearchErrorScreen}
-          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
-          options={{ headerShadowVisible: false, headerShown: false }}
-        />
-        <Stack.Screen
-          name="SearchPostalCodeScreen"
-          component={SearchPostalCodeScreen}
-          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
-          options={{ headerShadowVisible: false, headerShown: false }}
-        />
-        <Stack.Screen
-          name="MenuPlatesPage"
-          component={MenuPlatesPage}
-          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
-          options={({ navigation }) => ({
-            headerShadowVisible: false,
-            headerShown: true,
-            headerTitle: "Menu",
-            headerLeft: () => {
-              return (
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.goBack();
-                  }}
-                  style={{
-                    justifyContent: "center",
-                    marginLeft: 10,
-                    marginRight: 15,
-                  }}
-                >
-                  <ArrowLeft />
-                </TouchableOpacity>
-              );
-            },
-          })}
-        />
-        <Stack.Screen
-          name="ProfileRestaurantPage"
-          component={ProfileRestaurantPage}
-          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
-          options={({ navigation }) => ({
-            headerShadowVisible: false,
-            headerShown: true,
-            headerTitle: "",
-            headerLeft: () => {
-              return (
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("HomeTab");
-                  }}
-                  style={{ flexDirection: "row", gap: 80 }}
-                >
-                  <ArrowLeft />
-                  <Text style={{ fontSize: 18, fontWeight: 500 }}>
-                    Perfil do Restaurante
-                  </Text>
-                </TouchableOpacity>
-              );
-            },
-          })}
-        />
-        <Stack.Screen
-          name="NotificationNotFoundScreen"
-          component={NotificationNotFoundScreen}
-          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
-          options={{ headerShadowVisible: false, headerShown: false }}
-        />
-        <Stack.Screen
-          name="LoadingPageScreen"
-          component={LoadingPageScreen}
-          screenoptions={{ headerShadowVisible: false, animation: "fade" }}
-          options={{ headerShadowVisible: false, headerShown: false }}
-        />
-      </Stack.Navigator>
+          <Stack.Screen
+            name="Walkthrough"
+            component={Walkthrough}
+            screenoptions={{ headerShadowVisible: false, animation: "fade" }}
+            options={({ navigation }) => ({
+              headerShadowVisible: false,
+              headerShown: true,
+              headerTitle: "",
+            })}
+          />
+          <Stack.Screen
+            name="HomeScreen"
+            component={HomeScreen}
+            screenoptions={{ headerShadowVisible: false, animation: "fade" }}
+            options={{ headerShadowVisible: false, headerShown: false }}
+          />
+          <Stack.Screen
+            name="HomeLoading"
+            component={HomeLoading}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="SearchErrorScreen"
+            component={SearchErrorScreen}
+            screenoptions={{ headerShadowVisible: false, animation: "fade" }}
+            options={{ headerShadowVisible: false, headerShown: false }}
+          />
+          <Stack.Screen
+            name="SearchPostalCodeScreen"
+            component={SearchPostalCodeScreen}
+            screenoptions={{ headerShadowVisible: false, animation: "fade" }}
+            options={{ headerShadowVisible: false, headerShown: false }}
+          />
+          <Stack.Screen
+            name="MenuPlatesPage"
+            component={MenuPlatesPage}
+            screenoptions={{ headerShadowVisible: false, animation: "fade" }}
+            options={({ navigation }) => ({
+              headerShadowVisible: false,
+              headerShown: true,
+              headerTitle: "Menu",
+              headerLeft: () => {
+                return (
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.goBack();
+                    }}
+                    style={{
+                      justifyContent: "center",
+                      marginLeft: 10,
+                      marginRight: 15,
+                    }}
+                  >
+                    <ArrowLeft />
+                  </TouchableOpacity>
+                );
+              },
+            })}
+          />
+          <Stack.Screen
+            name="ProfileRestaurantPage"
+            component={ProfileRestaurantPage}
+            screenoptions={{ headerShadowVisible: false, animation: "fade" }}
+            options={({ navigation }) => ({
+              headerShadowVisible: false,
+              headerShown: true,
+              headerTitle: "",
+              headerLeft: () => {
+                return (
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate("HomeTab");
+                    }}
+                    style={{ flexDirection: "row", gap: 80 }}
+                  >
+                    <ArrowLeft />
+                    <Text style={{ fontSize: 18, fontWeight: 500 }}>
+                      {restaurantId}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              },
+            })}
+          />
+          <Stack.Screen
+            name="NotificationNotFoundScreen"
+            component={NotificationNotFoundScreen}
+            screenoptions={{ headerShadowVisible: false, animation: "fade" }}
+            options={{ headerShadowVisible: false, headerShown: false }}
+          />
+          <Stack.Screen
+            name="LoadingPageScreen"
+            component={LoadingPageScreen}
+            screenoptions={{ headerShadowVisible: false, animation: "fade" }}
+            options={{ headerShadowVisible: false, headerShown: false }}
+          />
+        </Stack.Navigator>
+      </CarouselMapProvider>
     );
   }
 
