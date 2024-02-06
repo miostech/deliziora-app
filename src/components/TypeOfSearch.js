@@ -9,7 +9,7 @@ const TypeOfSearch = ({ setTypeOfMenu, typeOfMenu }) => {
     { label: "Todos", value: "option3" },
   ];
 
-  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOption, setSelectedOption] = useState("option1");
 
   const handleValueChange = (value) => {
     setSelectedOption(value);
@@ -26,9 +26,8 @@ const TypeOfSearch = ({ setTypeOfMenu, typeOfMenu }) => {
         setTypeOfMenu({ complete_menu: true, especiality: true });
         // updateFilteredSearch()
         break;
-
       default:
-        break;
+        setTypeOfMenu({ complete_menu: true });
     }
   };
 
@@ -36,7 +35,7 @@ const TypeOfSearch = ({ setTypeOfMenu, typeOfMenu }) => {
     <View style={styles.container}>
       <RNPickerSelect
         items={dropdownOptions}
-        placeholder={{ label: "Selecione uma opção", value: { all: true } }}
+        placeholder={{ label: "Selecione uma opção", value: { complete_menu: true } }}
         onValueChange={handleValueChange}
         style={pickerSelectStyles}
         value={selectedOption}
