@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -25,10 +25,12 @@ import Loader from "../components/Loader";
 import Info from "../components/SVGs/Info/Info";
 import ReactNativeModal from "react-native-modal";
 import Arrow from "../components/Arrow";
+import CarouselMapContext from "../components/CarouselMapContext";
 const Colors = require("../style/Colors.json");
 
 export default function ProfileRestaurantPage({ route, navigation }) {
   console.log(route.params.restaurant.img);
+  const carouselContext = useContext(CarouselMapContext);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showMore, setShowMore] = useState(false);
@@ -38,7 +40,6 @@ export default function ProfileRestaurantPage({ route, navigation }) {
   const [menuItems, setMenuItems] = useState([]);
   const [plates, setPlates] = useState([]);
   const [day, setDay] = useState(0);
-  const [idRestaurant, setIdRestaurant] = useState(null)
   const [characteristics, setCharacteristics] = useState([]);
   const currentDay = moment().format("dddd").toLowerCase();
   const daysMap = {
@@ -64,11 +65,11 @@ export default function ProfileRestaurantPage({ route, navigation }) {
         console.error("ERROR ", err);
       });
   }, []);
-
+  const [idRestaurant, setIdRestaurant] = useState();
   useEffect(() => {
     console.log("OPEN", ProfileRestaurantPage.name, "SCREEN");
     setRestaurant(route.params.restaurant);
-    setIdRestaurant(restaurant._id.$oid)
+    carouselContext.setIdRestaurant(restaurant._id.$oid);
     CharacteristicsService.returnAllCharacteristics()
       .then((dataCharacteristics) => {
         RestaurantService.returnRestaurantById(restaurant._id.$oid)
@@ -126,7 +127,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
       setMenuItems([]);
       setPlates([]);
     };
-  }, [restaurant._id.$oid, day]);
+  }, [restaurant._id.$oid, day, route.params.restaurant, carouselContext.setIdRestaurant]);
 
   const getOpeningHoursForCurrentDay = () => {
     const currentDay = moment().format("dddd").toLowerCase();
