@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,7 +7,6 @@ import {
   ScrollView,
   FlatList,
   Pressable,
-  Modal
 } from "react-native";
 import { Linking } from "react-native";
 import * as Device from "expo-device";
@@ -15,8 +14,6 @@ import moment from "moment";
 import Close from "../components/SVGs/Close";
 import PhoneIcon from "../components/PhoneIcon";
 import GoogleMapsIcon from "../components/GoogleMapsIcon";
-import StarIcon from "../components/SVGs/StarIcon";
-import { Button, Icon } from "react-native-elements";
 import Clock from './../components/SVGs/Clock/Clock'
 import {
   CharacteristicsService,
@@ -24,20 +21,15 @@ import {
   MenuService,
   RestaurantService,
 } from "deliziora-client-module/client-web";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Loader from "../components/Loader";
-import { IconInfoCircle, IconInfoOctagon } from "@tabler/icons-react";
-import { InfoCircleOutlined } from "@ant-design/icons";
 import Info from "../components/SVGs/Info/Info";
 import ReactNativeModal from "react-native-modal";
 import Arrow from "../components/Arrow";
-import CarouselMapContext from "../components/CarouselMapContext";
 const Colors = require("../style/Colors.json");
 
 export default function ProfileRestaurantPage({ route, navigation }) {
   console.log(route.params.restaurant.img);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
   const [isLoading, setIsLoading] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [restaurant, setRestaurant] = useState(route.params.restaurant);
@@ -46,6 +38,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
   const [menuItems, setMenuItems] = useState([]);
   const [plates, setPlates] = useState([]);
   const [day, setDay] = useState(0);
+  const [idRestaurant, setIdRestaurant] = useState(null)
   const [characteristics, setCharacteristics] = useState([]);
   const currentDay = moment().format("dddd").toLowerCase();
   const daysMap = {
@@ -65,6 +58,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           (item) => item.id_Restaurants === restaurant._id.$oid
         );
         setPlates(filteredDataByRestaurantId);
+        console.log
       })
       .catch((err) => {
         console.error("ERROR ", err);
@@ -74,6 +68,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
   useEffect(() => {
     console.log("OPEN", ProfileRestaurantPage.name, "SCREEN");
     setRestaurant(route.params.restaurant);
+    setIdRestaurant(restaurant._id.$oid)
     CharacteristicsService.returnAllCharacteristics()
       .then((dataCharacteristics) => {
         RestaurantService.returnRestaurantById(restaurant._id.$oid)
@@ -169,8 +164,6 @@ export default function ProfileRestaurantPage({ route, navigation }) {
      });
    }; */
 
-  const carouselContext = useContext(CarouselMapContext);
-   const { setRenderItemData } = carouselContext;
   const RenderItem = ({ item, index }) => {
     const itemStyle = styles.item;
     const nameStyle = styles.itemName;
@@ -189,10 +182,14 @@ export default function ProfileRestaurantPage({ route, navigation }) {
         <Text style={nameStyle}>€{item.price}</Text>
       </View>
     );
-    setRenderItemData({
+    /* BLOCO TENTATIVA CONTEXT GUARDAR NOME RESTAURANTE */
+    /* setRenderItemData({
+
+  const carouselContext = useContext(CarouselMapContext);
+   const { setRenderItemData } = carouselContext;
       restaurantId: item._id.$oid,
       // outras informações que você deseja compartilhar globalmente
-    });
+    }); */
   };
 
   const onLayoutRootView = useCallback(async () => {
@@ -206,7 +203,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
 
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
-      <View style={{ flex: 1, minHeight:200 }}>
+      <View style={{ flex: 1, minHeight: 200 }}>
         <Image
           resizeMode="cover"
           source={{ uri: restaurant.img }}
@@ -475,7 +472,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
           Pratos do Dia
         </Text>
 
-        <View style={{height:200, gap:10 , width:330}}>
+        <View style={{ height: 200, gap: 10, width: 330 }}>
           {menuItems.length > 0 ? (
             <>
               <FlatList
@@ -485,14 +482,14 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                   <RenderItem item={item} index={index} />
                 )}
                 showsHorizontalScrollIndicator={false}
-                style={{paddingBottom:10, width:"100%"}}
+                style={{ paddingBottom: 10, width: "100%" }}
               />
-              <View style={{minWidth: 100 }}>
+              <View style={{ minWidth: 100 }}>
                 <Pressable
                   style={{
                     backgroundColor: Colors.colors.neutral02Color.neutral_01,
                     borderRadius: 100,
-                    width:300
+                    width: 300
                   }}
                   onPress={() => {
                     navigation.navigate("MenuPlatesPage", {
