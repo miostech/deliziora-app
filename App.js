@@ -215,7 +215,7 @@ export default function App() {
   }
 
   function StackApp() {
-    
+    /* TODO // USAR O NOME DO RESTAURANTE */
     const carouselContext = useContext(CarouselMapContext);
     const { renderItemData } = carouselContext;
     const  restaurantId  = renderItemData;
