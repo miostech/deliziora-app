@@ -47,9 +47,7 @@ const SearchBar = ({
   const [selectedCharacteristics, setSelectedCharacteristics] = useState([]);
   const [distance, setDistance] = useState(0);
   const [isOpen, setIsOpen] = useState(null);
-  const [typeOfMenu, setTypeOfMenu] = useState({
-    complete_menu: true
-  });
+  const [typeOfMenu, setTypeOfMenu] = useState({});
   const refRBSheet = useRef();
 
   function calculateDistance(lat1, lon1, lat2, lon2) {
