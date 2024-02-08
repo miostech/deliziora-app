@@ -282,7 +282,7 @@ export default function ProfileRestaurantPage({ route, navigation }) {
                   },
                 ]}
               >
-                {restaurantStatus === "Aberto" ? "Aberto" : "Fechado"}
+                {isRestaurantOpen == "Aberto" ? "Aberto" : "Fechado"}
               </Text>
             </View>
           </View>

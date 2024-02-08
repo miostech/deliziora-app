@@ -328,9 +328,7 @@ export default function App() {
                     style={{ flexDirection: "row", gap: 80 }}
                   >
                     <ArrowLeft />
-                    <Text style={{ fontSize: 18, fontWeight: 500, color: "red" }}>
-                      {CarouselMapContext.idRestaurant}
-                    </Text>
+                    <Text>Valor do idRestaurant: {carouselContext.idRestaurant}</Text>
                   </TouchableOpacity>
                 );
               },
