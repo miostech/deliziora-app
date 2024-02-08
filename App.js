@@ -27,6 +27,9 @@ import RestaurantList from "./src/view/RestaurantList";
 import CarouselMapContext from "./src/components/CarouselMapContext";
 import { OpenAPI } from "deliziora-client-module/client-web";
 import FavoriteSvg from "./src/components/SVGs/HomeSvg/HomeSvg";
+
+import { Provider } from 'react-redux';
+import store from './src/redux/store'
 import HomeAndFavorites from "./src/components/HomeAndFavorites";
 
 OpenAPI.BASE = "https://deliziora-api.azurewebsites.net/";
@@ -49,179 +52,181 @@ export default function App() {
     const isFocused = useIsFocused();
 
     return (
-      <CarouselMapProvider>
-        <Tab.Navigator
-          initialRouteName="Map"
-          options={{ headerShadowVisible: false, headerShown: false }}
-        >
-          <Tab.Screen
-            name="Home"
-            component={HomeAndFavorites}
-            options={{
-              headerShadowVisible: false,
-              tabBarShowLabel: false,
-              headerShown: false,
-              title: "Inicio",
-              tabBarIcon: ({ focused, color, size }) => (
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <View style={{}}>
-                    <HomeSvg focused={focused} />
-                  </View>
-                  <View>
-                    <Text
-                      style={{
-                        color: focused
-                          ? colors.colors.baseColor.base_01
-                          : "black",
-                      }}
-                    >
-                      Inicio
-                    </Text>
-                  </View>
-                </View>
-              ),
-            }}
-          />
-
-          <Tab.Screen
-            name="Map"
-            component={(props) => <HomeScreen listType={listType} navigation={props.navigation} />}
-            options={({ navigation }) => ({
-              headerShadowVisible: false,
-              tabBarShowLabel: false,
-              headerShown: false,
-              title: "",
-              tabBarIcon: ({ focused, color, size }) => (
-                <Pressable
-                  onPress={() => {
-                    switch (true) {
-                      case isFocused && changeList() === false:
-                        changeList();
-                        console.log("Entramos no if");
-                        break;
-                      case isFocused:
-                        navigation.navigate('Map');
-                        changeList(false);
-                        console.log("entramos no Else que faz change list false");
-                        break;
-                      default:
-                        navigation.navigate('Map');
-                        changeList(false);
-                        console.log("entramos no Else que faz change list false se focused for false");
-                        break;
-                    }
-                  }}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    position: "relative",
-                  }}
-                >
+      <Provider store={store}>
+        <CarouselMapProvider>
+          <Tab.Navigator
+            initialRouteName="Map"
+            options={{ headerShadowVisible: false, headerShown: false }}
+          >
+            <Tab.Screen
+              name="Home"
+              component={HomeAndFavorites}
+              options={{
+                headerShadowVisible: false,
+                tabBarShowLabel: false,
+                headerShown: false,
+                title: "Inicio",
+                tabBarIcon: ({ focused, color, size }) => (
                   <View
                     style={{
-                      bottom: 24,
-                      backgroundColor: "white",
-                      borderRadius: 100,
-                      width: 60,
-                      height: 60,
-                      alignItems: "center",
+                      display: "flex",
+                      flexDirection: "column",
                       justifyContent: "center",
-                      borderWidth: 3,
-                      borderColor: "#f1f3f4",
+                      alignItems: "center",
                     }}
                   >
-                    <MapSvg focused={focused} />
+                    <View style={{}}>
+                      <HomeSvg focused={focused} />
+                    </View>
+                    <View>
+                      <Text
+                        style={{
+                          color: focused
+                            ? colors.colors.baseColor.base_01
+                            : "black",
+                        }}
+                      >
+                        Inicio
+                      </Text>
+                    </View>
                   </View>
-                  <View>
-                    <Text
-                      style={{
-                        bottom: 17,
-                        color: focused
-                          ? colors.colors.baseColor.base_01
-                          : "black",
-                      }}
-                    >
-                      Mapa
-                    </Text>
-                  </View>
-                </Pressable>
-              ),
-            })}
-          />
-          <Tab.Screen
-            name="Notifications"
-            component={Notifications}
-            screenoptions={{ headerShadowVisible: false, animation: "fade" }}
-            options={({ navigation }) => ({
-              headerShadowVisible: true,
-              tabBarShowLabel: false,
-              headerShown: false,
-              headerTitle: "Quadro de notificações",
-              tabBarIcon: ({ focused, color, size }) => (
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <View>
-                    <NotificationSvg focused={focused} />
-                  </View>
-                  <View>
-                    <Text
-                      style={{
-                        color: focused
-                          ? colors.colors.baseColor.base_01
-                          : "black",
-                      }}
-                    >
-                      Notificações
-                    </Text>
-                  </View>
-                </View>
-              ),
-              headerLeft: () => {
-                return (
-                  <TouchableOpacity
+                ),
+              }}
+            />
+
+            <Tab.Screen
+              name="Map"
+              component={(props) => <HomeScreen listType={listType} navigation={props.navigation} />}
+              options={({ navigation }) => ({
+                headerShadowVisible: false,
+                tabBarShowLabel: false,
+                headerShown: false,
+                title: "",
+                tabBarIcon: ({ focused, color, size }) => (
+                  <Pressable
                     onPress={() => {
-                      navigation.goBack();
+                      switch (true) {
+                        case isFocused && changeList() === false:
+                          changeList();
+                          console.log("Entramos no if");
+                          break;
+                        case isFocused:
+                          navigation.navigate('Map');
+                          changeList(false);
+                          console.log("entramos no Else que faz change list false");
+                          break;
+                        default:
+                          navigation.navigate('Map');
+                          changeList(false);
+                          console.log("entramos no Else que faz change list false se focused for false");
+                          break;
+                      }
                     }}
                     style={{
-                      height: "100%",
-                      width: "100%",
+                      display: "flex",
+                      flexDirection: "column",
                       justifyContent: "center",
-                      marginLeft: 10,
+                      alignItems: "center",
+                      position: "relative",
                     }}
                   >
-                    <ArrowLeft />
-                  </TouchableOpacity>
-                );
-              },
-            })}
-          />
-        </Tab.Navigator>
-      </CarouselMapProvider>
+                    <View
+                      style={{
+                        bottom: 24,
+                        backgroundColor: "white",
+                        borderRadius: 100,
+                        width: 60,
+                        height: 60,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderWidth: 3,
+                        borderColor: "#f1f3f4",
+                      }}
+                    >
+                      <MapSvg focused={focused} />
+                    </View>
+                    <View>
+                      <Text
+                        style={{
+                          bottom: 17,
+                          color: focused
+                            ? colors.colors.baseColor.base_01
+                            : "black",
+                        }}
+                      >
+                        Mapa
+                      </Text>
+                    </View>
+                  </Pressable>
+                ),
+              })}
+            />
+            <Tab.Screen
+              name="Notifications"
+              component={Notifications}
+              screenoptions={{ headerShadowVisible: false, animation: "fade" }}
+              options={({ navigation }) => ({
+                headerShadowVisible: true,
+                tabBarShowLabel: false,
+                headerShown: false,
+                headerTitle: "Quadro de notificações",
+                tabBarIcon: ({ focused, color, size }) => (
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <View>
+                      <NotificationSvg focused={focused} />
+                    </View>
+                    <View>
+                      <Text
+                        style={{
+                          color: focused
+                            ? colors.colors.baseColor.base_01
+                            : "black",
+                        }}
+                      >
+                        Notificações
+                      </Text>
+                    </View>
+                  </View>
+                ),
+                headerLeft: () => {
+                  return (
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.goBack();
+                      }}
+                      style={{
+                        height: "100%",
+                        width: "100%",
+                        justifyContent: "center",
+                        marginLeft: 10,
+                      }}
+                    >
+                      <ArrowLeft />
+                    </TouchableOpacity>
+                  );
+                },
+              })}
+            />
+          </Tab.Navigator>
+        </CarouselMapProvider>
+      </Provider>
     );
   }
 
   function StackApp() {
     /* BLOCO TENTATIVA DE GUARDAR O NOME DO CONTEXT */
-    /* TODO // USAR O NOME DO RESTAURANTE *//* 
+    /* TODO // USAR O NOME DO RESTAURANTE *//*
     const carouselContext = useContext(CarouselMapContext);
-    const { renderItemData } = carouselContext;
-    const {restaurantName} = renderItemData?.restaurant?.name || ""; *//* 
-    console.log("aquii bruno ",restaurantName) */
+    const {renderItemData} = carouselContext;
+        const {restaurantName} = renderItemData?.restaurant?.name || ""; *//*
+console.log("aquii bruno ",restaurantName) */
 
     const carouselContext = useContext(CarouselMapContext);
     return (
@@ -364,7 +369,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "red",
     alignItems: "center",
     justifyContent: "center",
   },

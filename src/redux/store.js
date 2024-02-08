@@ -1,8 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit';
-import restaurantReducer from './reducers/restaurantSlice';
+// redux/store.js
 
-export const store = configureStore({
-    reducer: {
-        restaurants: restaurantReducer
-    },
+import { configureStore } from '@reduxjs/toolkit';
+import rootReducer from './features/index';
+
+const store = configureStore({
+  reducer: rootReducer,
 });
+
+export default store;

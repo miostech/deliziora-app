@@ -4,7 +4,6 @@ import {
   View,
   Text,
   Image,
-  TouchableWithoutFeedback,
   Pressable,
 } from "react-native";
 import Carousel from "react-native-snap-carousel";

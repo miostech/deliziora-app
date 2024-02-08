@@ -1,77 +1,217 @@
-import { Alert, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native'
-import React, { useContext, useState } from 'react'
-import SearchBar from './SearchBar'
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { setAllRestaurants } from '../redux/features/restaurants/restaurantsSlice';
+import { RestaurantService } from 'deliziora-client-module/client-web';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import RestaurantCard from './RestaurantCard';
+import Carousel from 'react-native-snap-carousel';
 
-const colors = require("../style/Colors.json");
-import CarouselMapContext from "../components/CarouselMapContext";
-import { FlatList } from 'react-native-gesture-handler';
-export default function HomeAndFavorites() {
-    const [isLoading, setIsLoading] = useState(true);
-    const [filteredSearch, setFilteredSearch] = useState({});
-    const [search, setSearch] = useState('');
-    const [restaurants, setRestaurants] = useState([]);
+import { Dimensions } from 'react-native';
+const colors = require('./../style/Colors.json');
+const windowWidth = Dimensions.get('window').width;
 
-    const [allRestaurant, setAllRestaurants] = useState([])
-    useContext(CarouselMapContext);
+const HomeAndFavorites = () => {
+    const allrestaurants = useSelector(state => state.restaurants.allRestaurants);
+    const favoriteRestaurants = useSelector(state => state.restaurants.favoriteRestaurants);
+    const dispatch = useDispatch();
+    const [justRestaurantsFavorite, setJustRestaurantsFavorite] = useState([]);
+    const [nonFavoriteRestaurants, setNonFavoriteRestaurants] = useState([]);
+    useEffect(() => {
+        RestaurantService.returnAllRestaurants()
+            .then(res => {
+                dispatch(setAllRestaurants(res.data));
+                console.log("pegou", res.data);
+            })
+            .catch(err => {
+                console.log("ERROR", err);
+            });
+    }, [dispatch]);
+
+    useEffect(() => {
+        console.log("Redux State - All Restaurants:", allrestaurants);
+    }, [allrestaurants]);
+    useEffect(() => {
+        console.log("Redux State - Favorite Restaurants:", favoriteRestaurants);
+        // Mapeia os IDs dos favoritos para obter os detalhes completos dos restaurantes
+        const favoriteRestaurantsDetails = allrestaurants.filter(restaurant => favoriteRestaurants.includes(restaurant._id.$oid));
+        setJustRestaurantsFavorite(favoriteRestaurantsDetails);
+
+        // Filtra os restaurantes que não estão na lista de favoritos
+        const nonFavoriteRestaurantsDetails = allrestaurants.filter(restaurant => !favoriteRestaurants.includes(restaurant._id.$oid));
+        setNonFavoriteRestaurants(nonFavoriteRestaurantsDetails);
+    }, [favoriteRestaurants, allrestaurants]);
+
+    const renderRestaurantCard = ({ item }) => (
+        <RestaurantCard
+            key={item._id.$oid}
+            id={item._id.$oid} // Passa o ID do restaurante para o RestaurantCard
+            name={item.name}
+            description={item.description}
+            distance={"5km"} // Use a função apropriada para calcular a distância
+            imageUri={item.img}
+            enableMomentum
+        />
+    );
+
     return (
         <SafeAreaView style={styles.container}>
-            <View>
-                <SearchBar filteredSearch={filteredSearch} setFilteredSearch={setFilteredSearch} setSearch={setSearch} setListRestaurant={setRestaurants} listRestaurant={allRestaurant} filteredRestaurants={restaurants} search={search} />
-            </View>
-            <View style={{
-                width: "100%",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-evenly",
-                alignItems: "stretch",
-                marginTop: 24
-            }}>
-                <Text style={{
-                    textAlign: 'center',
-                    fontFamily: 'JUST Sans',
-                    fontSize: 16,
-                    fontStyle: 'normal',
-                    fontWeight: '500',
-                    lineHeight: undefined, // 'normal' line-height in React Native is achieved by setting it to undefined
-                }}
-                >
-                    Restaurantes favoritos
-                </Text>
-                <Pressable onPress={console.warn("hello")}>
-                    <Text style={styles.seeMoreFavorites}>Ver mais</Text>
-                </Pressable>
-                <View style={styles.favoritesListContainer}>
-                   {/*  <FlatList
-                        data={restaurants.filter(restaurant => restaurant.isFavorite)}
-                        renderItem={({ item }) => (
-                            <View style={styles.restaurantItem}>
-                                <Text style={styles.restaurantTitle}>{item.name}</Text>
-                            </View>
-                        )}
-                        horizontal
-                        
-                    /> */}
+            <View style={styles.favoritesContainer}>
+                <View style={{ width: "100%", justifyContent: 'flex-start'}}>
+                    <View style={styles.sectionHeader}>
+                        <Text style={styles.title}>Restaurantes favoritos</Text>
+                        <Pressable onPress={() => console.warn("hello")}>
+                            <Text style={styles.seeMore}>Ver mais</Text>
+                        </Pressable>
+                    </View>
+                    {/* Aqui vai ser os Favoritos */}
+                    <View style={styles.cardList}>
+                        <Carousel
+                            data={justRestaurantsFavorite} // Alterado para renderizar apenas os restaurantes favoritos
+                            sliderWidth={windowWidth} // Largura do slider baseada na largura da tela do dispositivo
+                            itemWidth={windowWidth * 0.75} // Largura de cada item com 5% a menos
+                            itemHeight={190} // Altura de cada item com 5% a menos
+                            renderItem={renderRestaurantCard}
+                            keyExtractor={item => item._id.$oid}
+                            style={styles.cardListStyle}
+                        />
+                    </View>
                 </View>
             </View>
+            <View style={styles.nonFavoritesContainer}>
+                <View style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    width: "100%",
+                    justifyContent: 'space-between'
+                }}>
+                    <Text style={styles.title}>Demais restaurantes</Text>
+                    <Pressable onPress={() => console.warn("hello")}>
+                        <Text style={styles.seeMoreFavorites}>Ver mais</Text>
+                    </Pressable>
+                </View>
+                {/* Aqui serão os que não são favoritos */}
+                <Carousel
+                    data={nonFavoriteRestaurants} // Renderiza apenas os restaurantes que não estão na lista de favoritos
+                    sliderWidth={windowWidth} // Largura do slider baseada na largura da tela do dispositivo
+                    itemWidth={windowWidth * 0.75} // Largura de cada item com 5% a menos
+                    itemHeight={190} // Altura de cada item com 5% a menos
+                    renderItem={renderRestaurantCard}
+                    keyExtractor={item => item._id.$oid}
+                    style={styles.cardListStyle}
+                />
+            </View>
         </SafeAreaView >
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     container: {
-        width: '95%',
-        height: '95%',
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        flex: 1,
+        flexDirection: 'column',
     },
-    seeMoreFavorites: {
+    favoritesContainer: {
+        width: '100%',
+        height: "35%",
+        marginTop: 24,
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        padding: "2%",
+    },
+    cardList: {
+        width: "100%",
+        position: "relative",
+    },
+    cardListStyle: {
+        position: "absolute",
+        left: 0
+    },
+    sectionHeader: {
+        display: "flex",
+        flexDirection: "row",
+        width: "100%",
+        justifyContent: 'space-between'
+    },
+    title: {
+        textAlign: 'right',
+        padding: "2%",
+        fontSize: 16,
+        fontStyle: 'normal',
+        fontWeight: 'bold',
+    },
+    seeMore: {
         color: colors.colors.baseColor.base_01,
-        textAlign: 'center',
+        textAlign: 'right',
         fontFamily: 'Roboto',
         fontSize: 12,
         fontStyle: 'normal',
         fontWeight: '400',
-        lineHeight: undefined, // 'normal' line-height in React Native is achieved by setting it to undefined
+        padding: "2%",
     },
-})
+    restaurantListContainer: {
+        width: "100%",
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        marginTop: 12,
+    },
+    favoritesContainer: {
+        width: '100%',
+        height: "35%",
+        marginTop: 24,
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        padding: "2%",
+    },
+    nonFavoritesContainer: {
+        width: '98%',
+        height: "35%",
+        marginTop: 24,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        padding: "2%",
+    },
+    title: {
+        textAlign: 'right',
+        padding: "2%",
+        marginLeft: 10,
+        fontSize: 16,
+        fontStyle: 'normal',
+        fontWeight: 'bold',
+    },
+    seeMoreFavorites: {
+        color: colors.colors.baseColor.base_01,
+        textAlign: 'right',
+        fontFamily: 'Roboto',
+        fontSize: 12,
+        fontStyle: 'normal',
+        fontWeight: '400',
+        padding: "2%",
+    },
+    favoritesListContainer: {
+        width: "100%",
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        marginTop: 12,
+    },
+    restaurantItem: {
+        backgroundColor: 'white',
+        borderRadius: 8,
+        padding: 10,
+        marginHorizontal: 5,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    restaurantTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+});
+
+export default HomeAndFavorites;

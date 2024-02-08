@@ -1,16 +1,37 @@
-import React, { useEffect, useCallback, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { toggleFavorite } from "../redux/reducers/restaurantSlice";
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import {
+  SafeAreaView,
+  StatusBar,
+  Appearance,
+  useColorScheme,
+  Platform,
+  KeyboardAvoidingView,
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  Button,
+  Pressable,
+} from "react-native";
 import Loader from "../components/Loader";
-import { View, Text, FlatList, Image, Pressable, StyleSheet } from "react-native";
 import * as Device from "expo-device";
 const Colors = require("../style/Colors.json");
 
-export default function ListMapRestaurant({ navigation }) {
-  const dispatch = useDispatch();
-  const favoriteRestaurants = useSelector((state) => state.restaurants.favoriteRestaurants);
-  const nonFavoriteRestaurants = useSelector((state) => state.restaurants.nonFavoriteRestaurants);
-  const [isLoading, setIsLoading] = useState(false);
+import { RestaurantService } from "deliziora-client-module/client-web";
+
+
+export default function ListMapRestaurant({ route, navigation, restaurants }) {
+  const [isLoading, setIsLoading] = useState(true);
+  
+  const handleFavoriteToggle = (id) => {
+    const updatedRestaurants = restaurant.map((restaurant) =>
+      restaurant.id === id
+        ? { ...restaurant, isFavorite: !restaurant.isFavorite }
+        : restaurant
+    );
+    setRestaurant(updatedRestaurants);
+  };
 
   useEffect(() => {
     console.log("OPEN", ListMapRestaurant.name, "SCREEN");
@@ -22,20 +43,14 @@ export default function ListMapRestaurant({ navigation }) {
       console.log("SCREEN", ListMapRestaurant.name, "CLOSE");
     };
   }, []);
-
-  const handleFavoriteToggle = (id) => {
-    dispatch(toggleFavorite(id));
-    console.log(`Favorite`, id);
-  };
-
   const onLayoutRootView = useCallback(async () => {
     if (isLoading) {
     }
   }, [isLoading]);
-
+  if (!isLoading) {
+    return <Loader />;
+  }
   const Item = ({ item, index }) => {
-    const isFavorite = favoriteRestaurants.some((restaurant) => restaurant.id === item.id);
-
     return (
       <>
         <View
@@ -58,13 +73,13 @@ export default function ListMapRestaurant({ navigation }) {
           >
             <View>
               <Image
-                source={{ uri: item.img }}
+                source={{uri: item.img}}
                 style={{ width: 90, height: 80, borderRadius: 10 }}
               />
             </View>
             <View style={{ display: "flex" }}>
-              <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>{item.name}</Text>
-              <Text style={{ fontSize: 14, flexWrap: "wrap", maxWidth: 200 }}>{item.description.slice(0, 100) + "..."}</Text>
+              <Text style={{ fontSize: 18 , fontWeight: "bold" , marginBottom: 10}}>{item.name}</Text>
+              <Text style={{ fontSize: 14 , flexWrap: "wrap", maxWidth: 200 ,  }}>{item.description.slice(0, 100) + "..."}</Text>
             </View>
             <View style={styleSelected.visitBox}>
               <View style={styleSelected.imageFavorite}>
@@ -73,7 +88,7 @@ export default function ListMapRestaurant({ navigation }) {
                     handleFavoriteToggle(item.id);
                   }}
                 >
-                  {isFavorite ? (
+                  {item.isFavorite ? (
                     <Image
                       key={index}
                       source={require("../../assets/FavoriteSelected1.png")}
@@ -117,35 +132,27 @@ export default function ListMapRestaurant({ navigation }) {
       </>
     );
   };
-
   return (
-    <View style={[styleSelected.backgroundPrimary]}>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <SafeAreaView
-          style={[styleSelected.backgroundPrimary]}
-          onLayout={onLayoutRootView}
-        >
-          <View style={[styleSelected.backgroundPrimary]}>
-            <FlatList
-              data={restaurants}
-              renderItem={({ item, index }) => <Item item={item} index={index} />}
-            />
-          </View>
-        </SafeAreaView>
-      )}
-    </View>
+    <SafeAreaView
+      style={[styleSelected.backgroundPrimary]}
+      onLayout={onLayoutRootView}
+    >
+      <View style={[styleSelected.backgroundPrimary]}>
+        <FlatList
+          data={restaurants}
+          renderItem={({ item, index }) => <Item item={item} index={index} />}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
-
 const styleSelected = StyleSheet.create({
   backgroundPrimary: { marginTop: Device.brand === "Apple" ? 70 : 55, marginBottom: Device.brand === "Apple" ? 40 : 10 },
-  visitButtonBox: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end"
-  },
+  visitButtonBox:{
+    flexDirection:"row",
+    justifyContent:"space-between",
+    alignItems:"flex-end"
+  },  
   visitButton: {
     backgroundColor: Colors.colors.neutral02Color.neutral_02,
     paddingVertical: 10,
