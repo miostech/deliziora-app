@@ -1,0 +1,122 @@
+import React from 'react';
+import { View, Text, StyleSheet, Pressable, TextInput } from 'react-native';
+import { Svg, Path, Image } from 'react-native-svg';
+import InterfaceessentialMagnifier from './SVGs/InterfaceessentialMagnifier/InterfaceessentialMagnifier';
+import FilterIcon from './SVGs/Filter_Search/Filter_Search';
+import { SearchIcon } from './SearchIcon';
+import { FilterSearch } from './FilterSearch';
+
+export default function SearchBar2() {
+    return (
+        <View style={styles.searchBar2}>
+            <View style={styles.content}>
+                <View style={styles.searchicon}>
+                    <View style={styles.rectangle254} />
+                    <View style={styles.interfaceessentialMagnifier}>
+                        <InterfaceessentialMagnifier />
+                    </View>
+                </View>
+                <TextInput
+                    style={styles.placeholderLabel}
+                    placeholder="Pesquisar"
+                />
+            </View>
+            <View>
+                <Pressable style={{
+                    flexShrink: 0,
+                    height: 56,
+                    width: 56,
+                    alignItems: "flex-start",
+                    rowGap: 0,
+                    backgroundColor: "#FFFFFF",
+                    borderRadius: 24
+                }}>
+                    <FilterSearch />
+                </Pressable>
+
+            </View>
+        </View>
+    )
+}
+
+const styles = StyleSheet.create({
+    searchBar2: {
+        flexShrink: 0,
+        width: "100%",
+        alignItems: "flex-start",
+        justifyContent: "space-evenly",
+        rowGap: 10,
+        flexDirection: "row"
+    },
+    content: {
+        alignSelf: "stretch",
+        flexShrink: 0,
+        height: 56,
+        width: "70%",
+        backgroundColor: "rgba(255, 255, 255, 1)",
+        shadowOffset: {
+            width: 0,
+            height: 1
+        },
+        shadowRadius: 9,
+        shadowColor: "rgb(0, 0, 0)",
+        shadowOpacity: 0.05,
+        flexDirection: "row",
+        alignItems: "center",
+        columnGap: 16,
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderRadius: 32
+    },
+    searchicon: {
+        flexShrink: 0,
+        height: 24,
+        width: 24,
+        alignItems: "flex-start",
+        rowGap: 0
+    },
+    rectangle254: {
+        position: "absolute",
+        flexShrink: 0,
+        top: -2,
+        right: -2,
+        bottom: -2,
+        left: -2,
+        backgroundColor: "rgba(217, 217, 217, 0)"
+    },
+    interfaceessentialMagnifier: {
+        position: "absolute",
+        flexShrink: 0,
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        transform: [
+            {
+                rotateZ: "-90.00deg"
+            }
+        ],
+        alignItems: "flex-start",
+        rowGap: 0
+    },
+    icon: {
+        position: "absolute",
+        flexShrink: 0,
+        top: 2,
+        right: 2,
+        bottom: 2,
+        left: 3,
+        overflow: "visible"
+    },
+    placeholderLabel: {
+        flexGrow: 1,
+        flexShrink: 1,
+        flexBasis: 0,
+        textAlign: "left",
+        color: "rgba(60, 60, 67, 0.6)",
+        fontFamily: "Roboto",
+        fontSize: 18,
+        fontWeight: "400",
+        letterSpacing: 0
+    }
+})

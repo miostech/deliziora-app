@@ -8,6 +8,7 @@ import RestaurantCard from './RestaurantCard';
 import Carousel from 'react-native-snap-carousel';
 
 import { Dimensions } from 'react-native';
+import SearchBar2 from './SearchBar2';
 const colors = require('./../style/Colors.json');
 const windowWidth = Dimensions.get('window').width;
 
@@ -56,6 +57,7 @@ const HomeAndFavorites = () => {
 
     return (
         <SafeAreaView style={styles.container}>
+            <SearchBar2 />
             <View style={styles.favoritesContainer}>
                 <View style={{ width: "100%", justifyContent: 'flex-start'}}>
                     <View style={styles.sectionHeader}>
