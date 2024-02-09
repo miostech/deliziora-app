@@ -1,9 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable, TextInput } from 'react-native';
-import { Svg, Path, Image } from 'react-native-svg';
 import InterfaceessentialMagnifier from './SVGs/InterfaceessentialMagnifier/InterfaceessentialMagnifier';
-import FilterIcon from './SVGs/Filter_Search/Filter_Search';
-import { SearchIcon } from './SearchIcon';
 import { FilterSearch } from './FilterSearch';
 
 export default function SearchBar2() {
@@ -11,7 +8,6 @@ export default function SearchBar2() {
         <View style={styles.searchBar2}>
             <View style={styles.content}>
                 <View style={styles.searchicon}>
-                    <View style={styles.rectangle254} />
                     <View style={styles.interfaceessentialMagnifier}>
                         <InterfaceessentialMagnifier />
                     </View>
@@ -74,15 +70,6 @@ const styles = StyleSheet.create({
         width: 24,
         alignItems: "flex-start",
         rowGap: 0
-    },
-    rectangle254: {
-        position: "absolute",
-        flexShrink: 0,
-        top: -2,
-        right: -2,
-        bottom: -2,
-        left: -2,
-        backgroundColor: "rgba(217, 217, 217, 0)"
     },
     interfaceessentialMagnifier: {
         position: "absolute",

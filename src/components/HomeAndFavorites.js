@@ -49,7 +49,7 @@ const HomeAndFavorites = () => {
             id={item._id.$oid} // Passa o ID do restaurante para o RestaurantCard
             name={item.name}
             description={item.description}
-            distance={"5km"} // Use a função apropriada para calcular a distância
+            distance={"5"} // Use a função apropriada para calcular a distância
             imageUri={item.img}
             enableMomentum
         />

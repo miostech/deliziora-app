@@ -77,17 +77,11 @@ export default function RestaurantCard({ id, name, description, distance, imageU
 
     return (
         <View style={styles.restaurantCard}>
-            <View style={styles.cardBackground} />
-            <View style={styles.restaurantImage}>
+            <View style={styles.rowCardOne}>
                 <ImageBackground style={styles.image} source={{ uri: imageUri }} />
-            </View>
-            <Text style={styles.restaurantName}>
-                {name}
-            </Text>
-            <Text style={styles.description}>
-                {description}
-            </Text>
-            <View style={styles.favoriteIcon}>
+                <Text style={styles.restaurantName}>
+                    {name}
+                </Text>
                 <Pressable onPress={toggleFavorite}>
                     {isFavorite ? (
                         <Svg width="24" height="24" viewBox="0 0 24 24" fill="#F36527" stroke="#F36527" xmlns="http://www.w3.org/2000/svg">
@@ -100,9 +94,18 @@ export default function RestaurantCard({ id, name, description, distance, imageU
                     }
                 </Pressable>
             </View>
-            <Text style={styles.distance}>
-                Distância {distance} km
-            </Text>
+            <View style={styles.rowCardTwo}>
+                <Text style={styles.description}>
+                    {description.length > 170 ? `${description.slice(0, 170)}...` : description}
+                </Text>
+            </View>
+
+            <View style={styles.rowCardThree}>
+                <Text style={styles.distance}>
+                    Distância {distance} km
+                </Text>
+            </View>
+
         </View >
     );
 }
@@ -110,7 +113,11 @@ export default function RestaurantCard({ id, name, description, distance, imageU
 const styles = StyleSheet.create({
     restaurantCard: {
         height: 200,
+        maxHeight: 200,
         width: "100%",
+        maxWidth: "100%",
+        display: "flex",
+        flexDirection: 'column',
         borderRadius: 16,
         overflow: 'hidden',
         backgroundColor: '#FFFFFF',
@@ -122,57 +129,65 @@ const styles = StyleSheet.create({
         shadowColor: '#000000',
         shadowOpacity: 0.05,
     },
-    cardBackground: {
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        bottom: 0,
-        left: 0,
-        backgroundColor: 'rgba(255, 255, 255, 1)',
+    rowCardOne: {
+        display: 'flex',
+        flexDirection: 'row',
+        height: '50%',
+        width: "100%",
+        padding: "2%",
+        alignItems: "flex-start",
+        justifyContent: "space-between"
+    },
+    rowCardTwo: {
+        display: 'flex',
+        flexDirection: 'row',
+        height: '40%',
+        width: "100%",
+        padding: "2%",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+    rowCardThree: {
+        display: 'flex',
+        flexDirection: 'row',
+        height: '10%',
+        paddingBottom: 5,
+        paddingLeft: 5,
+        width: "100%",
+        justifyContent: "space-between",
+        alignItems: "center",
     },
     restaurantImage: {
-        position: 'absolute',
-        top: 12,
-        left: 12,
         width: 100,
         height: 100,
     },
     image: {
         flex: 1,
-        borderRadius: 6,
+        minHeight: 100,
+        maxHeight: 100,
+        minWidth: 100,
+        maxWidth: 100
     },
     restaurantName: {
-        position: 'absolute',
-        top: 12,
-        left: 124,
+        maxWidth: 200,
         fontSize: 16,
         fontWeight: '500',
         color: '#29272D',
-        fontFamily: 'JUST Sans',
+        fontFamily: 'Roboto',
     },
     description: {
-        position: 'absolute',
-        top: 120,
-        left: 13,
-        width: 164,
+        width: "100%",
+        textAlign: "justify",
         fontSize: 12,
         fontWeight: '400',
         color: '#48464A',
         fontFamily: 'Roboto',
-    },
-    favoriteIcon: {
-        position: 'absolute',
-        top: 12,
-        right: 12,
     },
     icon: {
         width: 22,
         height: 22,
     },
     distance: {
-        position: 'absolute',
-        bottom: 12,
-        left: 12,
         fontSize: 11,
         fontWeight: '400',
         color: '#79767B',
