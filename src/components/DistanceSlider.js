@@ -1,14 +1,14 @@
-//import liraries
+
 import React, { Component, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Slider } from 'react-native-elements';
 // create a component
-const MyComponent = ({distance, setDistance}) => {
-
+const DistanceSlider = () => {
+    const [distance, setDistance] = useState(1)
 
     const handleRangeChange = (value) => {
         setDistance(value);
-        // updateFilteredSearch()
+        console.log(value, "km")
     };
 
     return (
@@ -16,7 +16,7 @@ const MyComponent = ({distance, setDistance}) => {
             <View style={styles.container}>
                 <Slider
                     style={styles.slider}
-                    minimumValue={1} // updated minimum value to 1 km
+                    minimumValue={1}
                     maximumValue={100}
                     step={1}
                     value={distance}
@@ -85,4 +85,4 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default MyComponent;
+export default DistanceSlider;

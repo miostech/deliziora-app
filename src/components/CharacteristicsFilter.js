@@ -10,59 +10,41 @@ import {
 } from "react-native";
 import Modal from "react-native-modal";
 import Close from "./SVGs/Close";
+import { useDispatch, useSelector } from 'react-redux';
+import { setSelectedCharacteristics, toggleSelectedCharacteristic, updateSelectedCharacteristic } from './../redux/features/characteristicsSlice/characteristicsSlice'
 
-const CharacteristicsFilter = ({selectedCharacteristics, setSelectedCharacteristics}) => {
+const CharacteristicsFilter = () => {
   const [isModalVisible, setModalVisible] = useState(false);
-  const [allchar, setAllchar] = useState([]);
+  const dispatch = useDispatch();
+  const [allchar, setAllChar] = useState([])
+
+  const selectedCharacteristics = useSelector(state => state.characteristics);
+
   useEffect(() => {
     CharacteristicsService.returnAllCharacteristics().then((res) => {
-      setAllchar(res.data);
-      console.log(allchar);
+      setAllChar(res.data);
     });
 
     return () => {
-      setAllchar([]);
+      setAllChar([]);
     };
   }, []);
 
-  const [allSelected, setAllSelected] = useState(false); // Set allSelected to true initially
+  useEffect(() => {
+    console.log('Characteristic filter rendered', selectedCharacteristics);
+  }, [selectedCharacteristics]);
+
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
   const handleSwitchToggle = (characteristic) => {
-    setSelectedCharacteristics((prevSelected) => {
-      const updatedCharacteristics = new Set(prevSelected);
-
-      if (characteristic === "all") {
-        setAllSelected(!allSelected);
-
-        if (allSelected) {
-          updatedCharacteristics.clear();
-        } else {
-          allchar.forEach((option) => updatedCharacteristics.add(option._id.$oid));
-        }
-      } else {
-        if (updatedCharacteristics.has(characteristic._id.$oid)) {
-          updatedCharacteristics.delete(characteristic._id.$oid);
-        } else {
-          updatedCharacteristics.add(characteristic._id.$oid);
-        }
-      }
-
-      return Array.from(updatedCharacteristics);
-    });
-    // updateFilteredSearch()
+    // Update Redux state
+    dispatch(updateSelectedCharacteristic(characteristic));
   };
 
-  useEffect(() => {
-    // Verifica se todas as opções foram selecionadas
-    const allOptionsSelected =
-      selectedCharacteristics.length === allchar.length;
-    setAllSelected(allOptionsSelected);
-    console.log("SELECTED",selectedCharacteristics)
-  }, [selectedCharacteristics]);
+
 
   return (
     <View style={styles.container}>
@@ -70,27 +52,29 @@ const CharacteristicsFilter = ({selectedCharacteristics, setSelectedCharacterist
         <Text style={styles.openModalText}>Selecionar Caracteristicas</Text>
       </Pressable>
 
+      {/* Modal Content */}
       <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
         <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalLabel}>Selecione as características:</Text>
             <Pressable onPress={toggleModal}>
-              <Close />
+              <Text>Close</Text>
             </Pressable>
           </View>
           <View style={styles.modalItem}>
             <Text style={styles.characteristicLabel}>Selecionar Todas</Text>
             <Switch
-              value={allSelected}
+
               onValueChange={() => handleSwitchToggle("all")}
+              value={selectedCharacteristics?.length !== allchar.length}
             />
           </View>
           {allchar.map((option) => (
-            <View key={option.value} style={styles.modalItem}>
+            <View key={option._id.$oid} style={styles.modalItem}>
               <Text style={styles.characteristicLabel}>{option.name}</Text>
               <Switch
-                value={selectedCharacteristics.includes(option._id.$oid)}
-                onValueChange={() => handleSwitchToggle(option)}
+                value={selectedCharacteristics?.includes(option._id.$oid)}
+                onValueChange={() => handleSwitchToggle(option._id.$oid)}
               />
             </View>
           ))}
@@ -103,8 +87,9 @@ const CharacteristicsFilter = ({selectedCharacteristics, setSelectedCharacterist
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
+    marginTop: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalHeader: {
     flexDirection: "row",
@@ -122,7 +107,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     marginBottom: 10,
-    width: 330,
+    width: "100%",
   },
   openModalText: {
     color: "white",

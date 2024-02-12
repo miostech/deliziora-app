@@ -23,7 +23,7 @@ import { RestaurantService } from "deliziora-client-module/client-web";
 
 export default function ListMapRestaurant({ route, navigation, restaurants }) {
   const [isLoading, setIsLoading] = useState(true);
-  
+
   const handleFavoriteToggle = (id) => {
     const updatedRestaurants = restaurant.map((restaurant) =>
       restaurant.id === id
@@ -73,13 +73,13 @@ export default function ListMapRestaurant({ route, navigation, restaurants }) {
           >
             <View>
               <Image
-                source={{uri: item.img}}
+                source={{ uri: item.img }}
                 style={{ width: 90, height: 80, borderRadius: 10 }}
               />
             </View>
             <View style={{ display: "flex" }}>
-              <Text style={{ fontSize: 18 , fontWeight: "bold" , marginBottom: 10}}>{item.name}</Text>
-              <Text style={{ fontSize: 14 , flexWrap: "wrap", maxWidth: 200 ,  }}>{item.description.slice(0, 100) + "..."}</Text>
+              <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>{item.name}</Text>
+              <Text style={{ fontSize: 14, flexWrap: "wrap", maxWidth: 200, }}>{item.description.slice(0, 100) + "..."}</Text>
             </View>
             <View style={styleSelected.visitBox}>
               <View style={styleSelected.imageFavorite}>
@@ -119,7 +119,7 @@ export default function ListMapRestaurant({ route, navigation, restaurants }) {
                 style={{
                   color: Colors.colors.neutral02Color.neutral_10,
                   fontSize: 18,
-                  fontFamily: "Roboto_400Regular",
+                  fontFamily: "Roboto",
                   fontWeight: "600",
                   textAlign: "center",
                 }}
@@ -148,11 +148,11 @@ export default function ListMapRestaurant({ route, navigation, restaurants }) {
 }
 const styleSelected = StyleSheet.create({
   backgroundPrimary: { marginTop: Device.brand === "Apple" ? 70 : 55, marginBottom: Device.brand === "Apple" ? 40 : 10 },
-  visitButtonBox:{
-    flexDirection:"row",
-    justifyContent:"space-between",
-    alignItems:"flex-end"
-  },  
+  visitButtonBox: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end"
+  },
   visitButton: {
     backgroundColor: Colors.colors.neutral02Color.neutral_02,
     paddingVertical: 10,

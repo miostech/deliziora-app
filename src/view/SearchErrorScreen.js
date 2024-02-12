@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'space-evenly',
-        
+
     },
     image: {
         width: 328,
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     TextNotFound: {
         color: colors.colors.neutral01Color.neutral_01,
         textAlign: 'center',
-        fontFamily: "Roboto_400Regular",
+        fontFamily: "Roboto",
         fontSize: 20,
         fontStyle: "normal",
         fontWeight: "600",
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
         width: 328,
         color: colors.colors.neutral01Color.neutral_01,
         textAlign: 'center',
-        fontFamily: "Roboto_400Regular",
+        fontFamily: "Roboto",
         fontSize: 16,
         fontStyle: "normal",
         fontWeight: "500",
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         textAlign: 'center',
-        fontFamily: "Roboto_400Regular",
+        fontFamily: "Roboto",
         fontSize: 14,
         fontStyle: "normal",
         fontWeight: "500",

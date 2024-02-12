@@ -9,7 +9,7 @@ import * as Device from "expo-device";
 const colors = require('./../style/Colors.json')
 
 // Componente para o card completo
-function CompleteRestaurantCard({ id, name, description, navigation, distance, imageUri, isFavorite, toggleFavorite , onOpen}) {
+function CompleteRestaurantCard({ id, name, description, navigation, distance, imageUri, isFavorite, toggleFavorite, onOpen }) {
     return (
         <View style={styles.restaurantCard}>
             <View style={styles.rowCardOne}>
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.colors.neutral02Color.neutral_02,
         color: colors.colors.neutral02Color.neutral_10,
         textAlign: "center",
-        fontFamily: "Roboto_400Regular",
+        fontFamily: "Roboto",
         fontSize: 14,
         fontStyle: "normal",
         fontWeight: "500",

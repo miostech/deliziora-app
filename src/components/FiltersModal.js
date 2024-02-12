@@ -6,6 +6,8 @@ import Close from './SVGs/Close';
 import { Switch } from 'react-native-elements';
 import SwitchOpenOrClose from './Switch';
 import TypeOfSearch from './TypeOfSearch';
+import CharacteristicsFilter from './CharacteristicsFilter';
+import DistanceSlider from './DistanceSlider';
 
 export default function FiltersModal() {
     let rbSheetRef;
@@ -43,7 +45,9 @@ export default function FiltersModal() {
             >
                 <ScrollView contentContainerStyle={styles.scrollView}>
                     <View style={styles.modalHeader}>
-                        <Close />
+                        <Pressable onPress={() => rbSheetRef.close()}>
+                            <Close />
+                        </Pressable>
                         <Text>Filtros</Text>
                     </View>
                     <View style={styles.modalBody}>
@@ -67,16 +71,38 @@ export default function FiltersModal() {
                         </View>
                         <View style={{
                             paddingTop: 10,
-                            gap:10
+                            gap: 10
                         }}>
                             <Text style={{
-                                fontWeight:"bold"
+                                fontWeight: "bold"
                             }}>
                                 Tipo de Menu
                             </Text>
                             <TypeOfSearch />
                         </View>
-                        
+                        <View style={{
+                            paddingTop: 10,
+                        }}>
+                            <Text style={{
+                                fontWeight: "bold"
+                            }}>Caracteristicas</Text>
+                            <Text>Busque por Restaurantes, com uma ou mais caracteristicas</Text>
+                        </View>
+                        <View style={{
+                            paddingBottom: 15,
+                            borderColor: "rgba(255,255,255,0.6",
+                            borderBottomWidth: "1px",
+                        }}>
+                            <CharacteristicsFilter />
+                        </View>
+                        <View style={{
+                            paddingTop: 10,
+                        }}>
+                            <Text style={{
+                                fontWeight: "bold"
+                            }}>Distância</Text>
+                            <DistanceSlider />
+                        </View>
                     </View>
                 </ScrollView>
             </RBSheet>
