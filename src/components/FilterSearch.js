@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 import { Svg, Path } from 'react-native-svg';
-
+import { Pressable } from 'react-native';
 const colors = require("../style/Colors.json");
 
 export function FilterSearch() {
@@ -26,5 +26,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#f8f9fa',
+        borderRadius: 24,
     },
 });

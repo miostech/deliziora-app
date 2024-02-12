@@ -10,9 +10,9 @@ import { Dimensions } from 'react-native';
 import SearchBar2 from './SearchBar2';
 import ModalFavoritesOrNonFavorites from './organisms/ModalFavoritesOurNonFavorites/ModalFavoritesOurNonFavorites';
 import { Path, Svg } from 'react-native-svg';
+import FiltersModal from './FiltersModal';
 const colors = require('./../style/Colors.json');
 const windowWidth = Dimensions.get('window').width;
-import { useNavigation } from '@react-navigation/native';
 const HomeAndFavorites = () => {
     const allrestaurants = useSelector(state => state.restaurants.allRestaurants);
     const favoriteRestaurants = useSelector(state => state.restaurants.favoriteRestaurants);
@@ -21,7 +21,6 @@ const HomeAndFavorites = () => {
     const [nonFavoriteRestaurants, setNonFavoriteRestaurants] = useState([]);
     const [favoriteModalVisible, setFavoriteModalVisible] = useState(false);
     const [nonFavoriteModalVisible, setNonFavoriteModalVisible] = useState(false);
-
 
     useEffect(() => {
         RestaurantService.returnAllRestaurants()
@@ -73,7 +72,19 @@ const HomeAndFavorites = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <SearchBar2 />
+            <View style ={{
+                display:"flex",
+                flexDirection:"row",
+                width:"80%",
+                justifyContent:"center",
+                alignItems:"center",
+                alignSelf:"center",
+                marginRight:20
+            }}>
+                <SearchBar2 />
+                <FiltersModal />
+            </View>
+
             <View style={styles.favoritesContainer}>
                 <View style={{ width: "100%", justifyContent: 'flex-start' }}>
                     <View style={styles.sectionHeader}>

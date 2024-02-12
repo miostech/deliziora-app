@@ -1,0 +1,17 @@
+import { createSlice } from "@reduxjs/toolkit";
+
+const typesOfSearchSlice = createSlice({
+  name: "typesOfSearch",
+  initialState: {
+    selectedOption: "option1", 
+  },
+  reducers: {
+    setSelectedOption(state, action) {
+      state.selectedOption = action.payload;
+    },
+  },
+});
+
+export const { setSelectedOption } = typesOfSearchSlice.actions;
+
+export default typesOfSearchSlice.reducer;

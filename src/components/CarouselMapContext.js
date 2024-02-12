@@ -58,3 +58,4 @@ export const CarouselMapProvider = ({ children }) => {
 };
 
 export default CarouselMapContext;
+

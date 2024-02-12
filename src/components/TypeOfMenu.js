@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
         color: colors.neutral02ColorNeutral01,
         left: "50%",
         textAlign: "left",
-        position: "absolute", 
+        position: "absolute",
     },
     pintadoAssadoTypo: {
         marginLeft: -155,

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { View, Text, StyleSheet, Pressable, TextInput } from 'react-native';
 import InterfaceessentialMagnifier from './SVGs/InterfaceessentialMagnifier/InterfaceessentialMagnifier';
 import { FilterSearch } from './FilterSearch';
 
 export default function SearchBar2() {
+
     return (
         <View style={styles.searchBar2}>
             <View style={styles.content}>
@@ -17,29 +18,8 @@ export default function SearchBar2() {
                     placeholder="Pesquisar"
                 />
             </View>
-            <View>
-                <Pressable style={{
-                    flexShrink: 0,
-                    height: 56,
-                    width: 56,
-                    alignItems: "flex-start",
-                    rowGap: 0,
-                    backgroundColor: "#FFFFFF",
-                    borderRadius: 24,
-                    shadowOffset: {
-                        width: 0,
-                        height: 1
-                    },
-                    shadowRadius: 9,
-                    shadowColor: "rgb(0, 0, 0)",
-                    shadowOpacity: 0.05,
-                }}>
-                    <FilterSearch />
-                </Pressable>
-
-            </View>
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -112,5 +92,21 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "400",
         letterSpacing: 0
+    },
+    filterButton: {
+        flexShrink: 0,
+        height: 56,
+        width: 56,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#FFFFFF",
+        borderRadius: 24,
+        shadowOffset: {
+            width: 0,
+            height: 1
+        },
+        shadowRadius: 9,
+        shadowColor: "rgb(0, 0, 0)",
+        shadowOpacity: 0.05,
     }
-})
+});

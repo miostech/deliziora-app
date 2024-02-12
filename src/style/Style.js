@@ -5,3 +5,4 @@ const colors = require("../style/Colors.json");
 const style = StyleSheet.create({
 
 })
+

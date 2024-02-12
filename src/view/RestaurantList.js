@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import { RestaurantService } from "deliziora-client-module/client-web";
 import Loader from "../components/Loader";
-import SearchBar from "../components/SearchBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import * as Device from "expo-device";

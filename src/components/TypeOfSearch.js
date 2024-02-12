@@ -1,45 +1,32 @@
-import React, { Component, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React from "react";
+import { View, StyleSheet } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedOption } from "../redux/features/typesOfSearchSlice/typesOfSearchSlice";
 
-const TypeOfSearch = ({ setTypeOfMenu, typeOfMenu }) => {
+const TypeOfSearch = () => {
   const dropdownOptions = [
     { label: "Menu completo + prato do dia", value: "option1" },
     { label: "Especialidade apenas", value: "option2" },
     { label: "Todos", value: "option3" },
   ];
 
-  const [selectedOption, setSelectedOption] = useState("");
+  const selectedOption = useSelector((state) => state.typesOfSearch.selectedOption);
+  const dispatch = useDispatch();
 
   const handleValueChange = (value) => {
-    setSelectedOption(value);
-    switch (value) {
-      case "option1":
-        setTypeOfMenu({ complete_menu: true });
-        // updateFilteredSearch()
-        break;
-      case "option2":
-        setTypeOfMenu({ especiality: true });
-        // updateFilteredSearch()
-        break;
-      case "option3":
-        setTypeOfMenu({ complete_menu: true, especiality: true });
-        // updateFilteredSearch()
-        break;
-
-      default:
-        break;
-    }
+    dispatch(setSelectedOption(value));
+    console.log("Redux state Storage Type of menu :" + value);
   };
 
   return (
     <View style={styles.container}>
       <RNPickerSelect
         items={dropdownOptions}
-        placeholder={{ label: "Selecione uma opção", value: { all: true } }}
+        placeholder={{ label: "Selecione uma opção", value: null }}
         onValueChange={handleValueChange}
         style={pickerSelectStyles}
-        value={selectedOption}
+        value={selectedOption || "option1"}
       />
     </View>
   );
@@ -64,7 +51,6 @@ const pickerSelectStyles = StyleSheet.create({
     borderRadius: 4,
     color: "black",
     alignSelf: "flex-start",
-    justifySelf: "flex-start",
     paddingRight: 30,
   },
   inputAndroid: {
@@ -75,7 +61,6 @@ const pickerSelectStyles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     alignSelf: "flex-start",
-    justifySelf: "flex-start",
     borderColor: "purple",
     borderRadius: 8,
     color: "black",

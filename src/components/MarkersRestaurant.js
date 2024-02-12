@@ -1,51 +1,54 @@
-import { View, Text } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+// MarkersRestaurant.js
+
+import React, { useEffect } from "react";
 import { Marker } from "react-native-maps";
+import { useDispatch, useSelector } from 'react-redux';
+import { selectRestaurants, setRestaurants } from './../redux/features/markers/markersSlice';
 import MarkerIconComponent from "./MarkerIconComponent";
-import CarouselMapContext from "./CarouselMapContext";
 import { RestaurantService } from "deliziora-client-module/client-web";
 
 export default function MarkersRestaurant() {
-  const { handleMarkerPress, changeSlide } = useContext(CarouselMapContext);
-  const [restaurants, setRestaurants] = useState([])
-  const handleChangeSlide = (slideIndex) => {
-    changeSlide(slideIndex); 
-  };
+  const dispatch = useDispatch();
+  const restaurants = useSelector(selectRestaurants);
+
   useEffect(() => {
-    RestaurantService.returnAllRestaurants().then((res) => {
-      setRestaurants(res.data);
-    }).catch((err) => {
-      console.error(err)
-    })
-  
-  }, [])
-  
+    RestaurantService.returnAllRestaurants()
+      .then((res) => {
+        dispatch(setRestaurants(res.data));
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [dispatch]);
+
+  const handleChangeSlide = (index) => {
+    // Dispatch actions or perform other logic as needed
+    console.log("Slide index:", index);
+  };
+
+  const handleMarkerPress = (coordinate, restaurantName) => {
+    // Dispatch actions or perform other logic as needed
+    console.log("Marker pressed at:", coordinate);
+    console.log("Restaurant name:", restaurantName);
+  };
+
   return (
     <>
-      {restaurants.map((item) => {
-        return (
-          <Marker
-            key={item.name}
-            identifier="restaurant"
-            draggable={false}
-            onDrag={false}
-            onPress={(e) => {
-              handleChangeSlide(e._dispatchInstances._debugOwner.index, );
-              console.log(e.nativeEvent.coordinate)
-              console.log(
-                "nome do restaurante",
-                e._dispatchInstances._debugOwner.key
-              );
-            }}
-            coordinate={{
-              latitude: parseFloat(item.latitude),
-              longitude: parseFloat(item.longitude),
-            }}
-          >
-            <MarkerIconComponent />
-          </Marker>
-        );
-      })}
+      {restaurants.map((item, index) => (
+        <Marker
+          key={item.name}
+          identifier="restaurant"
+          draggable={false}
+          onDrag={false}
+          onPress={() => handleMarkerPress(item.coordinate, item.name)}
+          coordinate={{
+            latitude: parseFloat(item.latitude),
+            longitude: parseFloat(item.longitude),
+          }}
+        >
+          <MarkerIconComponent />
+        </Marker>
+      ))}
     </>
   );
 }
