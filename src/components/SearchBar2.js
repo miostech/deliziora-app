@@ -25,7 +25,14 @@ export default function SearchBar2() {
                     alignItems: "flex-start",
                     rowGap: 0,
                     backgroundColor: "#FFFFFF",
-                    borderRadius: 24
+                    borderRadius: 24,
+                    shadowOffset: {
+                        width: 0,
+                        height: 1
+                    },
+                    shadowRadius: 9,
+                    shadowColor: "rgb(0, 0, 0)",
+                    shadowOpacity: 0.05,
                 }}>
                     <FilterSearch />
                 </Pressable>

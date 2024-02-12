@@ -333,8 +333,6 @@ console.log("aquii bruno ",restaurantName) */
                     }}
                     style={{ flexDirection: "row", gap: 80 }}
                   >
-                    <ArrowLeft />
-                    <Text>Valor do idRestaurant: {carouselContext.idRestaurant}</Text>
                   </TouchableOpacity>
                 );
               },
