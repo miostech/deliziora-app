@@ -12,12 +12,29 @@ import { setAllRestaurants } from '../redux/features/restaurants/restaurantsSlic
 import RestaurantCard from './../components/RestaurantCard'
 
 const windowWidth = Dimensions.get('window').width;
+
 function HomeScreen() {
   const allRestaurants = useSelector(state => state.restaurants.allRestaurants);
   const favoriteRestaurants = useSelector(state => state.restaurants.favoriteRestaurants);
   const dispatch = useDispatch();
   const [favoriteRestaurantsList, setFavoriteRestaurantsList] = useState([]);
   const [nonFavoriteRestaurantsList, setNonFavoriteRestaurantsList] = useState([]);
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [selectedRestaurantCoordinates, setSelectedRestaurantCoordinates] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permissão para acessar a localização foi negada');
+        return;
+      }
+
+      let currentLocation = await Location.getCurrentPositionAsync({});
+      setLocation(currentLocation);
+    })();
+  }, []);
 
   useEffect(() => {
     RestaurantService.returnAllRestaurants()
@@ -48,13 +65,34 @@ function HomeScreen() {
       type="complete"
       imageUri={item.img}
       enableMomentum
+      onPress={() => setSelectedRestaurantCoordinates({ latitude: item.latitude, longitude: item.longitude })}
     />
   );
+
   return (
     <View style={styles.container}>
-      <MapView
-        style={styles.map}
-      />
+      {location ? (
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        >
+          {selectedRestaurantCoordinates && (
+            <Marker
+              coordinate={selectedRestaurantCoordinates}
+              title="Restaurante Selecionado"
+              description="Coordenadas do Restaurante"
+            />
+          )}
+        </MapView>
+      ) : (
+        <Text>Carregando...</Text>
+      )}
+      {errorMsg && <Text>{errorMsg}</Text>}
       <View
         style={{
           width: "90%",
@@ -71,7 +109,6 @@ function HomeScreen() {
           zIndex: 1
         }}
       >
-
         <SearchBar2 />
         <FiltersModal />
       </View>
@@ -88,9 +125,8 @@ function HomeScreen() {
         <Carousel
           data={allRestaurants}
           renderItem={renderCarouselItem}
-
           style={styles.cardListStyle}
-          sliderWidth={windowWidth} x
+          sliderWidth={windowWidth}
           itemWidth={windowWidth * 0.75}
           itemHeight={190}
         />
