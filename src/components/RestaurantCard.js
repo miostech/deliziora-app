@@ -4,8 +4,10 @@ import { Svg, Path } from 'react-native-svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToFavorites, removeFromFavorites } from '../redux/features/restaurants/restaurantsSlice';
+import { useNavigation } from '@react-navigation/native'; // Importação necessária para usar a navegação
 
 import * as Device from "expo-device";
+import { setCurrentId } from '../redux/features/profilePageSlice/profilePageSlice';
 const colors = require('./../style/Colors.json')
 
 // Componente para o card completo
@@ -13,7 +15,7 @@ function CompleteRestaurantCard({ id, name, description, navigation, distance, i
     return (
         <View style={styles.restaurantCard}>
             <View style={styles.rowCardOne}>
-                <ImageBackground style={styles.image} source={{ uri: imageUri }} />
+                {/* <ImageBackground style={styles.image} source={{ uri: imageUri }} /> */}
                 <View>
                     <Text style={styles.restaurantName}>
                         {name}
@@ -40,7 +42,7 @@ function CompleteRestaurantCard({ id, name, description, navigation, distance, i
                 </Text>
                 <View style={styles.visitButton}>
                     <Button
-                        onPress={() => onOpen(id)}
+                        onPress={() => onOpen(id)} // Aqui foi alterado para chamar onOpen com o ID do restaurante
                         title="Abrir"
                         color={
                             Device.brand == "Apple"
@@ -90,7 +92,7 @@ function MinimalistRestaurantCard({ id, name, imageUri, isFavorite, toggleFavori
                 justifyContent: "flex-start",
                 gap: 10
             }}>
-                <ImageBackground style={
+                {/* <ImageBackground style={
                     {
                         width: 72,
                         height: 58,
@@ -98,7 +100,7 @@ function MinimalistRestaurantCard({ id, name, imageUri, isFavorite, toggleFavori
                         alignItems: "center",
                         borderRadius: 8
                     }
-                } source={{ uri: imageUri }} />
+                } source={{ uri: imageUri }} /> */}
                 <View>
                     <Text style={{
                         maxWidth: 200,
@@ -140,6 +142,7 @@ function MinimalistRestaurantCard({ id, name, imageUri, isFavorite, toggleFavori
 }
 
 export default function RestaurantCard({ id, name, description, distance, imageUri, isLoading, type, onOpen }) {
+    const navigation = useNavigation(); // Obter objeto de navegação
 
     const dispatch = useDispatch();
     const [isFavorite, setIsFavorite] = useState(false);
@@ -165,24 +168,28 @@ export default function RestaurantCard({ id, name, description, distance, imageU
 
     const toggleFavorite = async () => {
         try {
+            console.log("HERE", id)
             // Verifica se o restaurante é favorito
-            if (isFavorite) {
+            if (favoriteRestaurants.includes(id)) {
                 // Remove o restaurante dos favoritos
-                const updatedFavorites = favoriteRestaurants.filter(restaurantId => restaurantId !== id);
-                await AsyncStorage.setItem('favoriteRestaurants', JSON.stringify(updatedFavorites));
                 dispatch(removeFromFavorites({ restaurantId: id }));
             } else {
                 // Adiciona o restaurante aos favoritos
-                const updatedFavorites = [...favoriteRestaurants, id];
-                await AsyncStorage.setItem('favoriteRestaurants', JSON.stringify(updatedFavorites));
                 dispatch(addToFavorites({ restaurantId: id }));
             }
-            // Atualiza o estado local do favorito
-            setIsFavorite(!isFavorite);
         } catch (error) {
             console.error('Erro ao atualizar restaurantes favoritos:', error);
         }
     };
+
+    const handleOpen = () => {
+        // Navegar para a página ProfileRestaurantPage com o ID do card clicado
+        navigation.navigate('ProfileRestaurantPage', { restaurantId: id });
+        // Armazenar o ID do restaurante no estado global do Redux
+        dispatch(setCurrentId(id));
+        console.log(id, "cade");
+    };
+
 
     if (isLoading) {
         // Se estiver carregando, exibir o esqueleto
@@ -201,8 +208,9 @@ export default function RestaurantCard({ id, name, description, distance, imageU
                 description={description}
                 distance={distance}
                 imageUri={imageUri}
-                isFavorite={isFavorite}
+                isFavorite={favoriteRestaurants.includes(id)}
                 toggleFavorite={toggleFavorite}
+                onOpen={handleOpen} // Alterado para chamar handleOpen
             />
         );
     } else if (type === 'minimalist') {
@@ -214,6 +222,7 @@ export default function RestaurantCard({ id, name, description, distance, imageU
                 imageUri={imageUri}
                 isFavorite={isFavorite}
                 toggleFavorite={toggleFavorite}
+                onOpen={handleOpen} // Alterado para chamar handleOpen
             />
         );
     }
@@ -263,27 +272,6 @@ const styles = StyleSheet.create({
         maxHeight: 100,
         minWidth: 100,
         maxWidth: 100
-    },
-    imageMinimalist: {
-        flex: 1,
-        minHeight: 100,
-        maxHeight: 100,
-        minWidth: 100,
-        maxWidth: 100,
-    },
-    restaurantName: {
-        maxWidth: 160,
-        fontSize: 16,
-        fontWeight: '500',
-        color: '#29272D',
-        fontFamily: 'Roboto',
-    },
-    restaurantNameMinimalist: {
-        maxWidth: 200,
-        fontSize: 16,
-        fontWeight: '500',
-        color: '#29272D',
-        fontFamily: 'Roboto',
     },
     description: {
         width: "60%",

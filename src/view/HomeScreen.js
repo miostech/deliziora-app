@@ -1,5 +1,4 @@
-// HomeScreen.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import MapView, { Marker } from 'react-native-maps';
@@ -9,19 +8,17 @@ import FiltersModal from './../components/FiltersModal';
 import Carousel from 'react-native-snap-carousel';
 import { RestaurantService } from 'deliziora-client-module/client-web';
 import { setAllRestaurants } from '../redux/features/restaurants/restaurantsSlice';
-import RestaurantCard from './../components/RestaurantCard'
+import RestaurantCard from './../components/RestaurantCard';
+import MarkersRestaurant from './../components/MarkersRestaurant';
 
 const windowWidth = Dimensions.get('window').width;
 
 function HomeScreen() {
   const allRestaurants = useSelector(state => state.restaurants.allRestaurants);
-  const favoriteRestaurants = useSelector(state => state.restaurants.favoriteRestaurants);
   const dispatch = useDispatch();
-  const [favoriteRestaurantsList, setFavoriteRestaurantsList] = useState([]);
-  const [nonFavoriteRestaurantsList, setNonFavoriteRestaurantsList] = useState([]);
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-  const [selectedRestaurantCoordinates, setSelectedRestaurantCoordinates] = useState(null);
+  const mapRef = useRef(null);
 
   useEffect(() => {
     (async () => {
@@ -47,25 +44,28 @@ function HomeScreen() {
       });
   }, [dispatch]);
 
-  useEffect(() => {
-    const favoriteRestaurantsDetails = allRestaurants.filter(restaurant => favoriteRestaurants.includes(restaurant.id)); // Altere para o campo correto do id do restaurante
-    setFavoriteRestaurantsList(favoriteRestaurantsDetails);
-
-    const nonFavoriteRestaurantsDetails = allRestaurants.filter(restaurant => !favoriteRestaurants.includes(restaurant.id)); // Altere para o campo correto do id do restaurante
-    setNonFavoriteRestaurantsList(nonFavoriteRestaurantsDetails);
-  }, [favoriteRestaurants, allRestaurants]);
+  const handleChangeSlide = (index) => {
+    if (mapRef.current && allRestaurants[index]) {
+      const { latitude, longitude } = allRestaurants[index];
+      mapRef.current.animateToRegion({
+        latitude,
+        longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    }
+  };
 
   const renderCarouselItem = ({ item }) => (
     <RestaurantCard
       key={item.id}
-      id={item.id}
+      id={item._id.$oid}
       name={item.name}
       description={item.description}
       distance={item.distance}
       type="complete"
       imageUri={item.img}
       enableMomentum
-      onPress={() => setSelectedRestaurantCoordinates({ latitude: item.latitude, longitude: item.longitude })}
     />
   );
 
@@ -73,6 +73,7 @@ function HomeScreen() {
     <View style={styles.container}>
       {location ? (
         <MapView
+          ref={mapRef}
           style={styles.map}
           initialRegion={{
             latitude: location.coords.latitude,
@@ -81,13 +82,7 @@ function HomeScreen() {
             longitudeDelta: 0.0421,
           }}
         >
-          {selectedRestaurantCoordinates && (
-            <Marker
-              coordinate={selectedRestaurantCoordinates}
-              title="Restaurante Selecionado"
-              description="Coordenadas do Restaurante"
-            />
-          )}
+          <MarkersRestaurant />
         </MapView>
       ) : (
         <Text>Carregando...</Text>
@@ -127,8 +122,9 @@ function HomeScreen() {
           renderItem={renderCarouselItem}
           style={styles.cardListStyle}
           sliderWidth={windowWidth}
-          itemWidth={windowWidth * 0.75}
-          itemHeight={190}
+          itemWidth={windowWidth * 0.87}
+          itemHeight={200}
+          onSnapToItem={handleChangeSlide} // Adiciona esta propriedade para chamar handleChangeSlide quando o slide muda
         />
       </View>
     </View>

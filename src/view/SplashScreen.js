@@ -7,10 +7,13 @@ import * as Device from "expo-device";
 import { Image, SafeAreaView, Text, View } from "react-native";
 
 import { BackHandler } from 'react-native';
+import { useDispatch } from "react-redux";
+import { setAllFavoritesRestaurants } from "../redux/features/restaurants/restaurantsSlice";
 
 const gif = require("../../assets/SplashDelizioragif.gif");
 export default function SplashScreen({ navigation }) {
   const [storedData, setStoredData] = useState("");
+  const dispatch = useDispatch();
   const saveData = async (data) => {
     try {
       await AsyncStorage.setItem("userData", data);
@@ -32,6 +35,12 @@ export default function SplashScreen({ navigation }) {
   };
   useEffect(() => {
     const id = uuid4();
+    AsyncStorage.getItem("@favoriteRestaurants").then((response) => {
+      console.warn(response);
+      if (response !== null) {
+        dispatch(setAllFavoritesRestaurants(JSON.parse(response)));
+      }
+    })
     AsyncStorage.getItem("@userData").then((response) => {
       console.log(response);
       if (response == undefined || response == null) {
