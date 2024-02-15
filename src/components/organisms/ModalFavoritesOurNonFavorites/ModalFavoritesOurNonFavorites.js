@@ -120,16 +120,12 @@ const styles = {
         flexDirection: "row",
         paddingLeft: "5%",
         paddingBottom: "5%",
-        borderBottomWidth: 1,
-        borderColor: "#FFF6F9"
     },
     headerTitleContainer: {
         width: "90%",
         height: "100%",
         alignItems: "center",
         paddingRight: "10%",
-        borderBottomWidth: 1,
-        borderColor: "#FFF6F9"
     },
     headerTitle: {
         color: "#313033",

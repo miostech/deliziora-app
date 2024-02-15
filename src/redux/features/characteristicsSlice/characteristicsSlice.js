@@ -1,35 +1,35 @@
-// characteristicsSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
 const characteristicsSlice = createSlice({
     name: 'characteristics',
-    initialState: [],
+    initialState: [], // Estado inicial como um array vazio
     reducers: {
         setSelectedCharacteristics: (state, action) => {
-            console.log("setSelectedCharacteristic", action.payload);
-            state.selectedCharacteristics = action.payload;
+            // Define o estado como o payload da ação
+            return action.payload;
         },
         toggleSelectedCharacteristic: (state, action) => {
-            console.log("toggleSelectedCharacteristic", action.payload);
             const characteristic = action.payload;
-            const index = state.selectedCharacteristics?.filter((value) => value == characteristic)?.length;
-            console.log("AQUI", action.payload)
-            console.log("INDEX", index)
-            if (index > 0) {
-                state = state.selectedCharacteristics?.filter((value) => value != characteristic);
-                return state
+            // Verifica se a característica já está presente no estado
+            const index = state.findIndex(char => char === characteristic);
+            if (index !== -1) {
+                // Remove a característica se já estiver presente
+                state.splice(index, 1);
             } else {
-                state.selectedCharacteristics?.push(characteristic);
+                // Adiciona a característica se não estiver presente
+                state.push(characteristic);
             }
         },
-
         updateSelectedCharacteristic: (state, action) => {
-            const checkIfExist = state.filter(f => f == action.payload);
-            if (checkIfExist.length === 0) {
-                state.push(action.payload)
+            const characteristic = action.payload;
+            // Verifica se a característica já está presente no estado
+            const index = state.findIndex(char => char === characteristic);
+            if (index === -1) {
+                // Adiciona a característica se não estiver presente
+                state.push(characteristic);
             } else {
-                state = state.filter(f => f != action.payload)
-                return state
+                // Remove a característica se já estiver presente
+                state.splice(index, 1);
             }
         },
     },

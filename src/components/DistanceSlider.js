@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
         shadowOffset: {
             width: 0,
             height: 2,
+
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
@@ -61,15 +62,16 @@ const styles = StyleSheet.create({
     },
     ViewText: {
         marginTop: 10,
-        borderWidth: 1,
-        borderColor: 'black',
         display: "flex",
         width: 150,
         height: 51,
         padding: 8,
-        flexDirection: "column",
-        alignItems: "center",
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 10,
         justifyContent: "center",
+        alignItems: "center",
+        marginBottom: 10,
         borderRadius: 10,
         gap: 5,
         flexShrink: 0,

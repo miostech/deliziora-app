@@ -1,13 +1,6 @@
 import { CharacteristicsService } from "deliziora-client-module/client-web";
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Switch,
-  TouchableOpacity,
-  Pressable,
-} from "react-native";
+import { View, Text, StyleSheet, Switch, TouchableOpacity, Pressable } from "react-native";
 import Modal from "react-native-modal";
 import Close from "./SVGs/Close";
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,35 +9,46 @@ import { setSelectedCharacteristics, toggleSelectedCharacteristic, updateSelecte
 const CharacteristicsFilter = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
-  const [allchar, setAllChar] = useState([])
+  const [allchar, setAllChar] = useState([]);
 
   const selectedCharacteristics = useSelector(state => state.characteristics);
 
   useEffect(() => {
+    // Obtém todas as características da API quando o componente é montado
     CharacteristicsService.returnAllCharacteristics().then((res) => {
       setAllChar(res.data);
+      console.log("Temos aqui >>", selectedCharacteristics)
+      // Por padrão, todas as características estão selecionadas
+      dispatch(setSelectedCharacteristics(res.data.map(option => option._id.$oid)));
     });
 
     return () => {
       setAllChar([]);
     };
-  }, []);
-
-  useEffect(() => {
-    console.log('Characteristic filter rendered', selectedCharacteristics);
-  }, [selectedCharacteristics]);
-
+  }, [allchar]);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
   const handleSwitchToggle = (characteristic) => {
-    // Update Redux state
-    dispatch(updateSelectedCharacteristic(characteristic));
+    // Ativa ou desativa a característica
+    dispatch(toggleSelectedCharacteristic(characteristic));
+    // Exibe todas as características no console
+    console.log("Características selecionadas:", selectedCharacteristics);
   };
 
-
+  const handleToggleAll = () => {
+    // Se "Selecionar Todas" estiver ativado, seleciona todas as características
+    if (selectedCharacteristics.length !== allchar.length) {
+      dispatch(setSelectedCharacteristics(allchar.map(option => option._id.$oid)));
+    } else {
+      // Senão, desmarca todas as características
+      dispatch(setSelectedCharacteristics([]));
+    }
+    // Exibe todas as características no console
+    console.log("Características selecionadas:", selectedCharacteristics);
+  };
 
   return (
     <View style={styles.container}>
@@ -52,28 +56,26 @@ const CharacteristicsFilter = () => {
         <Text style={styles.openModalText}>Selecionar Caracteristicas</Text>
       </Pressable>
 
-      {/* Modal Content */}
       <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
         <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
             <Text style={styles.modalLabel}>Selecione as características:</Text>
             <Pressable onPress={toggleModal}>
-              <Text>Close</Text>
+              <Text><Close /></Text>
             </Pressable>
           </View>
           <View style={styles.modalItem}>
             <Text style={styles.characteristicLabel}>Selecionar Todas</Text>
             <Switch
-
-              onValueChange={() => handleSwitchToggle("all")}
-              value={selectedCharacteristics?.length !== allchar.length}
+              onValueChange={handleToggleAll}
+              value={selectedCharacteristics.length === allchar.length}
             />
           </View>
           {allchar.map((option) => (
             <View key={option._id.$oid} style={styles.modalItem}>
               <Text style={styles.characteristicLabel}>{option.name}</Text>
               <Switch
-                value={selectedCharacteristics?.includes(option._id.$oid)}
+                value={selectedCharacteristics.includes(option._id.$oid)}
                 onValueChange={() => handleSwitchToggle(option._id.$oid)}
               />
             </View>

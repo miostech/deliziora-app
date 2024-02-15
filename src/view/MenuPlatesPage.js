@@ -75,7 +75,6 @@ export default function MenuPlatesPage({ route, navigation }) {
         style={{
           marginVertical: 20,
           marginHorizontal: 20,
-          borderBottomWidth: 1,
           flexDirection: "row",
           justifyContent: "space-between",
           paddingBottom: 15,

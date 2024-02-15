@@ -55,7 +55,7 @@ function HomeTab({ listType }) {
   const isFocused = useIsFocused();
 
   return (
-    <Tab.Navigator initialRouteName="Map" options={{ headerShadowVisible: false, headerShown: false }}>
+    <Tab.Navigator initialRouteName="Home" options={{ headerShadowVisible: false, headerShown: false }}>
       <Tab.Screen name="Home" component={HomeAndFavorites} options={{ tabBarShowLabel: false }} />
       <Tab.Screen name="Map" component={HomeScreen} options={{ tabBarShowLabel: false }} />
       <Tab.Screen name="Notifications" component={Notifications} options={{ tabBarShowLabel: false }} />

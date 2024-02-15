@@ -5,6 +5,8 @@ import carouselReducer from './carousel/carouselSlice';
 import switchSliceReducer from './switchSlice/switchSlice';
 import typesOfSearchReducer from './typesOfSearchSlice/typesOfSearchSlice';
 import characteristicsSliceReducer from './characteristicsSlice/characteristicsSlice';
+import locationReducer from './locationSlice/locationSlice';
+import listTypeReducer from './listTypeSlice/listTypeSlice';
 const rootReducer = combineReducers({
     restaurants: restaurantsReducer,
     markers: markersReducer,
@@ -12,6 +14,8 @@ const rootReducer = combineReducers({
     switchSlice: switchSliceReducer,
     typesOfSearch: typesOfSearchReducer,
     characteristics: characteristicsSliceReducer,
+    location: locationReducer,
+    listType: listTypeReducer,
 });
 
 export default rootReducer;

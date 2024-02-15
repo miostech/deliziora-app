@@ -62,8 +62,6 @@ export default function FiltersModal() {
                             justifyContent: "center",
                             height: 40,
                             paddingBottom: 15,
-                            borderColor: "rgba(255,255,255,0.6",
-                            borderBottomWidth: "1px",
                         }}>
 
                             <Text>Mostrar apenas restaurantes abertos </Text>
@@ -71,7 +69,9 @@ export default function FiltersModal() {
                         </View>
                         <View style={{
                             paddingTop: 10,
-                            gap: 10
+                            gap: 10,
+                            borderTopWidth: 1,
+                            borderTopColor: 'gray'
                         }}>
                             <Text style={{
                                 fontWeight: "bold"
@@ -90,18 +90,75 @@ export default function FiltersModal() {
                         </View>
                         <View style={{
                             paddingBottom: 15,
-                            borderColor: "rgba(255,255,255,0.6",
-                            borderBottomWidth: "1px",
                         }}>
                             <CharacteristicsFilter />
                         </View>
                         <View style={{
                             paddingTop: 10,
+                            borderTopColor: 'gray',
+                            borderTopWidth: 1,
+                            borderBottomColor: 'gray',
+                            borderBottomWidth: 1
                         }}>
                             <Text style={{
                                 fontWeight: "bold"
                             }}>Distância</Text>
                             <DistanceSlider />
+                        </View>
+                        <View style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            marginTop: 40,
+                            justifyContent: "space-evenly",
+                            alignItems: "center",
+                            gap: 10,
+                        }}>
+                            <Pressable
+                                style={{
+                                    backgroundColor: "white",
+                                    borderRadius: 100,
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    width: "auto",
+                                    minWidth: 150,
+                                    height: 40,
+                                    borderColor: "#000000",
+                                    borderWidth: 1,
+                                    marginTop: 10,
+                                    padding: 10,
+                                }}
+                                onPress={() => rbSheetRef.close()}
+                            >
+                                <Text 
+                                style={{
+                                    fontWeight: "bold",
+                                    color: "#000000",
+                                    textAlign: "center",
+                                    fontSize: 16
+                                }}>
+                                    Limpar filtros
+                                </Text>
+                            </Pressable>
+                            <Pressable style={{
+                                backgroundColor: "#000000",
+                                borderRadius: 100,
+                                justifyContent: "center",
+                                alignItems: "center",
+                                width: "auto",
+                                minWidth: 150,
+                                height: 40,
+                                marginTop: 10,
+                                padding: 10,
+                            }}>
+                                <Text style={{
+                                    fontWeight: "bold",
+                                    color: "white",
+                                    textAlign: "center",
+                                    fontSize: 16
+                                }}>
+                                    Ver Restaurantes
+                                </Text>
+                            </Pressable>
                         </View>
                     </View>
                 </ScrollView>
@@ -122,11 +179,11 @@ const styles = StyleSheet.create({
         width: "100%",
         display: "flex",
         height: 60,
-        borderColor: "rgba(255,255,255,0.6",
-        borderBottomWidth: "1px",
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        gap: 20
-    }
+        gap: 20,
+        borderBottomColor: 'gray',
+        borderBottomWidth: 1
+    },
 });
