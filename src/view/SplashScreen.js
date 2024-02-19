@@ -5,7 +5,6 @@ import "react-native-get-random-values";
 import { v4 as uuid4 } from "uuid";
 import * as Device from "expo-device";
 import { Image, SafeAreaView, Text, View } from "react-native";
-
 import { BackHandler } from 'react-native';
 import { useDispatch } from "react-redux";
 import { setAllFavoritesRestaurants } from "../redux/features/restaurants/restaurantsSlice";

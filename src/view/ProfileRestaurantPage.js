@@ -6,9 +6,6 @@ import ArrowLeft from '../components/SVGs/ArrowLeft/ArrowLeft';
 import { useNavigation } from '@react-navigation/native';
 import { Path, Svg } from 'react-native-svg';
 import { Image } from 'react-native-elements';
-import MapSvg from '../components/SVGs/MapSvg/MapSvg';
-import Carousel from 'react-native-snap-carousel';
-
 
 export default function ProfileRestaurantPage() {
 
@@ -33,7 +30,6 @@ export default function ProfileRestaurantPage() {
     if (!openingHours) {
       return false;
     }
-
     const { open, closed } = openingHours;
     if (currentTime >= open && currentTime <= closed) {
       return true;
@@ -77,18 +73,26 @@ export default function ProfileRestaurantPage() {
   const [allChars, setAllChars] = useState([]);
   const [filteredChars, SetFilteredChars] = useState([]);
   useEffect(() => {
-    CharacteristicsService.returnAllCharacteristics().then(response => {
+    const fetchCharacteristics = async () => {
+      const response = await CharacteristicsService.returnAllCharacteristics();
       setAllChars(response.data);
-      console.log("Temos aqui >>", allChars)
-      console.log("Temos aqui <<", restaurantData.characteristics)
+    };
+
+    // Verify if allChars is empty before proceeding with the process
+    if (allChars.length === 0) {
+      fetchCharacteristics();
+    } else {
+      // Block of code need to be executed only when allChars is not empty
+      console.log("Temos aqui >>", allChars);
+      console.log("Temos aqui <<", restaurantData.characteristics);
       // Filtrar os elementos de allChars que também estão presentes em restaurantData.characteristics
-      SetFilteredChars(allChars.filter(char => restaurantData.characteristics.includes(char._id.$oid)))
+      SetFilteredChars(allChars.filter(char => restaurantData.characteristics.includes(char._id.$oid)));
 
       // Agora você pode usar filteredChars, que contém apenas as características presentes tanto em allChars quanto em restaurantData.characteristics
       console.log("Características filtradas:", filteredChars);
+    }
+  }, [allChars]);
 
-    });
-  }, []);
 
 
   useEffect(() => {
@@ -122,9 +126,6 @@ export default function ProfileRestaurantPage() {
       </View>
     );
   }
-
-
-
 
 
   return (
@@ -274,39 +275,40 @@ export default function ProfileRestaurantPage() {
 
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => this.flatListRef.scrollToOffset({ animated: true, offset: 0 })}>
-            <Text style={{ fontSize: 12 }}>{"<"}</Text>
-          </TouchableOpacity>
+          <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Path d="M16 3.25C15.8009 3.24906 15.6099 3.32837 15.47 3.47L7.46999 11.47C7.17754 11.7628 7.17754 12.2372 7.46999 12.53L15.47 20.53C15.7655 20.8054 16.226 20.7972 16.5116 20.5116C16.7972 20.226 16.8053 19.7655 16.53 19.47L9.05999 12L16.53 4.53C16.8224 4.23718 16.8224 3.76282 16.53 3.47C16.3901 3.32837 16.1991 3.24906 16 3.25Z" fill="#79767B" />
+          </Svg>
           <FlatList
-            ref={(ref) => { this.flatListRef = ref; }}
             data={filteredChars}
+            style={{
+              maxWidth: 300,
+              height: 50,
+              padding: 10,
+            }}
             renderItem={({ item }) => (
               <Image source={{ uri: item.icon }} style={{ width: 32, height: 32 }} />
             )}
-            keyExtractor={(item) => item.toString()}
-            horizontal={true}
-            scrollEnabled
-            pinchGestureEnabled
             contentContainerStyle={{
               gap: 30,
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 300,
-              paddingVertical: 10,
+              paddingRight: 20,
             }}
+            keyExtractor={(item) => item.toString()}
+            horizontal={true}
           />
-          <TouchableOpacity onPress={() => {
-            this.flatListRef.scrollToEnd({ animated: true });
-          }}>
-            <Text style={{ fontSize: 24 }}>{">"}</Text>
-          </TouchableOpacity>
+          <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Path d="M8.00001 20.75C8.19908 20.7509 8.39013 20.6716 8.53001 20.53L16.53 12.53C16.8225 12.2372 16.8225 11.7628 16.53 11.47L8.53001 3.47C8.2345 3.19464 7.774 3.20277 7.48839 3.48838C7.20278 3.77399 7.19465 4.23449 7.47001 4.53L14.94 12L7.47001 19.47C7.17756 19.7628 7.17756 20.2372 7.47001 20.53C7.6099 20.6716 7.80095 20.7509 8.00001 20.75Z" fill="#79767B" />
+          </Svg>
         </View>
         <View style={{
           display: "flex",
           flexDirection: "column",
-          gap: 5
+          gap: 5,
+          minWidth: "90%",
+          maxWidth: "90%",
         }}>
-          <Text>
+          <Text style={{
+            textAlign: "justify",
+          }}>
             {isDescriptionExpanded ? restaurantData.description : `${restaurantData.description.substring(0, 50)}...`}
           </Text>
           <Pressable onPress={() => setIsDescriptionExpanded(!isDescriptionExpanded)}>
@@ -316,6 +318,7 @@ export default function ProfileRestaurantPage() {
               fontSize: 12,
               fontStyle: "normal",
               fontWeight: "400",
+              paddingBottom: 10,
             }}>
               {isDescriptionExpanded ? 'Ver menos' : 'Ver mais'}
             </Text>
@@ -324,7 +327,8 @@ export default function ProfileRestaurantPage() {
         <View style={{
           display: "flex",
           flexDirection: "column",
-          width: 300,
+          width: "90%",
+          maxWidth: "90%",
           gap: 5,
           justifyContent: "flex-start",
           alignItems: "flex-start",
