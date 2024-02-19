@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, FlatList, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { RestaurantService } from 'deliziora-client-module/client-web';
+import { CharacteristicsService, MenuOfTheDayService, RestaurantService } from 'deliziora-client-module/client-web';
 import ArrowLeft from '../components/SVGs/ArrowLeft/ArrowLeft';
 import { useNavigation } from '@react-navigation/native';
 import { Path, Svg } from 'react-native-svg';
@@ -9,7 +9,9 @@ import { Image } from 'react-native-elements';
 import MapSvg from '../components/SVGs/MapSvg/MapSvg';
 import Carousel from 'react-native-snap-carousel';
 
+
 export default function ProfileRestaurantPage() {
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [restaurantData, setRestaurantData] = useState(null);
@@ -19,7 +21,7 @@ export default function ProfileRestaurantPage() {
   const currentId = useSelector(state => state.profilePage.currentId);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-
+  const [allMenuOfDay, setAllMenuOfDay] = useState([]);
   // Função para verificar se o restaurante está aberto
   const isRestaurantOpen = () => {
     const currentDate = new Date();
@@ -27,7 +29,6 @@ export default function ProfileRestaurantPage() {
     const currentHour = currentDate.getHours();
     const currentMinutes = currentDate.getMinutes();
     const currentTime = `${currentHour}:${currentMinutes}`;
-
     const openingHours = restaurantData.opening_hours[currentDay];
     if (!openingHours) {
       return false;
@@ -73,6 +74,23 @@ export default function ProfileRestaurantPage() {
     };
   }, [currentId, dispatch]);
 
+  const [allChars, setAllChars] = useState([]);
+  const [filteredChars, SetFilteredChars] = useState([]);
+  useEffect(() => {
+    CharacteristicsService.returnAllCharacteristics().then(response => {
+      setAllChars(response.data);
+      console.log("Temos aqui >>", allChars)
+      console.log("Temos aqui <<", restaurantData.characteristics)
+      // Filtrar os elementos de allChars que também estão presentes em restaurantData.characteristics
+      SetFilteredChars(allChars.filter(char => restaurantData.characteristics.includes(char._id.$oid)))
+
+      // Agora você pode usar filteredChars, que contém apenas as características presentes tanto em allChars quanto em restaurantData.characteristics
+      console.log("Características filtradas:", filteredChars);
+
+    });
+  }, []);
+
+
   useEffect(() => {
     // Verificar se o restaurante está aberto quando os dados do restaurante são carregados
     if (restaurantData) {
@@ -104,6 +122,10 @@ export default function ProfileRestaurantPage() {
       </View>
     );
   }
+
+
+
+
 
   return (
     <View>
@@ -238,6 +260,7 @@ export default function ProfileRestaurantPage() {
               fontStyle: "normal",
               fontWeight: "400",
             }}>12AM - 23PM</Text>
+            {/* Horario não está correto */}
             <Text style={{
               color: restaurantIsOpen ? "#00662C" : "#FF0000",
               fontFamily: "Roboto",
@@ -248,7 +271,35 @@ export default function ProfileRestaurantPage() {
               | {restaurantIsOpen ? 'Aberto' : 'Fechado'}
             </Text>
           </View>
-          {/* Carousel aqui */}
+
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => this.flatListRef.scrollToOffset({ animated: true, offset: 0 })}>
+            <Text style={{ fontSize: 12 }}>{"<"}</Text>
+          </TouchableOpacity>
+          <FlatList
+            ref={(ref) => { this.flatListRef = ref; }}
+            data={filteredChars}
+            renderItem={({ item }) => (
+              <Image source={{ uri: item.icon }} style={{ width: 32, height: 32 }} />
+            )}
+            keyExtractor={(item) => item.toString()}
+            horizontal={true}
+            scrollEnabled
+            pinchGestureEnabled
+            contentContainerStyle={{
+              gap: 30,
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 300,
+              paddingVertical: 10,
+            }}
+          />
+          <TouchableOpacity onPress={() => {
+            this.flatListRef.scrollToEnd({ animated: true });
+          }}>
+            <Text style={{ fontSize: 24 }}>{">"}</Text>
+          </TouchableOpacity>
         </View>
         <View style={{
           display: "flex",
@@ -306,10 +357,10 @@ export default function ProfileRestaurantPage() {
             fontSize: 18,
             fontStyle: "normal",
             fontWeight: "bold",
-             }}>
+          }}>
             Prato do Dia
           </Text>
-        
+
         </View>
         {/* TODO ir para menu completo */}
         <Pressable style={{
@@ -322,16 +373,16 @@ export default function ProfileRestaurantPage() {
           justifyContent: "center",
           alignItems: "center",
         }}>
-         <Text style={{
-          color: "#fff",
-          textAlign: "center",
-          fontFamily: "Roboto",
-          fontSize: 14,
-          fontStyle: "normal",
-          fontWeight: "500",
-          lineHeight: 20, // 142.857%
+          <Text style={{
+            color: "#fff",
+            textAlign: "center",
+            fontFamily: "Roboto",
+            fontSize: 14,
+            fontStyle: "normal",
+            fontWeight: "500",
+            lineHeight: 20, // 142.857%
           }}>
-          Ver Menu Completo
+            Ver Menu Completo
           </Text>
         </Pressable>
       </View>
