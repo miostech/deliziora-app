@@ -122,6 +122,7 @@ function HomeScreen() {
           renderItem={renderCarouselItem}
           style={styles.cardListStyle}
           sliderWidth={windowWidth}
+          enableMomentum
           itemWidth={windowWidth * 0.87}
           itemHeight={200}
           onSnapToItem={handleChangeSlide} // Adiciona esta propriedade para chamar handleChangeSlide quando o slide muda

@@ -10,12 +10,14 @@ import * as Device from "expo-device";
 import { Image, SafeAreaView, Text, View } from "react-native";
 import * as Location from "expo-location";
 import { BackHandler } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setAllFavoritesRestaurants } from "../redux/features/restaurants/restaurantsSlice";
 import { useNavigation } from "@react-navigation/native";
+import { updateLocation } from "../redux/features/locationSlice/locationSlice";
 
 const gif = require("../../assets/SplashDelizioragif.gif");
 export default function SplashScreen() {
+  const location = useSelector((state) => state.location);
   const navigation = useNavigation();
   const [storedData, setStoredData] = useState("");
   const [currentLatitude, setcurrentLatitude] = useState("");
@@ -41,85 +43,160 @@ export default function SplashScreen() {
       console.error("Error loading data:", error);
     }
   };
-  useEffect(() => {
-    const id = uuid4();
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMsg("Permissão para acessar a localização foi negada");
-        return;
-      }
 
-      let currentLocation = await Location.getCurrentPositionAsync({});
-      console.log("AQUII", currentLocation.coords.latitude);
-      setcurrentLatitude(currentLocation.coords.latitude);
-      console.log("AQUII", currentLocation.coords.longitude);
-      setcurrentLongitude(currentLocation.coords.longitude);
-      fetch(
-        `https://json.geoapi.pt/gps/${currentLocation.coords.latitude},${currentLocation.coords.longitude}`
-      )
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          // Work with the JSON data here
-          console.log("DEU CERTO", data);
-          setRegionDataResponse(data);
-        })
-        .catch((error) => {
-          console.error(
-            "There was a problem with your fetch operation:",
-            error
-          );
-        });
-    })();
-    AsyncStorage.getItem("@favoriteRestaurants").then((response) => {
-      console.warn(response);
-      if (response !== null) {
-        dispatch(setAllFavoritesRestaurants(JSON.parse(response)));
+  function getStatusLocation() {
+    return new Promise(async (res, rej) => {
+      try {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        res(status);
+      } catch (error) {
+        rej(error);
       }
     });
-    AsyncStorage.getItem("@userData").then((response) => {
-      console.log(response);
+  }
+
+  function getCurrentLocationDevice() {
+    return new Promise(async (res, rej) => {
+      try {
+        let currentLocation = await Location.getCurrentPositionAsync({});
+        console.log(
+          "AQUII",
+          currentLocation.coords.latitude,
+          currentLocation.coords.longitude
+        );
+        res(currentLocation);
+        // dispatch(
+        //   updateLocation({
+        //     latitude: currentLocation.coords.latitude,
+        //     longitude: currentLocation.coords.longitude,
+        //   })
+        // );
+      } catch (error) {
+        rej(error);
+      }
+    });
+  }
+
+  function checkFirstTimeApp() {
+    return new Promise(async (res, rej) => {
+      const user = await AsyncStorage.getItem("@userData");
+      res(user);
+    });
+  }
+
+  useEffect(() => {
+    const id = uuid4();
+
+    checkFirstTimeApp().then((response) => {
       if (response == undefined || response == null) {
-        AnonymousUserService.addAnonymousUser({
-          uuid: id,
-          created_at: "",
-          device_name: Device.brand,
-        })
-          .then((res) => {
-            console.log(res.data);
-            AnonymousUserLocationService.createNewUserLocation({
-              id_anonymous_user: res.data,
-              district: regionDataResponse.distrito,
-              county: regionDataResponse.concelho,
-              parish: regionDataResponse.freguesia,
-              latitude: currentLatitude,
-              longitude: currentLongitude,
-            })
-              .then((responseLoc) => {
-                AsyncStorage.setItem("@userData", res.data);
-                setTimeout(() => {
-                  navigation.reset({
-                    index: 0,
-                    routes: [{ name: "Walkthrough" }],
-                  });
-                }, 2900);
-              })
-              .catch((err) => console.error("ERRO", err));
-          })
-          .catch((err) => {
-            console.error(err);
-            
+        setTimeout(() => {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Walkthrough" }],
           });
+        }, 2900);
       } else {
         navigation.navigate("HomeTab", { screen: "Map" });
       }
     });
-  }, []);
+
+    //   if (status === "granted") {
+    //     console.log(location);
+    //     AsyncStorage.getItem("@userData").then((response) => {
+    //       console.log(response);
+    //       if (response == undefined || response == null) {
+    //         fetch(
+    //           `https://json.geoapi.pt/gps/${currentLocation.coords.latitude},${currentLocation.coords.longitude}`,
+    //           {
+    //             headers: {
+    //               Accept: "application/json",
+    //             },
+    //           }
+    //         )
+    //           .then((response) => {
+    //             if (!response.ok) {
+    //               throw new Error("Network response was not ok");
+    //             }
+    //             return response.json();
+    //           })
+    //           .then((data) => {
+    //             // Work with the JSON data here
+    //             console.log("DEU CERTO", data);
+    //             setRegionDataResponse(data);
+    //             AsyncStorage.getItem("@favoriteRestaurants").then(
+    //               (response) => {
+    //                 console.warn(response);
+    //                 if (response !== null) {
+    //                   dispatch(
+    //                     setAllFavoritesRestaurants(JSON.parse(response))
+    //                   );
+    //                 }
+    //               }
+    //             );
+    //           })
+    //           .catch((error) => {
+    //             console.error(
+    //               "There was a problem with your fetch operation:",
+    //               error
+    //             );
+    //           });
+    //         AnonymousUserService.addAnonymousUser({
+    //           uuid: id,
+    //           created_at: "",
+    //           device_name: Device.brand,
+    //         })
+    //           .then((res) => {
+    //             console.log(res.data);
+    //             console.log({
+    //               district: regionDataResponse.distrito
+    //                 ? regionDataResponse.distrito
+    //                 : "",
+    //               county: regionDataResponse.concelho
+    //                 ? regionDataResponse.concelho
+    //                 : "",
+    //               parish: regionDataResponse.freguesia
+    //                 ? regionDataResponse.freguesia
+    //                 : "",
+    //               latitude: location.location.latitude,
+    //               longitude: location.location.longitude,
+    //               created_at: "",
+    //             });
+    //             AnonymousUserLocationService.createNewUserLocation({
+    //               id_anonymous_user: res.data,
+    //               district: regionDataResponse.distrito
+    //                 ? regionDataResponse.distrito
+    //                 : "",
+    //               county: regionDataResponse.concelho
+    //                 ? regionDataResponse.concelho
+    //                 : "",
+    //               parish: regionDataResponse.freguesia
+    //                 ? regionDataResponse.freguesia
+    //                 : "",
+    //               latitude: location.location.latitude,
+    //               longitude: location.location.longitude,
+    //               created_at: "",
+    //             })
+    //               .then((responseLoc) => {
+    //                 AsyncStorage.setItem("@userData", res.data);
+    //                 setTimeout(() => {
+    //                   navigation.reset({
+    //                     index: 0,
+    //                     routes: [{ name: "Walkthrough" }],
+    //                   });
+    //                 }, 2900);
+    //               })
+    //               .catch((err) => console.error("ERRO", err));
+    //           })
+    //           .catch((err) => {
+    //             console.error(err);
+    //           });
+    //       } else {
+    //         navigation.navigate("HomeTab", { screen: "Map" });
+    //       }
+    //     });
+    //   }
+    // })();
+  }, [dispatch, navigation]);
 
   /* Bloco modificado para testar solução de bug  */
 

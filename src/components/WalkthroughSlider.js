@@ -12,6 +12,12 @@ import {
 import WalkthroughSvg3 from "./SVGs/WalkthroughSvg3/WalkthroughSvg3";
 import WalkthroughSvg2 from "./SVGs/WalkthroughSvg2/WalkthroughSvg2";
 import WalkthroughSvg1 from "./SVGs/WalkthroughSvg1/WalkthroughSvg1";
+import { v4 as uuid4 } from "uuid";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  AnonymousUserLocationService,
+  AnonymousUserService,
+} from "deliziora-client-module/client-web";
 import * as Device from "expo-device";
 import * as Location from "expo-location";
 
@@ -20,8 +26,8 @@ export default function WalkthroughSlider({ navigation }) {
   const [carouselWidth, setCarouselWidth] = useState(
     Dimensions.get("window").width
   );
-  
-  //  SE FAZ FAVOR NÃO RETIRAR ISSO 
+
+  //  SE FAZ FAVOR NÃO RETIRAR ISSO
 
   /* 
   const [userDistance, setUserDistance] = useState([]);
@@ -35,6 +41,108 @@ useEffect(() => {
   
   }, [])
  */
+
+  function getCurrentLocationDevice() {
+    return new Promise(async (res, rej) => {
+      try {
+        let currentLocation = await Location.getCurrentPositionAsync({});
+        console.log(
+          "AQUII",
+          currentLocation.coords.latitude,
+          currentLocation.coords.longitude
+        );
+        res(currentLocation);
+        // dispatch(
+        //   updateLocation({
+        //     latitude: currentLocation.coords.latitude,
+        //     longitude: currentLocation.coords.longitude,
+        //   })
+        // );
+      } catch (error) {
+        rej(error);
+      }
+    });
+  }
+
+  function createUserDB() {
+    return new Promise((resolve, reject) => {
+      const id = uuid4();
+      resolve(
+        AnonymousUserService.addAnonymousUser({
+          uuid: id,
+          created_at: "",
+          device_name: Device.brand,
+        })
+      );
+    });
+  }
+
+  function createUserLocationDB(id_user, currentLocation) {
+    return new Promise((resolve, reject) => {
+      fetch(
+        `https://json.geoapi.pt/gps/${currentLocation.coords.latitude},${currentLocation.coords.longitude}`,
+        {
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return reject(response.json());
+        })
+        .then((data) => {
+          // Work with the JSON data here
+          console.log("DEU CERTO", data);
+          AnonymousUserLocationService.createNewUserLocation({
+            id_anonymous_user: id_user,
+            district: data.distrito ? data.distrito : "",
+            county: data.concelho ? data.concelho : "",
+            parish: data.freguesia ? data.freguesia : "",
+            latitude: currentLocation.coords.latitude,
+            longitude: currentLocation.coords.longitude,
+            created_at: "",
+          }).catch((err) => reject(err));
+          AsyncStorage.getItem("@favoriteRestaurants").then((response) => {
+            console.warn(response);
+            if (response !== null) {
+              dispatch(setAllFavoritesRestaurants(JSON.parse(response)));
+            }
+          });
+        })
+        .catch((error) => {
+          console.error(
+            "There was a problem with your fetch operation:",
+            error
+          );
+          reject("There was a problem with your fetch operation:", error);
+        });
+    });
+  }
+
+  function createUser(id) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await AsyncStorage.setItem("@userData", id);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  function creatingAnonymousUser() {
+    return new Promise(async (resolve, reject) => {
+      createUserDB().then((res) => {
+        console.log(res.data);
+        // createUser(res.data)
+        getCurrentLocationDevice().then((location) => {
+          createUserLocationDB(res.data, location);
+        });
+      });
+    });
+  }
 
   const [activeSlide, setActiveSlide] = useState(0);
   const [carouselRef, setCarouselRef] = useState(null);
@@ -91,6 +199,7 @@ useEffect(() => {
       ),
     },
   ];
+
   return (
     <View
       style={{
@@ -192,7 +301,12 @@ useEffect(() => {
           />
         </View>
         {activeSlide === 2 ? (
-          <TouchableOpacity onPress={() => navigation.navigate("HomeTab")}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("HomeTab");
+              creatingAnonymousUser();
+            }}
+          >
             <Text>Finalizar</Text>
           </TouchableOpacity>
         ) : (

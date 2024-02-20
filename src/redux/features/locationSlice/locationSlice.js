@@ -2,17 +2,24 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  location: null,
+  location: {
+    latitude: 0,
+    longitude: 0,
+  },
   errorMsg: null,
 };
-
+ 
 const locationSlice = createSlice({
   name: 'location',
   initialState,
   reducers: {
     updateLocation(state, action) {
-      state.location = action.payload;
-      state.errorMsg = null; // Limpar mensagem de erro, se houver
+      console.log("BANANANA",action.payload)
+      
+      state.location.latitude = action.payload.latitude;
+      state.location.longitude = action.payload.longitude;
+      state.errorMsg = null;
+      return state
     },
     setLocationError(state, action) {
       state.errorMsg = action.payload;
