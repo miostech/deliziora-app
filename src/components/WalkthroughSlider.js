@@ -52,12 +52,6 @@ useEffect(() => {
           currentLocation.coords.longitude
         );
         res(currentLocation);
-        // dispatch(
-        //   updateLocation({
-        //     latitude: currentLocation.coords.latitude,
-        //     longitude: currentLocation.coords.longitude,
-        //   })
-        // );
       } catch (error) {
         rej(error);
       }
@@ -80,7 +74,7 @@ useEffect(() => {
   function createUserLocationDB(id_user, currentLocation) {
     return new Promise((resolve, reject) => {
       fetch(
-        `https://json.geoapi.pt/gps/${currentLocation.coords.latitude},${currentLocation.coords.longitude}`,
+        `https://api.geodatasource.com/city?key=YKRGEZIEITLVMDUSF2M6HUPN9DMUFVRB&format=json&lat=${currentLocation.coords.latitude}&lng=${currentLocation.coords.longitude}`,
         {
           headers: {
             Accept: "application/json",
@@ -89,22 +83,40 @@ useEffect(() => {
       )
         .then((response) => {
           if (!response.ok) {
-            throw new Error("Network response was not ok");
+            throw new Error("Network response was not ok!!!");
           }
-          return reject(response.json());
+          return response.json(); // Resolve with JSON data
         })
         .then((data) => {
-          // Work with the JSON data here
           console.log("DEU CERTO", data);
+          console.log("DEU CERTO2", {
+            id_anonymous_user: id_user,
+            district: data.city ? data.city : "",
+            county: data.region ? data.region : "",
+            parish: "",
+            latitude: String(currentLocation.coords.latitude),
+            longitude: String(currentLocation.coords.longitude),
+            created_at: "",
+          });
           AnonymousUserLocationService.createNewUserLocation({
             id_anonymous_user: id_user,
-            district: data.distrito ? data.distrito : "",
-            county: data.concelho ? data.concelho : "",
-            parish: data.freguesia ? data.freguesia : "",
-            latitude: currentLocation.coords.latitude,
-            longitude: currentLocation.coords.longitude,
+            district: data.city ? data.city : "",
+            county: data.region ? data.region : "",
+            parish: "",
+            latitude: String(currentLocation.coords.latitude),
+            longitude: String(currentLocation.coords.longitude),
             created_at: "",
-          }).catch((err) => reject(err));
+          })
+            .then(() => {
+              resolve({
+                message: "foi terminado processo",
+                location: currentLocation.coords,
+                data: data,
+              });
+            })
+            .catch((err) => reject(err));
+
+          // Use AsyncStorage correctly
           AsyncStorage.getItem("@favoriteRestaurants").then((response) => {
             console.warn(response);
             if (response !== null) {
@@ -114,10 +126,10 @@ useEffect(() => {
         })
         .catch((error) => {
           console.error(
-            "There was a problem with your fetch operation:",
+            "!!!There was a problem with your fetch operation:",
             error
           );
-          reject("There was a problem with your fetch operation:", error);
+          reject(error);
         });
     });
   }
@@ -133,12 +145,13 @@ useEffect(() => {
   }
 
   function creatingAnonymousUser() {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       createUserDB().then((res) => {
-        console.log(res.data);
         // createUser(res.data)
         getCurrentLocationDevice().then((location) => {
-          createUserLocationDB(res.data, location);
+          createUserLocationDB(res.data, location).then((res) => {
+            console.log(res);
+          });
         });
       });
     });
@@ -173,13 +186,14 @@ useEffect(() => {
               marginBottom: 25,
               width: "100%",
             }}
-            onPress={async () => {
-              Location.requestForegroundPermissionsAsync().then((data) => {
-                console.log(data);
-                if (data.status === "granted") {
+            onPress={() => {
+              creatingAnonymousUser()
+                .then(() => {
                   navigation.navigate("HomeTab");
-                }
-              });
+                })
+                .catch(() => {
+                  console.warn("not accepted");
+                });
             }}
           >
             <Text
@@ -303,7 +317,7 @@ useEffect(() => {
         {activeSlide === 2 ? (
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("HomeTab");
+              //navigation.navigate("HomeTab");
               creatingAnonymousUser();
             }}
           >
