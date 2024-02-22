@@ -99,7 +99,7 @@ const MenuOfDay = () => {
             alignItems: "center",
             justifyContent: "center",
           }}>
-            <Image source={categoryImages[category]} style={styles.categoryImage} />
+            <Image  source={categoryImages[category]} style={styles.categoryImage} />
             <Text style={styles.categoryTitle}>{category}</Text>
             {items.map((item, index) => (
               <View key={index} style={styles.menuItem}>
