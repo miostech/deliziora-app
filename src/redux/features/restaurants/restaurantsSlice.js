@@ -6,6 +6,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
     allRestaurants: [],
     favoriteRestaurants: [],
+    allRestaurantsOpen: [],
 };
 
 const restaurantsSlice = createSlice({
@@ -14,6 +15,9 @@ const restaurantsSlice = createSlice({
     reducers: {
         setAllRestaurants(state, action) {
             state.allRestaurants = action.payload;
+        },
+        setAllRestaurantsOpen(state, action) {
+            state.allRestaurantsOpen = action.payload;
         },
         addToFavorites(state, action) {
             const { restaurantId } = action.payload;
@@ -36,6 +40,7 @@ const restaurantsSlice = createSlice({
     },
 });
 
-export const { setAllRestaurants, addToFavorites, removeFromFavorites, setAllFavoritesRestaurants } = restaurantsSlice.actions;
+export const { setAllRestaurants, addToFavorites, removeFromFavorites, setAllFavoritesRestaurants, setAllRestaurantsOpen } = restaurantsSlice.actions;
+
 
 export default restaurantsSlice.reducer;

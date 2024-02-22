@@ -1,14 +1,16 @@
 import React, { useEffect, useRef } from "react";
 import { Marker, AnimatedRegion } from "react-native-maps";
-import { useDispatch, useSelector } from 'react-redux';
-import { selectRestaurants, setRestaurants } from './../redux/features/markers/markersSlice';
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectRestaurants,
+  setRestaurants,
+} from "./../redux/features/markers/markersSlice";
 import MarkerIconComponent from "./MarkerIconComponent";
 import { RestaurantService } from "deliziora-client-module/client-web";
 
-export default function MarkersRestaurant() {
+export default function MarkersRestaurant({ CarrouselRef }) {
   const dispatch = useDispatch();
   const restaurants = useSelector(selectRestaurants);
-  const mapRef = useRef(null);
 
   useEffect(() => {
     RestaurantService.returnAllRestaurants()
@@ -20,25 +22,8 @@ export default function MarkersRestaurant() {
       });
   }, [dispatch]);
 
-  const handleChangeSlide = (index) => {
-    // Dispatch actions or perform other logic as needed
-    console.log("Slide index:", index);
-    // Aqui você pode chamar uma função para centralizar o mapa na coordenada do restaurante selecionado
-    if (mapRef.current && restaurants[index]) {
-      const { latitude, longitude } = restaurants[index];
-      mapRef.current.animateToRegion({
-        latitude,
-        longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      });
-    }
-  };
-
-  const handleMarkerPress = (coordinate, restaurantName) => {
-    // Dispatch actions or perform other logic as needed
-    console.log("Marker pressed at:", coordinate);
-    console.log("Restaurant name:", restaurantName);
+  const handleMarkerPress = (index) => {
+    CarrouselRef.current.snapToItem(index);
   };
 
   return (
@@ -49,11 +34,13 @@ export default function MarkersRestaurant() {
           identifier="restaurant"
           draggable={false}
           onDrag={false}
-          onPress={() => handleMarkerPress(item.coordinate, item.name)}
           coordinate={{
-            latitude: parseFloat(item.latitude),
-            longitude: parseFloat(item.longitude),
+            latitude: Number(item.latitude),
+            longitude: Number(item.longitude),
           }}
+          onPress={() =>
+            handleMarkerPress(index)
+          }
         >
           <MarkerIconComponent />
         </Marker>

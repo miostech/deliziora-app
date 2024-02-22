@@ -88,6 +88,7 @@ export default function SplashScreen() {
     const id = uuid4();
 
     checkFirstTimeApp().then((response) => {
+      
       if (response == undefined || response == null) {
         setTimeout(() => {
           navigation.reset({

@@ -1,30 +1,99 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import MapView, { Marker } from 'react-native-maps';
-import * as Location from 'expo-location';
-import SearchBar2 from './../components/SearchBar2';
-import FiltersModal from './../components/FiltersModal';
-import Carousel from 'react-native-snap-carousel';
-import { RestaurantService } from 'deliziora-client-module/client-web';
-import { setAllRestaurants } from '../redux/features/restaurants/restaurantsSlice';
-import RestaurantCard from './../components/RestaurantCard';
-import MarkersRestaurant from './../components/MarkersRestaurant';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  BackHandler,
+  Pressable,
+} from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import MapView, { Marker } from "react-native-maps";
+import * as Location from "expo-location";
+import SearchBar2 from "./../components/SearchBar2";
+import FiltersModal from "./../components/FiltersModal";
+import Carousel from "react-native-snap-carousel";
+import { RestaurantService } from "deliziora-client-module/client-web";
+import { setAllRestaurants, setAllRestaurantsOpen } from "../redux/features/restaurants/restaurantsSlice";
+import RestaurantCard from "./../components/RestaurantCard";
+import MarkersRestaurant from "./../components/MarkersRestaurant";
+import { useFocusEffect } from "@react-navigation/native";
 
-const windowWidth = Dimensions.get('window').width;
+const windowWidth = Dimensions.get("window").width;
 
 function HomeScreen() {
-  const allRestaurants = useSelector(state => state.restaurants.allRestaurants);
+  const allRestaurants = useSelector(
+    (state) => state.restaurants.allRestaurants
+  );
+  const allRestaurantsOpen = useSelector(
+    (state) => state.restaurants.allRestaurantsOpen
+  );
+
   const dispatch = useDispatch();
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-  const mapRef = useRef(null);
+  const mapsRef = useRef(null);
+  const CarrouselRef = useRef(null);
+
+  const getOpenRestaurants = (restaurants) => {
+    const currentTime = new Date();
+    const dayNames = [
+      "sunday",
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+    ];
+    const dayName = dayNames[currentTime.getDay()];
+    const currentHour = currentTime.getHours();
+    const currentMinute = currentTime.getMinutes();
+
+    return restaurants.filter((restaurant) => {
+      const openingHours = restaurant.opening_hours;
+      const today = openingHours[dayName];
+      if (today) {
+        const { open, closed } = today;
+        const [openHour, openMinute] = open.split(":").map(Number);
+        const [closedHour, closedMinute] = closed.split(":").map(Number);
+        const openingTime = new Date();
+        openingTime.setHours(openHour, openMinute, 0);
+
+        const closingTime = new Date();
+        closingTime.setHours(closedHour, closedMinute, 0);
+
+        if (currentTime >= openingTime && currentTime <= closingTime) {
+          return true;
+        }
+      }
+      return false;
+    });
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        // Do nothing when back button is pressed
+        return true;
+      };
+
+      // Add event listener for hardware back press
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      );
+
+      // Clean up the event listener
+      return () => backHandler.remove();
+    }, [])
+  );
 
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permissão para acessar a localização foi negada');
+      if (status !== "granted") {
+        setErrorMsg("Permissão para acessar a localização foi negada");
         return;
       }
 
@@ -35,21 +104,22 @@ function HomeScreen() {
 
   useEffect(() => {
     RestaurantService.returnAllRestaurants()
-      .then(res => {
+      .then((res) => {
+        console.log("restaurantes abertos", getOpenRestaurants(res.data));
         dispatch(setAllRestaurants(res.data));
-        console.log("pegou", res.data);
+        dispatch(setAllRestaurantsOpen(getOpenRestaurants(res.data)));
       })
-      .catch(err => {
+      .catch((err) => {
         console.log("ERROR", err);
       });
   }, [dispatch]);
 
   const handleChangeSlide = (index) => {
-    if (mapRef.current && allRestaurants[index]) {
+    if (mapsRef.current && allRestaurants[index]) {
       const { latitude, longitude } = allRestaurants[index];
-      mapRef.current.animateToRegion({
-        latitude,
-        longitude,
+      mapsRef.current.animateToRegion({
+        latitude: Number(latitude),
+        longitude: Number(longitude),
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       });
@@ -73,16 +143,18 @@ function HomeScreen() {
     <View style={styles.container}>
       {location ? (
         <MapView
-          ref={mapRef}
+          ref={mapsRef}
           style={styles.map}
+          provider="google"
+          showsUserLocation
           initialRegion={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
+            latitude: location?.coords?.latitude,
+            longitude: location?.coords?.longitude,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
         >
-          <MarkersRestaurant />
+          <MarkersRestaurant CarrouselRef={CarrouselRef} />
         </MapView>
       ) : (
         <Text>Carregando...</Text>
@@ -101,23 +173,26 @@ function HomeScreen() {
           top: 0,
           left: 0,
           right: 0,
-          zIndex: 1
+          zIndex: 1,
         }}
       >
         <SearchBar2 />
         <FiltersModal />
       </View>
-      <View style={{
-        width: "100%",
-        height: 200,
-        position: "absolute",
-        alignSelf: "center",
-        bottom: 20,
-        left: 0,
-        right: 0,
-        zIndex: 1,
-      }}>
+      <View
+        style={{
+          width: "100%",
+          height: 200,
+          position: "absolute",
+          alignSelf: "center",
+          bottom: 20,
+          left: 0,
+          right: 0,
+          zIndex: 1,
+        }}
+      >
         <Carousel
+          ref={CarrouselRef}
           data={allRestaurants}
           renderItem={renderCarouselItem}
           style={styles.cardListStyle}
@@ -137,12 +212,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    alignSelf: "center"
+    alignSelf: "center",
   },
   cardList: {
     width: "100%",
@@ -153,7 +228,7 @@ const styles = StyleSheet.create({
   },
   cardListStyle: {
     position: "absolute",
-    left: 0
+    left: 0,
   },
 });
 

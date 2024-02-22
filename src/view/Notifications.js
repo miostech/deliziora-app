@@ -8,9 +8,29 @@ import {
 } from "react-native";
 import React from "react";
 import * as Device from "expo-device";
+import { BackHandler } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Notifications() {
   const colors = require("../style/Colors.json");
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        // Do nothing when back button is pressed
+        return true;
+      };
+
+      // Add event listener for hardware back press
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      );
+
+      // Clean up the event listener
+      return () => backHandler.remove();
+    }, [])
+  );
 
   const items = [
     {
@@ -41,7 +61,7 @@ export default function Notifications() {
         marginTop: Device.brand === "Apple" ? 0 : 45,
       }}
     >
-      <View style={{alignItems: "center"}}>
+      <View style={{ alignItems: "center" }}>
         <Text>Notificações</Text>
       </View>
       {/* <View
@@ -92,8 +112,12 @@ export default function Notifications() {
                   margin: 20,
                 }}
               >
-                <Text style={{ fontSize: 18, marginBottom: 7 }}>{item.title}</Text>
-                <Text style={{ fontSize: 12, marginBottom: 7 }}>{item.date}</Text>
+                <Text style={{ fontSize: 18, marginBottom: 7 }}>
+                  {item.title}
+                </Text>
+                <Text style={{ fontSize: 12, marginBottom: 7 }}>
+                  {item.date}
+                </Text>
                 <Text style={{ fontSize: 16 }}>{item.text}</Text>
               </View>
             </TouchableWithoutFeedback>

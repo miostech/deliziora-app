@@ -12,6 +12,7 @@ import {
 import WalkthroughSvg3 from "./SVGs/WalkthroughSvg3/WalkthroughSvg3";
 import WalkthroughSvg2 from "./SVGs/WalkthroughSvg2/WalkthroughSvg2";
 import WalkthroughSvg1 from "./SVGs/WalkthroughSvg1/WalkthroughSvg1";
+import { useNavigation } from "@react-navigation/native";
 import { v4 as uuid4 } from "uuid";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -21,7 +22,8 @@ import {
 import * as Device from "expo-device";
 import * as Location from "expo-location";
 
-export default function WalkthroughSlider({ navigation }) {
+export default function WalkthroughSlider() {
+  const navigation = useNavigation();
   const colors = require("../style/Colors.json");
   const [carouselWidth, setCarouselWidth] = useState(
     Dimensions.get("window").width
@@ -42,15 +44,21 @@ useEffect(() => {
   }, [])
  */
 
+  function getStatusLocation() {
+    return new Promise(async (res, rej) => {
+      try {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        res(status);
+      } catch (error) {
+        rej(error);
+      }
+    });
+  }
+
   function getCurrentLocationDevice() {
     return new Promise(async (res, rej) => {
       try {
         let currentLocation = await Location.getCurrentPositionAsync({});
-        console.log(
-          "AQUII",
-          currentLocation.coords.latitude,
-          currentLocation.coords.longitude
-        );
         res(currentLocation);
       } catch (error) {
         rej(error);
@@ -88,16 +96,6 @@ useEffect(() => {
           return response.json(); // Resolve with JSON data
         })
         .then((data) => {
-          console.log("DEU CERTO", data);
-          console.log("DEU CERTO2", {
-            id_anonymous_user: id_user,
-            district: data.city ? data.city : "",
-            county: data.region ? data.region : "",
-            parish: "",
-            latitude: String(currentLocation.coords.latitude),
-            longitude: String(currentLocation.coords.longitude),
-            created_at: "",
-          });
           AnonymousUserLocationService.createNewUserLocation({
             id_anonymous_user: id_user,
             district: data.city ? data.city : "",
@@ -146,14 +144,23 @@ useEffect(() => {
 
   function creatingAnonymousUser() {
     return new Promise((resolve, reject) => {
-      createUserDB().then((res) => {
-        // createUser(res.data)
-        getCurrentLocationDevice().then((location) => {
-          createUserLocationDB(res.data, location).then((res) => {
-            console.log(res);
-          });
+      getStatusLocation()
+        .then((status) => {
+          if (status === "granted") {
+            createUserDB().then((res) => {
+              createUser(res.data);
+              getCurrentLocationDevice().then((location) => {
+                createUserLocationDB(res.data, location).then((res) => {
+                  console.log(res);
+                  resolve("accepted");
+                });
+              });
+            });
+          }
+        })
+        .catch(() => {
+          reject("not accepted location");
         });
-      });
     });
   }
 
@@ -188,11 +195,13 @@ useEffect(() => {
             }}
             onPress={() => {
               creatingAnonymousUser()
-                .then(() => {
-                  navigation.navigate("HomeTab");
+                .then((res) => {
+                  if (res === "accepted") {
+                    navigation.navigate("HomeTab", { screen: "Map" });
+                  }
                 })
-                .catch(() => {
-                  console.warn("not accepted");
+                .catch((err) => {
+                  console.error(err);
                 });
             }}
           >
@@ -318,7 +327,15 @@ useEffect(() => {
           <TouchableOpacity
             onPress={() => {
               //navigation.navigate("HomeTab");
-              creatingAnonymousUser();
+              creatingAnonymousUser()
+                .then((res) => {
+                  if (res === "accepted") {
+                    navigation.navigate("HomeTab", { screen: "Map" });
+                  }
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
             }}
           >
             <Text>Finalizar</Text>
