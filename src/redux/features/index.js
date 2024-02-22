@@ -8,6 +8,7 @@ import characteristicsSliceReducer from './characteristicsSlice/characteristicsS
 import locationReducer from './locationSlice/locationSlice';
 import listTypeReducer from './listTypeSlice/listTypeSlice';
 import profilePageReducer from './profilePageSlice/profilePageSlice';
+import currentRestaurantSelected from './currentRestaurantSelected/currentRestaurantSelectedSlice';
 
 const rootReducer = combineReducers({
     restaurants: restaurantsReducer,
@@ -18,7 +19,8 @@ const rootReducer = combineReducers({
     characteristics: characteristicsSliceReducer,
     location: locationReducer,
     listType: listTypeReducer,
-    profilePage: profilePageReducer, 
+    profilePage: profilePageReducer,
+    currentRestaurantSelected: currentRestaurantSelected,
 });
 
 export default rootReducer;
