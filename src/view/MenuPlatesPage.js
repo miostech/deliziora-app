@@ -1,188 +1,170 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
-import {
-  SafeAreaView,
-  Platform,
-  KeyboardAvoidingView,
-  View,
-  Text,
-  StyleSheet,
-  SectionList,
-  FlatList,
-} from "react-native";
-import Loader from "../components/Loader";
-import MeatIcon from "../components/SVGs/MeatIcon";
-import FishIcon from "../components/SVGs/FishIcon";
-import VegeterianIcon from "../components/SVGs/VegetarianIcon";
-import { Divider } from "@rneui/base";
-const Colors = require("../style/Colors.json");
+import React, { useEffect, useState } from 'react';
+import { Text, View, StyleSheet, ScrollView, Image, Pressable } from 'react-native';
+import { useSelector } from 'react-redux';
+import { MenuService, RestaurantService } from 'deliziora-client-module/client-web';
+import { useNavigation } from '@react-navigation/native';
+import ArrowLeft from '../components/SVGs/ArrowLeft/ArrowLeft';
 
-export default function MenuPlatesPage({ route, navigation }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const sectionRef = useRef();
-  const [restaurant, setRestaurant] = useState(route.params.restaurant);
-  const [plates, setPlates] = useState(route.params.plates);
-  const [data, setData] = useState([]);
+const Meat = require('../../assets/Meat.png');
+const Fish = require('../../assets/Fish.png');
+const Vegetarian = require('../../assets/Vegetarian.png');
 
+const categoryImages = {
+  Carne: Meat,
+  Peixe: Fish,
+  Vegano: Vegetarian
+};
+
+const MenuOfDay = () => {
+  const currentId = useSelector((state) => state.profilePage.currentId);
+  const [menu, setMenu] = useState([]);
+  const [restaurant, setRestaurant] = useState({});
+  const navigation = useNavigation();
+  RestaurantService.returnRestaurantById(currentId).then(restaurantData => {
+    setRestaurant(restaurantData.data);
+    console.log("RESTAURANTE", restaurant);
+  }).catch(error => {
+    console.error(error);
+  })
   useEffect(() => {
-    console.log("OPEN", MenuPlatesPage.name, "SCREEN");
-    const categorizedPlates = {};
-    plates.forEach((plate) => {
-      const category = plate.category;
-      if (!categorizedPlates[category]) {
-        categorizedPlates[category] = {
-          title: category,
-          data: [],
-        };
+
+    const fetchData = async () => {
+      try {
+        // Fetch all menu items
+        const responseMenuItems = await MenuService.returnAllMenu();
+        if (responseMenuItems && responseMenuItems.data && responseMenuItems.data.length > 0) {
+          // Filter menu items for the current restaurant
+          const menuForCurrentRestaurant = responseMenuItems.data.filter(item => item.id_Restaurants === currentId);
+          setMenu(menuForCurrentRestaurant);
+        } else {
+          console.log("No menu available for this restaurant.");
+          setMenu([]);
+        }
+      } catch (error) {
+        console.error(error);
       }
-      categorizedPlates[category].data.push({
-        name: plate.name,
-        price: plate.price,
-      });
-    });
-    const result = Object.values(categorizedPlates);
-
-    setData(result);
-    setTimeout(() => {
-      setIsLoading(true);
-    }, 1000);
-    return () => {
-      console.log("SCREEN", MenuPlatesPage.name, "CLOSE");
     };
-  }, [sectionRef]);
 
-  const onLayoutRootView = useCallback(async () => {
-    if (isLoading) {
-    }
-  }, [isLoading]);
-  if (!isLoading) {
-    return <Loader />;
-  }
-  const styles = {
-    sectionHeaderContainer: {
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    sectionHeaderText: {
-      padding: 10,
-      fontWeight: "bold",
-      textAlign: "center",
-      fontSize: 20,
-    },
-  };
-  const Item = ({ item }) => {
-    return (
-      <View
-        style={{
-          marginVertical: 20,
-          marginHorizontal: 20,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingBottom: 15,
-        }}
-      >
-        <Text
-          style={{
-            color: "#201F23",
-            fontFamily: "Roboto",
-            fontStyle: "normal",
-            fontWeight: "300",
-            fontSize: 18,
-          }}
-        >
-          {item.name}
-        </Text>
-        <Text
-          style={{
-            color: "#201F23",
-            fontFamily: "Roboto",
-            fontStyle: "normal",
-            fontWeight: "300",
-            fontSize: 18,
-          }}
-        >
-          €{item.price}
-        </Text>
-      </View>
-    );
+    fetchData();
+  }, [currentId]);
+
+  // Separate menu items by category
+  const categorizedMenu = {
+    Carne: menu.filter(item => item.category === 'Carne'),
+    Peixe: menu.filter(item => item.category === 'Peixe'),
+    Vegano: menu.filter(item => item.category === 'Vegano')
   };
 
   return (
-    <SafeAreaView
-      style={[styleSelected.backgroundPrimary, { flex: 1 }]}
-      onLayout={onLayoutRootView}
-    >
-      <KeyboardAvoidingView
-        style={{ flex: 1, marginBottom: 10 }}
-        enabled={true}
-        behavior={Platform.OS == "android" ? "height" : "padding"}
-        keyboardVerticalOffset={Platform.OS == "android" ? -150 : -150}
-      >
-        <View
+    <ScrollView style={{
+      width: "100%",
+      marginTop: 40,
+    }}>
+      <View style={{
+        width: "100%",
+        maxWidth: "100%",
+        marginTop: 20,
+        marginLeft: 0,
+        alignItems: "center",
+        justifyContent: "space-between",
+        display: "flex",
+        flexDirection: "row",
+      }}>
+        <Pressable
           style={{
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: 20,
+            marginLeft: 20,
+            alignSelf: "flex-start",
+            justifySelf: "flex-start",
           }}
+          onPress={
+            () => {
+              navigation.goBack();
+            }
+          }
         >
-          <Text
-            style={{
-              color: "var(--neutral-02-color-neutral-01, #201F23)",
-              textAlign: "center",
-              fontFamily: "Roboto",
-              fontStyle: "normal",
-              fontWeight: "800",
-              fontSize: 20,
-            }}
-          >
-            {restaurant.name}
-          </Text>
-
-          <Divider
-            style={{ width: "80%", margin: 20 }}
-            color="black"
-            insetType="left"
-            width={1}
-            orientation="horizontal"
-          />
-        </View>
-        {data.length > 0 && (
-          <View style={[styleSelected.backgroundPrimary, { flex: 1 }]}>
-            <SectionList
-              sections={data}
-              stickySectionHeadersEnabled={false}
-              renderSectionHeader={({ section }) => (
-                <>
-                  <View style={styles.sectionHeaderContainer}>
-                    {section.title === "Carne" && (
-                      <MeatIcon width={100} height={100} />
-                    )}
-                    {section.title === "Peixe" && (
-                      <FishIcon width={100} height={100} />
-                    )}
-                    {section.title === "Vegetariano" && (
-                      <VegeterianIcon width={100} height={100} />
-                    )}
-                    <Text style={styles.sectionHeaderText}>
-                      {section.title}
-                    </Text>
-                  </View>
-                  <FlatList
-                    data={section.data}
-                    renderItem={({ item }) => <Item item={item} />}
-                  />
-                </>
-              )}
-              renderItem={({ item }) => {}}
-            />
+          <ArrowLeft />
+        </Pressable>
+        <Text style={[styles.categoryTitle, {
+          marginLeft: -20,
+        }]}>
+          Menu Completo - {restaurant.name}
+        </Text>
+        <Text> </Text>
+      </View>
+      {
+        Object.entries(categorizedMenu).map(([category, items]) => (
+          <View key={category} style={{
+            width: "90%",
+            marginLeft: 20,
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
+            <Image source={categoryImages[category]} style={styles.categoryImage} />
+            <Text style={styles.categoryTitle}>{category}</Text>
+            {items.map((item, index) => (
+              <View key={index} style={styles.menuItem}>
+                <View style={styles.plateContainer}>
+                  <Text style={{
+                    textAlign: "center",
+                    fontFamily: "Roboto",
+                    fontSize: 16,
+                    fontStyle: "normal",
+                    fontWeight: "300",
+                  }}>{item.name}</Text>
+                  <Text style={{
+                    textAlign: "center",
+                    fontFamily: "Roboto",
+                    fontSize: 16,
+                    fontStyle: "normal",
+                    fontWeight: "300",
+                  }}>€{item.price}</Text>
+                </View>
+                <View style={styles.divider} />
+              </View>
+            ))}
           </View>
-        )}
-        {data.length === 0 && <Text>Sem Menu Disponivel</Text>}
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        ))
+      }
+    </ScrollView >
   );
-}
-const styleSelected = StyleSheet.create({
-  backgroundPrimary: {
-    backgroundColor: Colors.colors.neutral02Color.neutral_10,
+};
+
+export default MenuOfDay;
+
+const styles = StyleSheet.create({
+
+  categoryTitle: {
+    fontFamily: 'Roboto',
+    fontSize: 20,
+    fontWeight: '600',
+    lineHeight: 23,
+    letterSpacing: 0,
+    textAlign: 'center',
+  },
+  plateContainer: {
+    maxWidth: "100%",
+    flexDirection: "row",
+    display: "flex",
+    width: 300,
+    justifyContent: "space-between",
+  },
+  divider: {
+    height: 1,
+    minWidth: "90%",
+    backgroundColor: 'grey',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  menuItem: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  categoryImage: {
+    width: 104,
+    height: 104,
+    resizeMode: 'contain',
   },
 });
+

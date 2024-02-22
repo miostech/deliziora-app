@@ -1,25 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Pressable, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, Pressable, FlatList, ScrollView } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { CharacteristicsService, MenuOfTheDayService, RestaurantService } from 'deliziora-client-module/client-web';
+import { CharacteristicsService, RestaurantService } from 'deliziora-client-module/client-web';
 import ArrowLeft from '../components/SVGs/ArrowLeft/ArrowLeft';
 import { useNavigation } from '@react-navigation/native';
 import { Path, Svg } from 'react-native-svg';
 import { Image } from 'react-native-elements';
-
+import MenuOfDay from '../components/Atoms/MenuOfDay';
+import LoadingPageScreen from './LoadingPageScreen';
 export default function ProfileRestaurantPage() {
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [restaurantData, setRestaurantData] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false); // Estado de favorito
   const [restaurantIsOpen, setRestaurantIsOpen] = useState(false); // Estado de abertura do restaurante
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false); // Estado de exibição de descrição
+  const [allChars, setAllChars] = useState([]);
+  const [filteredChars, SetFilteredChars] = useState([]);
+  const [allMenuOfDay, setAllMenuOfDay] = useState([]);
   const currentId = useSelector(state => state.profilePage.currentId);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [allMenuOfDay, setAllMenuOfDay] = useState([]);
-  // Função para verificar se o restaurante está aberto
   const isRestaurantOpen = () => {
     const currentDate = new Date();
     const currentDay = currentDate.getDay();
@@ -37,64 +38,27 @@ export default function ProfileRestaurantPage() {
       return false;
     }
   };
-  // Função para obter o horário de funcionamento do dia atual
-  const getHorarioFuncionamento = () => {
-    const hoje = new Date().toLocaleDateString('pt-BR', { weekday: 'long' });
-    const horario = restaurantData.horarios.find(horario => horario.dia === hoje);
-    return horario ? `${horario.abertura} - ${horario.fechamento}` : 'Indisponível';
-  };
-  // Função para lidar com o favorito
   const handleFavorite = () => {
     setIsFavorite(!isFavorite); // Alterna o estado do favorito
   };
-
   useEffect(() => {
-    const fetchRestaurantData = async () => {
-      try {
-        setLoading(true);
-        const response = await RestaurantService.returnRestaurantById(currentId);
-        setRestaurantData(response.data);
+    RestaurantService.returnRestaurantById(currentId).then((response) => {
+      console.log("RESTAURANTE", response.data);
+      setRestaurantData(response.data);
+      CharacteristicsService.returnAllCharacteristics().then((responseChar) => {
+        console.log("CHARACTERISTICS", responseChar.data);
+        console.log(restaurantData)
+        const newArrayChars = responseChar.data.filter((item) => response.data.characteristics.includes(item._id.$oid)).map((item) => ({ icon: item.icon }));
+        console.log("ARRAY CHARACTERISTICS", newArrayChars);
+        SetFilteredChars(newArrayChars);
         setLoading(false);
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-      }
-    };
-
-    fetchRestaurantData();
-
-    return () => {
-      setLoading(false);
-      setError(null);
-      setRestaurantData(null);
-    };
-  }, [currentId, dispatch]);
-
-  const [allChars, setAllChars] = useState([]);
-  const [filteredChars, SetFilteredChars] = useState([]);
-  useEffect(() => {
-    const fetchCharacteristics = async () => {
-      const response = await CharacteristicsService.returnAllCharacteristics();
-      setAllChars(response.data);
-    };
-
-    // Verify if allChars is empty before proceeding with the process
-    if (allChars.length === 0) {
-      fetchCharacteristics();
-    } else {
-      // Block of code need to be executed only when allChars is not empty
-      console.log("Temos aqui >>", allChars);
-      console.log("Temos aqui <<", restaurantData.characteristics);
-      // Filtrar os elementos de allChars que também estão presentes em restaurantData.characteristics
-      SetFilteredChars(allChars.filter(char => restaurantData.characteristics.includes(char._id.$oid)));
-
-      // Agora você pode usar filteredChars, que contém apenas as características presentes tanto em allChars quanto em restaurantData.characteristics
-      console.log("Características filtradas:", filteredChars);
-    }
-  }, [allChars]);
-
-
-
+      }).catch((error) => {
+        console.error(error);
+      });
+    }).catch((error) => {
+      console.error(error);
+    });
+  }, []);
   useEffect(() => {
     // Verificar se o restaurante está aberto quando os dados do restaurante são carregados
     if (restaurantData) {
@@ -102,15 +66,11 @@ export default function ProfileRestaurantPage() {
       setRestaurantIsOpen(isOpen);
     }
   }, [restaurantData]);
-
   if (loading) {
     return (
-      <View>
-        <Text>Carregando...</Text>
-      </View>
+      <LoadingPageScreen />
     );
   }
-
   if (error) {
     return (
       <View>
@@ -118,7 +78,6 @@ export default function ProfileRestaurantPage() {
       </View>
     );
   }
-
   if (!restaurantData) {
     return (
       <View>
@@ -126,22 +85,28 @@ export default function ProfileRestaurantPage() {
       </View>
     );
   }
-
-
   return (
-    <View>
+    <View style={{
+      width: "100%",
+      height: "100%",
+      display: "flex",
+      paddingTop: 40,
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      alignItems: "center",
+    }}>
       <View style={{
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
         padding: 20,
+        width: "100%",
+        height: 70,
       }}>
-
         <Pressable onPress={() => navigation.goBack()}>
           <ArrowLeft />
         </Pressable>
-
         <Text style={{
           color: "var(--Neutral-02-Color-Neutral-02, #29272D)",
           fontFamily: "Roboto",
@@ -165,23 +130,23 @@ export default function ProfileRestaurantPage() {
         width: "100%",
         height: 232,
         backgroundColor: "var(--Neutral-02-Color-Neutral-02, #29272D)",
-        zIndex: 0,
       }}>
         <Image source={{ uri: restaurantData.img }} style={{ width: "100%", height: 232 }} />
       </View>
-      <View style={{
+      <ScrollView style={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
-        padding: 20,
+        marginLeft: 30,
+        padding: 10,
         width: "100%",
         minHeight: 500,
+        marginLeft: 20,
         height: "100%",
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         zIndex: 1,
         position: "absolute",
-        top: 232,
+        top: 332,
         backgroundColor: "white",
       }}>
         <View style={{
@@ -191,7 +156,8 @@ export default function ProfileRestaurantPage() {
           width: 300,
           justifyContent: "flex-start",
           alignItems: "center",
-          marginBottom: 20,
+          marginLeft: 30,
+          marginBottom: 5,
         }}>
           <Svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
             <Path d="M15 7.69701C15 12.6061 7.5 18.3334 7.5 18.3334C7.5 18.3334 0 12.6061 0 7.69701C0 3.68628 3.415 0.333374 7.5 0.333374C11.585 0.333374 15 3.68628 15 7.69701Z" fill="#F36527" />
@@ -199,12 +165,13 @@ export default function ProfileRestaurantPage() {
           </Svg>
           <Text style={{
             color: "var(--Neutral-02-Color-Neutral-04, #48464A)",
-            textAlign: "center",
+            textAlign: "left",
             fontFamily: "Roboto",
             fontSize: 16,
             fontStyle: "normal",
-            fontWeight: "400",
-            maxWidth: 200
+            fontWeight: "300",
+            minWidth: 300,
+            maxWidth: 330,
           }}>
             {restaurantData.address.length > 200 ? restaurantData.address.substring(0, 200) + '...' : restaurantData.address}
           </Text>
@@ -213,11 +180,12 @@ export default function ProfileRestaurantPage() {
           display: "flex",
           flexDirection: "row",
           gap: 40,
-          width: 300,
+          width: "90%",
           justifyContent: "flex-start",
           alignItems: "center",
-          marginBottom: 20,
-          paddingBottom: 20,
+          marginLeft: 30,
+          marginBottom: 10,
+          paddingBottom: 10,
           borderBottomColor: "gray",
           borderBottomWidth: 1,
         }}>
@@ -231,7 +199,7 @@ export default function ProfileRestaurantPage() {
             fontFamily: "Roboto",
             fontSize: 16,
             fontStyle: "normal",
-            fontWeight: "400",
+            fontWeight: "300",
           }}>
             {restaurantData.contact}
           </Text>
@@ -243,7 +211,8 @@ export default function ProfileRestaurantPage() {
           width: 300,
           justifyContent: "flex-start",
           alignItems: "center",
-          marginBottom: 20
+          marginBottom: 5,
+          marginLeft: 30,
         }}>
           <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <Path fill-rule="evenodd" clip-rule="evenodd" d="M14 2H9.76C7.63827 2 5.60344 2.84285 4.10315 4.34315C2.60285 5.84344 1.76 7.87827 1.76 10V14.24C1.76 18.6583 5.34172 22.24 9.76 22.24H14C18.4183 22.24 22 18.6583 22 14.24V10C22 5.58172 18.4183 2 14 2ZM11.88 18.12C11.3277 18.12 10.88 17.6723 10.88 17.12V12.12C10.8785 11.8542 10.9828 11.5987 11.17 11.41L15.17 7.41C15.4237 7.15634 15.7934 7.05728 16.1399 7.15012C16.4864 7.24297 16.757 7.51362 16.8499 7.86012C16.9427 8.20663 16.8437 8.57634 16.59 8.83L12.88 12.53V17.12C12.88 17.6723 12.4323 18.12 11.88 18.12Z" fill="#F36527" />
@@ -251,7 +220,7 @@ export default function ProfileRestaurantPage() {
           <View style={{
             display: "flex",
             flexDirection: "row",
-            gap: 5
+            gap: 5,
           }}>
             <Text style={{
               color: "var(--Neutral-02-Color-Neutral-04, #48464A) !important",
@@ -259,7 +228,7 @@ export default function ProfileRestaurantPage() {
               fontFamily: "Roboto",
               fontSize: 16,
               fontStyle: "normal",
-              fontWeight: "400",
+              fontWeight: "300",
             }}>12AM - 23PM</Text>
             {/* Horario não está correto */}
             <Text style={{
@@ -267,12 +236,11 @@ export default function ProfileRestaurantPage() {
               fontFamily: "Roboto",
               fontSize: 16,
               fontStyle: "normal",
-              fontWeight: "semi-bold",
+              fontWeight: "300",
             }}>
               | {restaurantIsOpen ? 'Aberto' : 'Fechado'}
             </Text>
           </View>
-
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -281,9 +249,9 @@ export default function ProfileRestaurantPage() {
           <FlatList
             data={filteredChars}
             style={{
-              maxWidth: 300,
+              maxWidth: "90%",
               height: 50,
-              padding: 10,
+              padding: 5,
             }}
             renderItem={({ item }) => (
               <Image source={{ uri: item.icon }} style={{ width: 32, height: 32 }} />
@@ -303,11 +271,17 @@ export default function ProfileRestaurantPage() {
           display: "flex",
           flexDirection: "column",
           gap: 5,
+          marginLeft: 20,
           minWidth: "90%",
           maxWidth: "90%",
         }}>
           <Text style={{
             textAlign: "justify",
+            marginLeft: 20,
+            fontFamily: "Roboto",
+            fontSize: 16,
+            fontStyle: "normal",
+            fontWeight: "300",
           }}>
             {isDescriptionExpanded ? restaurantData.description : `${restaurantData.description.substring(0, 50)}...`}
           </Text>
@@ -317,8 +291,9 @@ export default function ProfileRestaurantPage() {
               fontFamily: "Roboto",
               fontSize: 12,
               fontStyle: "normal",
-              fontWeight: "400",
-              paddingBottom: 10,
+              fontWeight: "300",
+              paddingBottom: 5,
+              marginLeft: 20,
             }}>
               {isDescriptionExpanded ? 'Ver menos' : 'Ver mais'}
             </Text>
@@ -332,14 +307,16 @@ export default function ProfileRestaurantPage() {
           gap: 5,
           justifyContent: "flex-start",
           alignItems: "flex-start",
-          marginBottom: 20,
+          marginBottom: 5,
+          marginLeft: 20,
         }}>
           <Text style={{
             color: "var(--Neutral-02-Color-Neutral-01, #201F23)",
             fontFamily: "Roboto",
-            fontSize: 18,
+            fontSize: 16,
             fontStyle: "normal",
             fontWeight: "bold",
+            marginLeft: 20,
           }}>
             Especialidade
           </Text>
@@ -350,6 +327,7 @@ export default function ProfileRestaurantPage() {
               fontSize: 16,
               fontStyle: "normal",
               fontWeight: "300",
+              marginLeft: 20,
             }
           }
           >
@@ -358,38 +336,43 @@ export default function ProfileRestaurantPage() {
           <Text style={{
             color: "var(--Neutral-02-Color-Neutral-01, #201F23)",
             fontFamily: "Roboto",
-            fontSize: 18,
+            fontSize: 16,
             fontStyle: "normal",
+            marginLeft: 20,
             fontWeight: "bold",
           }}>
             Prato do Dia
           </Text>
-
+          <MenuOfDay />
         </View>
         {/* TODO ir para menu completo */}
         <Pressable style={{
           width: 300,
           height: 50,
           backgroundColor: "black",
+          marginBottom: 40,
+          alignSelf: "center",
           borderRadius: 100,
-          position: "absolute",
-          bottom: 40,
           justifyContent: "center",
           alignItems: "center",
-        }}>
+        }}
+          onPress={
+            () => {
+              navigation.navigate('MenuPlatesPage');
+            }}
+        >
           <Text style={{
             color: "#fff",
             textAlign: "center",
             fontFamily: "Roboto",
-            fontSize: 14,
+            fontSize: 16,
             fontStyle: "normal",
-            fontWeight: "500",
-            lineHeight: 20, // 142.857%
+            fontWeight: "300",
           }}>
             Ver Menu Completo
           </Text>
         </Pressable>
-      </View>
+      </ScrollView>
     </View >
   );
-}
+} 
