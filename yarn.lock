@@ -38,10 +38,10 @@
     classnames "^2.2.6"
     rc-util "^5.31.1"
 
-"@ant-design/react-native@^5.0.4":
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/@ant-design/react-native/-/react-native-5.0.4.tgz#8170cde9b23e541b65e32e4dbd3cd9d3463bda7f"
-  integrity sha512-lzP/DbkF63EmK8qrOrsWUTRLwJ9LVEg0dgPBHNc55cupVORpyFqTe+MujsonLmb6GHfelMzkElsDnvIcORfLLQ==
+"@ant-design/react-native@^5.0.5":
+  version "5.0.5"
+  resolved "https://registry.yarnpkg.com/@ant-design/react-native/-/react-native-5.0.5.tgz#9420ecea07c6c0ebcaaf48d890b82094f85ed090"
+  integrity sha512-vz5eORXfnyV8yzMLpIBZInj1uEn8E0mgvnYX8Z00aQ6Ytse5ngEWOd11CZWkpA/oGqnFGPC43gWtX5OGlueJ8w==
   dependencies:
     "@ant-design/icons-react-native" "^2.3.1"
     "@bang88/react-native-ultimate-listview" "^4.1.0"

@@ -32,9 +32,9 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <NavigationContainer>
+      <NavigationContainer >
         <Stack.Navigator initialRouteName="Splash" screenptions={{ headerShadowVisible: false, animation: "timing" }}>
-          <Stack.Screen name="Splash" component={SplashScreen} screenoptions={{ headerShadowVisible: false, animation: "fade" }} options={{ headerShadowVisible: false, headerShown: false }} />
+          <Stack.Screen name="Splash" component={SplashScreen} screenoptions={{ headerShadowVisible: false, animation: "fade" }} options={{ headerShadowVisible: false, headerShown: false, header: false }} />
           <Stack.Screen name="HomeTab" component={HomeTab} screenoptions={{ headerShadowVisible: false, animation: "fade" }} options={{ headerShadowVisible: false, headerShown: false }} />
           <Stack.Screen name="Walkthrough" component={Walkthrough} screenoptions={{ headerShadowVisible: false, animation: "fade" }} options={{ headerShadowVisible: false, headerShown: true, headerTitle: "" }} />
           <Stack.Screen name="RestaurantList" component={RestaurantList} screenoptions={{ headerShadowVisible: false, animation: "fade" }} options={{ headerShadowVisible: false, headerShown: false }} />
@@ -43,8 +43,8 @@ export default function App() {
           <Stack.Screen name="NotificationNotFoundScreen" component={NotificationNotFoundScreen} screenoptions={{ headerShadowVisible: false, animation: "fade" }} options={{ headerShadowVisible: false, headerShown: false }} />
           <Stack.Screen name="LoadingPageScreen" component={LoadingPageScreen} screenoptions={{ headerShadowVisible: false, animation: "fade" }} options={{ headerShadowVisible: false, headerShown: false }} />
           <Stack.Screen name="HomeLoading" component={HomeLoading} options={{ headerShown: false }} />
-          <Stack.Screen name="MenuPlatesPage" component={MenuPlatesPage} screenoptions={{ headerShadowVisible: false, animation: "fade" }} options={({ navigation }) => ({ headerShadowVisible: false, headerShown: true, headerTitle: "Menu", headerLeft: () => { return (<TouchableOpacity onPress={() => { navigation.goBack(); }} style={{ justifyContent: "center", marginLeft: 10, marginRight: 15, }}><ArrowLeft /></TouchableOpacity>); }, })} />
-          <Stack.Screen name="ProfileRestaurantPage" component={ProfileRestaurantPage} screenoptions={{ headerShadowVisible: false, animation: "fade" }} options={({ navigation }) => ({ headerShadowVisible: false, headerShown: true, headerTitle: "", headerLeft: () => { return (<TouchableOpacity onPress={() => { navigation.navigate("HomeTab"); }} style={{ flexDirection: "row", gap: 80 }}></TouchableOpacity>); }, })} />
+          <Stack.Screen name="MenuPlatesPage" component={MenuPlatesPage} screenoptions={{ headerShadowVisible: false, animation: "fade" }} options={({ navigation }) => ({ headerShadowVisible: false, headerShown: true,  headerShown: false, headerTitle: "", headerLeft: () => { return (<TouchableOpacity onPress={() => { navigation.goBack(); }} style={{ justifyContent: "center", marginLeft: 10, marginRight: 15, }}><ArrowLeft /></TouchableOpacity>); }, })} />
+          <Stack.Screen name="ProfileRestaurantPage" component={ProfileRestaurantPage} screenoptions={{ headerShadowVisible: false, animation: "fade" }} options={({ navigation }) => ({ headerShadowVisible: false, headerShown: false, headerTitle: "", headerLeft: () => { return (<TouchableOpacity onPress={() => { navigation.navigate("HomeTab"); }} style={{ flexDirection: "row", gap: 80 }}></TouchableOpacity>); }, })} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
@@ -57,9 +57,9 @@ function HomeTab({ listType }) {
   return (
     <Tab.Navigator initialRouteName="Home" options={{ headerShadowVisible: false, headerShown: false }}>
       <Tab.Screen name="Home" component={HomeAndFavorites} options={{ tabBarShowLabel: false }} />
-      <Tab.Screen name="Map" component={HomeScreen} options={{ tabBarShowLabel: false }} />
+      <Tab.Screen name="Map" component={HomeScreen} options={{ tabBarShowLabel: true  }} />
       <Tab.Screen name="Notifications" component={Notifications} options={{ tabBarShowLabel: false }} />
-      </Tab.Navigator>
-      );
+    </Tab.Navigator>
+  );
 }
 
