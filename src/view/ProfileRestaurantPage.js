@@ -132,7 +132,7 @@ export default function ProfileRestaurantPage() {
           width: 300,
           justifyContent: "flex-start",
           alignItems: "center",
-          marginLeft: 35,
+          marginLeft: 27,
           marginBottom: 5
         }}>
           <MapLocationPageIcon />
