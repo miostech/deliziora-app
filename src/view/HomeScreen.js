@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,6 +6,7 @@ import {
   Dimensions,
   BackHandler,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import MapView, { Marker } from "react-native-maps";
@@ -13,63 +14,49 @@ import * as Location from "expo-location";
 import SearchBar2 from "./../components/SearchBar2";
 import FiltersModal from "./../components/FiltersModal";
 import Carousel from "react-native-snap-carousel";
-import { RestaurantService } from "deliziora-client-module/client-web";
-import { setAllRestaurants, setAllRestaurantsOpen } from "../redux/features/restaurants/restaurantsSlice";
+import {
+  MenuOfTheDayService,
+  MenuService,
+  RestaurantService,
+} from "deliziora-client-module/client-web";
+import {
+  setAllRestaurants,
+  setAllRestaurantsOpen,
+} from "../redux/features/restaurants/restaurantsSlice";
+import { setMenuOfDay } from "../redux/features/menuOfDaySlice/menuOfDaySlice";
 import RestaurantCard from "./../components/RestaurantCard";
 import MarkersRestaurant from "./../components/MarkersRestaurant";
 import { useFocusEffect } from "@react-navigation/native";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const windowWidth = Dimensions.get("window").width;
 
 function HomeScreen() {
   const allRestaurants = useSelector(
     (state) => state.restaurants.allRestaurants
   );
-  const allRestaurantsOpen = useSelector(
-    (state) => state.restaurants.allRestaurantsOpen
-  );
-
+  const menuOfDay = useSelector((state) => state.menuOfDay);
   const dispatch = useDispatch();
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResult, setSearchResult] = useState({});
+  const [filteredRestaurants, setFilteredRestaurants] =
+    useState(allRestaurants);
+  const [menuOfTheDayByRestaurant, setMenuOfTheDayByRestaurant] = useState({});
+  const [loading, setLoading] = useState(true);
   const mapsRef = useRef(null);
   const CarrouselRef = useRef(null);
 
-  const getOpenRestaurants = (restaurants) => {
-    const currentTime = new Date();
-    const dayNames = [
-      "sunday",
-      "monday",
-      "tuesday",
-      "wednesday",
-      "thursday",
-      "friday",
-      "saturday",
-    ];
-    const dayName = dayNames[currentTime.getDay()];
-    const currentHour = currentTime.getHours();
-    const currentMinute = currentTime.getMinutes();
-
-    return restaurants.filter((restaurant) => {
-      const openingHours = restaurant.opening_hours;
-      const today = openingHours[dayName];
-      if (today) {
-        const { open, closed } = today;
-        const [openHour, openMinute] = open.split(":").map(Number);
-        const [closedHour, closedMinute] = closed.split(":").map(Number);
-        const openingTime = new Date();
-        openingTime.setHours(openHour, openMinute, 0);
-
-        const closingTime = new Date();
-        closingTime.setHours(closedHour, closedMinute, 0);
-
-        if (currentTime >= openingTime && currentTime <= closingTime) {
-          return true;
-        }
-      }
-      return false;
-    });
-  };
+  useEffect(() => {
+    RestaurantService.returnAllRestaurants()
+      .then((res) => {
+        dispatch(setAllRestaurants(res.data));
+        setFilteredRestaurants(res.data);
+      })
+      .catch((err) => {
+        console.log("ERROR", err);
+      });
+  }, [dispatch]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -102,17 +89,167 @@ function HomeScreen() {
     })();
   }, []);
 
-  useEffect(() => {
-    RestaurantService.returnAllRestaurants()
-      .then((res) => {
-        console.log("restaurantes abertos", getOpenRestaurants(res.data));
-        dispatch(setAllRestaurants(res.data));
-        dispatch(setAllRestaurantsOpen(getOpenRestaurants(res.data)));
-      })
-      .catch((err) => {
-        console.log("ERROR", err);
+  async function getInitialValues() {
+    try {
+      const today = new Date().getDay(); // Get the current day (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+      const restaurants = allRestaurants; // Add your array of restaurant objects here
+      const promises = [];
+
+      await restaurants.forEach(async (element) => {
+        const menuOfRestaurant =
+          await MenuOfTheDayService.returnAllMenuOfDayByRestaurant(
+            element._id.$oid
+          );
+        console.warn("MENU", menuOfRestaurant);
+        if (
+          menuOfRestaurant &&
+          menuOfRestaurant.data &&
+          menuOfRestaurant.data.length > 0
+        ) {
+          const menuItems = menuOfRestaurant.data.filter(
+            (item) => item.day === today
+          );
+          console.warn("WARN", menuItems);
+        }
       });
-  }, [dispatch]);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = () => {
+        try {
+          RestaurantService.returnAllRestaurants()
+            .then((allRestauranteCurrent) => {
+              const today = new Date().getDay(); // Get the current day (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+              const restaurants = allRestauranteCurrent.data; // Add your array of restaurant objects here
+              const promises = [];
+
+              for (const restaurant of restaurants) {
+                const promise =
+                  MenuOfTheDayService.returnAllMenuOfDayByRestaurant(
+                    restaurant._id.$oid
+                  )
+                    .then((responseMenuOfTheDay) => {
+                      if (
+                        responseMenuOfTheDay &&
+                        responseMenuOfTheDay.data &&
+                        responseMenuOfTheDay.data.length > 0
+                      ) {
+                        // Filter menu items for the current day and current restaurant
+                        const menuItems = responseMenuOfTheDay.data.filter(
+                          (item) => item.day === today
+                        );
+
+                        // Fetch menu details for the filtered menu items
+                        const menuIds = menuItems.map((item) => item.id_menu);
+                        return MenuService.returnAllMenu().then(
+                          (responseMenuItems) => {
+                            const filteredMenuItems =
+                              responseMenuItems.data.filter((item) =>
+                                menuIds.includes(item._id.$oid)
+                              );
+
+                            // Add restaurant name and plates of the day to the JSON object
+                            return {
+                              restaurantName: restaurant.name,
+                              menuItems: filteredMenuItems.map(
+                                (item) => item.name
+                              ),
+                            };
+                          }
+                        );
+                      }
+                    })
+                    .catch((error) => console.error(error));
+
+                promises.push(promise);
+              }
+
+              Promise.all(promises).then((menuDataArray) => {
+                const menuOfTheDayByRestaurant = {};
+                menuDataArray.forEach((menuData) => {
+                  if (menuData) {
+                    menuOfTheDayByRestaurant[menuData.restaurantName] =
+                      menuData.menuItems;
+                  }
+                });
+
+                // Set the menuOfTheDayByRestaurant state
+                setMenuOfTheDayByRestaurant(menuOfTheDayByRestaurant);
+                dispatch(setMenuOfDay(menuOfTheDayByRestaurant));
+                setLoading(false);
+              });
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+          // getInitialValues();
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      fetchData();
+    }, [])
+  );
+
+  useEffect(() => {
+    if (searchResult?.name) {
+      const filtered = allRestaurants.filter((restaurant) => {
+        return restaurant.name
+          .toLowerCase()
+          .includes(searchResult.name.toLowerCase());
+      });
+      setFilteredRestaurants(filtered);
+    } else {
+      // If no search result, display all restaurants
+      setFilteredRestaurants(allRestaurants);
+    }
+  }, [searchResult]);
+
+  const handleSearch = () => {
+    let foundRestaurants = [];
+
+    // Search for restaurants with names containing the search term
+    foundRestaurants = allRestaurants.filter((restaurant) =>
+      restaurant.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    console.log("plates", menuOfDay);
+
+    // Search for restaurants with plates containing the search term
+    const restaurantsWithSimilarPlates = allRestaurants.filter((restaurant) => {
+      const plates = menuOfDay[restaurant.name] || [];
+      return plates.some((plate) =>
+        plate.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    });
+
+    // Combine the results from both searches
+    foundRestaurants = foundRestaurants.concat(restaurantsWithSimilarPlates);
+
+    // Remove duplicates
+    foundRestaurants = [...new Set(foundRestaurants)];
+
+    console.log(foundRestaurants);
+
+    if (foundRestaurants.length > 0 && mapsRef.current) {
+      const coordinates = foundRestaurants.map((restaurant) => ({
+        latitude: Number(restaurant.latitude),
+        longitude: Number(restaurant.longitude),
+      }));
+
+      // Fit map to the coordinates
+      mapsRef.current.fitToCoordinates(coordinates, {
+        edgePadding: { top: 10, right: 10, bottom: 10, left: 10 }, // Adjust padding as needed
+        animated: true,
+      });
+    }
+    setFilteredRestaurants(foundRestaurants);
+  };
 
   const handleChangeSlide = (index) => {
     if (mapsRef.current && allRestaurants[index]) {
@@ -139,27 +276,43 @@ function HomeScreen() {
     />
   );
 
+  const onLayoutRootView = useCallback(async () => {
+    if (loading) {
+      await SplashScreen.hideAsync();
+      navigation.setOptions({
+        headerShown: true,
+      });
+    }
+  }, [loading]);
+  if (loading) {
+    return (
+      <View style={{ marginTop: 90 }}>
+        <ActivityIndicator size="large" color="#f36527" />
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      {location ? (
-        <MapView
-          ref={mapsRef}
-          style={styles.map}
-          provider="google"
-          showsUserLocation
-          initialRegion={{
-            latitude: location?.coords?.latitude,
-            longitude: location?.coords?.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        >
-          <MarkersRestaurant CarrouselRef={CarrouselRef} />
-        </MapView>
-      ) : (
-        <Text>Carregando...</Text>
-      )}
-      {errorMsg && <Text>{errorMsg}</Text>}
+    <View style={styles.container} onLayout={onLayoutRootView}>
+      <MapView
+        ref={mapsRef}
+        style={styles.map}
+        provider="google"
+        showsUserLocation
+        initialRegion={{
+          latitude: location?.coords?.latitude,
+          longitude: location?.coords?.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+      >
+        <MarkersRestaurant
+          CarrouselRef={CarrouselRef}
+          setSearchResult={setSearchResult}
+          setSearchTerm={setSearchTerm}
+        />
+      </MapView>
+
       <View
         style={{
           width: "90%",
@@ -176,7 +329,11 @@ function HomeScreen() {
           zIndex: 1,
         }}
       >
-        <SearchBar2 />
+        <SearchBar2
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          handleSearch={handleSearch}
+        />
         <FiltersModal />
       </View>
       <View
@@ -193,7 +350,7 @@ function HomeScreen() {
       >
         <Carousel
           ref={CarrouselRef}
-          data={allRestaurants}
+          data={filteredRestaurants}
           renderItem={renderCarouselItem}
           style={styles.cardListStyle}
           sliderWidth={windowWidth}
