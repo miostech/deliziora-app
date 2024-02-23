@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, ScrollView, FlatList } from 'react-native';
 import { useSelector } from 'react-redux';
 import { MenuOfTheDayService, MenuService } from 'deliziora-client-module/client-web';
 
@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
     container: {
         width: "90%",
         height: "35%",
+        overflow: "scroll",
         marginLeft: 20,
     },
     plateContainer: {

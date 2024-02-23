@@ -60,37 +60,6 @@ const MenuOfDay = () => {
       width: "100%",
       marginTop: 40,
     }}>
-      <View style={{
-        width: "100%",
-        maxWidth: "100%",
-        marginTop: 20,
-        marginLeft: 0,
-        alignItems: "center",
-        justifyContent: "space-between",
-        display: "flex",
-        flexDirection: "row",
-      }}>
-        <Pressable
-          style={{
-            marginLeft: 20,
-            alignSelf: "flex-start",
-            justifySelf: "flex-start",
-          }}
-          onPress={
-            () => {
-              navigation.goBack();
-            }
-          }
-        >
-          <ArrowLeft />
-        </Pressable>
-        <Text style={[styles.categoryTitle, {
-          marginLeft: -20,
-        }]}>
-          Menu Completo - {restaurant.name}
-        </Text>
-        <Text> </Text>
-      </View>
       {
         Object.entries(categorizedMenu).map(([category, items]) => (
           <View key={category} style={{
@@ -99,7 +68,7 @@ const MenuOfDay = () => {
             alignItems: "center",
             justifyContent: "center",
           }}>
-            <Image  source={categoryImages[category]} style={styles.categoryImage} />
+            <Image source={categoryImages[category]} style={styles.categoryImage} />
             <Text style={styles.categoryTitle}>{category}</Text>
             {items.map((item, index) => (
               <View key={index} style={styles.menuItem}>
