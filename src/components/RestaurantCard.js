@@ -220,9 +220,8 @@ export default function RestaurantCard({ id, name, description, distance, imageU
                 name={name}
                 distance={distance}
                 imageUri={imageUri}
-                isFavorite={isFavorite}
+                isFavorite={favoriteRestaurants.includes(id)}
                 toggleFavorite={toggleFavorite}
-                onOpen={handleOpen} // Alterado para chamar handleOpen
             />
         );
     }

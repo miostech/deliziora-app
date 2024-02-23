@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Provider, useSelector } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import store from './src/redux/store';
 import HomeAndFavorites from "./src/components/HomeAndFavorites";
 import SplashScreen from "./src/view/SplashScreen";
@@ -25,6 +25,10 @@ import MenuPlatesPage from "./src/view/MenuPlatesPage";
 import RestaurantList from "./src/view/RestaurantList";
 import { OpenAPI } from "deliziora-client-module/client-web";
 import { Path, Svg } from "react-native-svg";
+import HomeSvg from "./src/components/SVGs/HomeSvg/HomeSvg";
+import ListType from "./src/components/ListType";
+import ModalFavoritesOrNonFavorites from "./src/components/organisms/ModalFavoritesOurNonFavorites/ModalFavoritesOurNonFavorites";
+import listTypeSlice, { setListType } from "./src/redux/features/listTypeSlice/listTypeSlice";
 OpenAPI.BASE = "https://deliziora-api.azurewebsites.net/";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -51,6 +55,7 @@ export default function App() {
               headerShadowVisible: true,
               headerShown: true,
               headerBackVisible: false,
+
               headerTitle: () => {
                 return (
                   <Text style={{
@@ -60,7 +65,10 @@ export default function App() {
                     fontSize: 20,
                     fontStyle: "normal",
                     fontWeight: "600",
-                    maxWidth: "85%",
+                    maxWidth: "75%",
+                    height: "100%",
+                    backgroundColor: 'red',
+                    flexWrap: "wrap"
                   }}>  Menu Completo - {restaurantData.name}
                   </Text>
                 )
@@ -115,14 +123,71 @@ export default function App() {
     )
   }
 
-  function HomeTab({ listType }) {
+  function HomeTab() {
     const isFocused = useIsFocused();
+    const dispatch = useDispatch();
+    const listType = useSelector((state) => state.listType);
+    console.log("listType: ", listType);
+    const toggleMapActive = () => {
+      // Verifica se a aba está focada antes de alterar o listType
+      if (isFocused) {
+        // Se estiver focada, então altere o listType
+        dispatch(setListType(!listType)); // Altera o listType para o oposto do valor atual
+        console.log("listType: ", listType);
+      }
+    };
 
     return (
-      <Tab.Navigator initialRouteName="Home" options={{ headerShadowVisible: false, headerShown: false }}>
-        <Tab.Screen name="Home" component={HomeAndFavorites} options={{ tabBarShowLabel: false }} />
-        <Tab.Screen name="Map" component={HomeScreen} options={{ tabBarShowLabel: true }} />
-        <Tab.Screen name="Notifications" component={Notifications} options={{ tabBarShowLabel: false }} />
+      <Tab.Navigator initialRouteName="Map" options={{ headerShadowVisible: false, headerShown: false }}>
+        <Tab.Screen
+          name="Home"
+          component={HomeAndFavorites}
+          options={{
+            tabBarShowLabel: true,
+            headerShown: false,
+            tabBarIcon: HomeSvg,
+            tabBarInactiveTintColor: 'black', // Cor das abas inativas
+            tabBarActiveTintColor: '#f36527', // Cor das abas ativas
+          }}
+        />
+        <Tab.Screen
+  name="Map"
+  component={ModalFavoritesOrNonFavorites}
+  listeners={{
+    tabPress: (e) => {
+      e.preventDefault();
+      toggleMapActive();
+    },
+  }}
+  options={{
+    tabBarShowLabel: true,
+    headerShown: false,
+    tabBarIcon: listType === false ? MapSvg : ListType,
+    tabBarIconStyle: {
+      position: 'absolute',
+      top: -30,
+      borderColor: '#f2f2f2',
+      borderWidth: 3,
+      borderRadius: 30,
+      backgroundColor: "white",
+      width: 60,
+      height: 60,
+    },
+    tabBarInactiveTintColor: 'black',
+    tabBarActiveTintColor: '#f36527',
+  }}
+/>
+        <Tab.Screen
+          name="Notifications"
+          component={Notifications}
+          options={{
+            tabBarShowLabel: true,
+            headerShown: false,
+            tabBarIcon: NotificationSvg,
+            tabBarInactiveTintColor: 'black', // Cor das abas inativas
+            tabBarActiveTintColor: '#f36527', // Cor das abas ativas
+          }}
+        />
       </Tab.Navigator>
     );
   }

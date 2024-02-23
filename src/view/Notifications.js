@@ -35,21 +35,9 @@ export default function Notifications() {
   const items = [
     {
       id: 1,
-      title: "Yum Tree",
-      text: "Lorem ipsum dolor sit amet leo consectetur. Mus magna sit vel leo",
-      date: "20 de outubro de 2023 ás 10:00",
-    },
-    {
-      id: 2,
-      title: "Yum Tree",
-      text: "Lorem ipsum dolor sit amet leo consectetur. Mus magna sit vel leo",
-      date: "20 de outubro de 2023 ás 10:00",
-    },
-    {
-      id: 3,
-      title: "Yum Tree",
-      text: "Lorem ipsum dolor sit amet leo consectetur. Mus magna sit vel leo",
-      date: "20 de outubro de 2023 ás 10:00",
+      title: "Bem-vindo ao app TelaBite!",
+      text: "Aqui pode ver a lista de notificações da aplicação TelaBite!",
+      date: new Date().toLocaleString('pt-PT'),
     },
   ];
 
@@ -62,7 +50,14 @@ export default function Notifications() {
       }}
     >
       <View style={{ alignItems: "center" }}>
-        <Text>Notificações</Text>
+        <Text style={{
+          fontSize: 20,
+          fontWeight: "bold",
+          color: "black",
+          textAlign: "center",
+          marginTop: 15,
+          marginBottom: 15,
+        }}>Notificações</Text>
       </View>
       {/* <View
         style={{

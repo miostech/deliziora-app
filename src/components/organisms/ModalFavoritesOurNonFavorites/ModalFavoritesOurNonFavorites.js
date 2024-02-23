@@ -1,145 +1,114 @@
-import React from 'react';
-import { Modal, View, Text, Pressable } from 'react-native';
-import ArrowLeft from '../../SVGs/ArrowLeft/ArrowLeft';
-import { Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { StyleSheet, Text, View, ScrollView, SafeAreaView, Pressable } from 'react-native';
+import { setAllRestaurants, toggleFavorite } from '../../../redux/features/restaurants/restaurantsSlice';
+import { RestaurantService } from 'deliziora-client-module/client-web';
 import SearchBar2 from '../../SearchBar2';
+import FiltersModal from '../../FiltersModal';
 import RestaurantCard from '../../RestaurantCard';
+import listType from '../../../redux/features/listTypeSlice/listTypeSlice';
 
-const { width, height } = Dimensions.get('window');
+const ModalFavoritesOurNonFavorites = () => {
+    const listType = useSelector((state) => state.listType);
+    const allrestaurants = useSelector((state) => state.restaurants.allRestaurants);
+    const favoriteRestaurants = useSelector((state) => state.restaurants.favoriteRestaurants);
+    const dispatch = useDispatch();
+    const [filteredRestaurants, setFilteredRestaurants] = useState([]);
 
-const ModalFavoritesOrNonFavorites = ({ isVisible, isFavorite, onClose, restaurantData }) => {
+    useEffect(() => {
+        RestaurantService.returnAllRestaurants()
+            .then((res) => {
+                dispatch(setAllRestaurants(res.data));
+                console.log('pegou', res.data);
+            })
+            .catch((err) => {
+                console.log('ERROR', err);
+            });
+    }, [dispatch]);
+
+    useEffect(() => {
+        setFilteredRestaurants(allrestaurants);
+    }, [allrestaurants]);
+
+    const handleToggleFavorite = (restaurantId) => {
+        dispatch(toggleFavorite(restaurantId));
+    };
+
     return (
-        <Modal
-            visible={isVisible}
-            animationType="slide"
-            transparent={false}
-            onRequestClose={onClose}
-        >
-            <View style={styles.modalOverlay}>
-                <View style={styles.modalContent}>
-                    {isFavorite ? (
-                        <View style={styles.modalFavoritesContent}>
-                            <View style={styles.modalFavoritesHeader}>
-                                <View style={styles.arrowLeftContainer}>
-                                    <Pressable onPress={onClose}>
-                                        <ArrowLeft />
-                                    </Pressable>
-                                </View>
-                                <View style={styles.headerTitleContainer}>
-                                    <Text style={styles.headerTitle}>Favoritos</Text>
-                                </View>
-                            </View>
-                            <View styles={styles.modalFavoritesBody}>
-                                <SearchBar2 />
-                                <View style={{ flex: 1, gap: 10 }}>
-                                    {restaurantData.map(restaurant => (
-                                        <RestaurantCard
-                                            type={"minimalist"}
-                                            key={restaurant._id.$oid}
-                                            id={restaurant._id.$oid}
-                                            name={restaurant.name}
-                                            distance={"5"}
-                                            imageUri={restaurant.img}
-                                            enableMomentum
-                                        />
-                                    ))}
-                                </View>
-                            </View>
-                        </View>
-                    ) : (
-                        <View style={styles.modalFavoritesContent}>
-                            <View style={styles.modalFavoritesHeader}>
-                                <View style={styles.arrowLeftContainer}>
-                                    <Pressable onPress={onClose}>
-                                        <ArrowLeft />
-                                    </Pressable>
-                                </View>
-                                <View style={styles.headerTitleContainer}>
-                                    <Text style={styles.headerTitle}>Favoritos</Text>
-                                </View>
-                            </View>
-                            <View styles={styles.modalFavoritesBody}>
-                                <SearchBar2 />
-                                <View style={{ flex: 1, gap: 10 }}>
-                                    {restaurantData.map(restaurant => (
-                                        <RestaurantCard
-                                            type={"minimalist"}
-                                            key={restaurant._id.$oid}
-                                            id={restaurant._id.$oid}
-                                            name={restaurant.name}
-                                            distance={"5"}
-                                            imageUri={restaurant.img}
-                                            enableMomentum
-                                        />
-                                    ))}
-                                </View>
-                            </View>
-                        </View>
-                    )}
-                </View>
+        <SafeAreaView style={styles.container}>
+            <View
+                style={{
+                    width: '90%',
+                    height: '10%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    position: 'absolute',
+                    alignSelf: 'center',
+                    top: 45,
+                    left: 0,
+                    right: 0,
+                    zIndex: 1,
+                }}>
+                <SearchBar2 />
+                <FiltersModal />
             </View>
-        </Modal>
+            <View style={styles.favoritesContainer}>
+                <Text style={styles.title}>Lista de Restaurantes</Text>
+                <ScrollView style={styles.scrollView}>
+                    {filteredRestaurants.map((restaurant) => (
+                        <View key={restaurant._id.$oid} style={{ width: '100%', height: 100 }}>
+                            <RestaurantCard
+                                id={restaurant._id.$oid}
+                                name={restaurant.name}
+                                description={restaurant.description}
+                                distance={'5'}
+                                type="minimalist"
+                                toggleFavorite={toggleFavorite}
+                                imageUri={restaurant.img}
+                                enableMomentum
+                            />
+
+                        </View>
+                    ))}
+                </ScrollView>
+            </View>
+        </SafeAreaView>
     );
 };
 
-const styles = {
-    modalOverlay: {
+const styles = StyleSheet.create({
+    container: {
         flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        backgroundColor: "#f6f6f6",
+        display: listType == false ? 'flex' : 'flex',
+        height: '90%',
+        paddingTop: 80,
+        alignItems: 'center',
+        backgroundColor: '#f2f2f2',
     },
-    modalContent: {
-        borderRadius: 10,
-        alignItems: 'flex-start',
-        width: "100%",
-        height: "100%",
+    favoritesContainer: {
+        flex: 1,
+        width: '90%',
+        marginTop: 60,
+        gap: 20,
     },
-    closeButton: {
-        marginTop: height * 0.01, // 1% of the screen height
+    title: {
+        textAlign: 'center',
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    scrollView: {
+        flex: 1,
+        height: '100%',
+        marginBottom: 20,
+    },
+    favoriteButton: {
+        textAlign: 'center',
         color: 'blue',
-        textDecorationLine: 'underline',
+        marginTop: 5,
     },
-    modalFavoritesContent: {
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
-        height: "100%",
-    },
-    modalFavoritesHeader: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        width: width * 0.98, // 98% of the screen width
-        paddingTop: height * 0.06, // 3% of the screen height
-    },
-    arrowLeftContainer: {
-        width: "10%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "row",
-        paddingLeft: "5%",
-        paddingBottom: "5%",
-    },
-    headerTitleContainer: {
-        width: "90%",
-        height: "100%",
-        alignItems: "center",
-        paddingRight: "10%",
-    },
-    headerTitle: {
-        color: "#313033",
-        fontFamily: "Roboto",
-        fontSize: 18,
-        fontStyle: "normal",
-        fontWeight: "500"
-    },
-    modalFavoritesBody: {
-        display: "flex",
-        width: width * 0.98, // 98% of the screen width
-        height: height * 0.95, // 98% of the screen height
-        paddingTop: height * 0.06,
-    }
-}
+});
 
-export default ModalFavoritesOrNonFavorites;
+export default ModalFavoritesOurNonFavorites;
