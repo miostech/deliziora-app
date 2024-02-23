@@ -137,7 +137,7 @@ function MinimalistRestaurantCard({ id, name, imageUri, isFavorite, toggleFavori
                     }
                 </Pressable>
             </View>
-        </View >
+        </View>
     );
 }
 

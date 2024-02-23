@@ -8,7 +8,11 @@ import {
 import MarkerIconComponent from "./MarkerIconComponent";
 import { RestaurantService } from "deliziora-client-module/client-web";
 
-export default function MarkersRestaurant({ CarrouselRef }) {
+export default function MarkersRestaurant({
+  CarrouselRef,
+  setSearchResult,
+  setSearchTerm,
+}) {
   const dispatch = useDispatch();
   const restaurants = useSelector(selectRestaurants);
 
@@ -20,10 +24,12 @@ export default function MarkersRestaurant({ CarrouselRef }) {
       .catch((err) => {
         console.error(err);
       });
-  }, [dispatch]);
+  }, [dispatch, setSearchResult, setSearchTerm]);
 
   const handleMarkerPress = (index) => {
     CarrouselRef.current.snapToItem(index);
+    setSearchResult({});
+    setSearchTerm("");
   };
 
   return (
@@ -38,9 +44,7 @@ export default function MarkersRestaurant({ CarrouselRef }) {
             latitude: Number(item.latitude),
             longitude: Number(item.longitude),
           }}
-          onPress={() =>
-            handleMarkerPress(index)
-          }
+          onPress={() => handleMarkerPress(index)}
         >
           <MarkerIconComponent />
         </Marker>
