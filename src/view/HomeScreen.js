@@ -234,7 +234,7 @@ function HomeScreen() {
     // Remove duplicates
     foundRestaurants = [...new Set(foundRestaurants)];
 
-    console.log(foundRestaurants);
+    console.log(foundRestaurants[0]);
 
     if (foundRestaurants.length > 0 && mapsRef.current) {
       const coordinates = foundRestaurants.map((restaurant) => ({
@@ -244,16 +244,17 @@ function HomeScreen() {
 
       // Fit map to the coordinates
       mapsRef.current.fitToCoordinates(coordinates, {
-        edgePadding: { top: 10, right: 10, bottom: 10, left: 10 }, // Adjust padding as needed
+        edgePadding: { top: 300, right: 300, bottom: 300, left: 300 }, // Adjust padding as needed
         animated: true,
+        
       });
     }
     setFilteredRestaurants(foundRestaurants);
   };
 
   const handleChangeSlide = (index) => {
-    if (mapsRef.current && allRestaurants[index]) {
-      const { latitude, longitude } = allRestaurants[index];
+    if (mapsRef.current && filteredRestaurants[index]) {
+      const { latitude, longitude } = filteredRestaurants[index];
       mapsRef.current.animateToRegion({
         latitude: Number(latitude),
         longitude: Number(longitude),
@@ -298,6 +299,7 @@ function HomeScreen() {
         ref={mapsRef}
         style={styles.map}
         provider="google"
+        maxZoomLevel={30}
         showsUserLocation
         initialRegion={{
           latitude: location?.coords?.latitude,
