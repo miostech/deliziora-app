@@ -94,7 +94,7 @@ const MenuOfDay = () => {
           </View>
         ))
       }
-    </ScrollView >
+    </ScrollView>
   );
 };
 
