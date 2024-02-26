@@ -10,6 +10,7 @@ import listTypeReducer from './listTypeSlice/listTypeSlice';
 import profilePageReducer from './profilePageSlice/profilePageSlice';
 import currentRestaurantSelected from './currentRestaurantSelected/currentRestaurantSelectedSlice';
 import menuOfDayReducer from './menuOfDaySlice/menuOfDaySlice'
+import restaurantsFavoritesSlice from './restaurantsFavorites/restaurantsFavoritesSlice'
 
 const rootReducer = combineReducers({
     restaurants: restaurantsReducer,
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
     switchSlice: switchSliceReducer,
     menuOfDay: menuOfDayReducer,
     typesOfSearch: typesOfSearchReducer,
+    restaurantsFavorites: restaurantsFavoritesSlice,
     characteristics: characteristicsSliceReducer,
     location: locationReducer,
     listType: listTypeReducer,

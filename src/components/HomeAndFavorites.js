@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { setAllRestaurants } from "../redux/features/restaurants/restaurantsSlice";
 import { RestaurantService } from "deliziora-client-module/client-web";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import RestaurantCard from "./RestaurantCard";
 import { useFocusEffect } from "@react-navigation/native";
 import SearchBar2 from "./../components/SearchBar2";
@@ -22,8 +23,34 @@ const HomeAndFavorites = () => {
     (state) => state.restaurants.favoriteRestaurants
   );
   const [searchTerm, setSearchTerm] = useState("");
+  const [isFavorite, setIsFavorite] = useState(false);
   const dispatch = useDispatch();
   const [justRestaurantsFavorite, setJustRestaurantsFavorite] = useState([]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // Verifica se o restaurante está nos favoritos ao montar o componente
+      checkIsFavorite();
+    }, [])
+  );
+
+  const checkIsFavorite = async () => {
+    try {
+      // Recupera os restaurantes favoritos do AsyncStorage
+      const storedFavorites = await AsyncStorage.getItem(
+        "@favoriteRestaurants"
+      );
+      console.log("FAVORITOS22", storedFavorites);
+      if (storedFavorites) {
+        const favoriteRestaurantsDetails = allrestaurants.filter((restaurant) =>
+          storedFavorites.includes(restaurant._id.$oid)
+        );
+        setJustRestaurantsFavorite(favoriteRestaurantsDetails);
+      }
+    } catch (error) {
+      console.error("Erro ao recuperar restaurantes favoritos:", error);
+    }
+  };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -53,13 +80,6 @@ const HomeAndFavorites = () => {
         console.log("ERROR", err);
       });
   }, [dispatch]);
-
-  useEffect(() => {
-    const favoriteRestaurantsDetails = allrestaurants.filter((restaurant) =>
-      favoriteRestaurants.includes(restaurant._id.$oid)
-    );
-    setJustRestaurantsFavorite(favoriteRestaurantsDetails);
-  }, [favoriteRestaurants, allrestaurants]);
 
   useEffect(() => {
     if (!searchTerm) {

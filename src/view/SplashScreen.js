@@ -11,9 +11,12 @@ import { Image, SafeAreaView, Text, View } from "react-native";
 import * as Location from "expo-location";
 import { BackHandler } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { setAllFavoritesRestaurants } from "../redux/features/restaurants/restaurantsSlice";
+import {
+  addOrRemoveFavorits,
+} from "../redux/features/restaurants/restaurantsSlice";
 import { useNavigation } from "@react-navigation/native";
 import { updateLocation } from "../redux/features/locationSlice/locationSlice";
+import { setAllFavoritesRestaurants } from "../redux/features/restaurantsFavorites/restaurantsFavoritesSlice";
 
 const gif = require("../../assets/SplashDelizioragif.gif");
 export default function SplashScreen() {
@@ -83,12 +86,23 @@ export default function SplashScreen() {
       res(user);
     });
   }
+  function checkFirstTimeAppFav() {
+    return new Promise(async (res, rej) => {
+      const user = await AsyncStorage.getItem("@favoriteRestaurants");
+      res(user);
+    });
+  }
+  
+  //AsyncStorage.removeItem("@favoriteRestaurants")
 
   useEffect(() => {
     const id = uuid4();
+    checkFirstTimeAppFav().then((res) => {
+      console.warn("FAVORITOS", res);
+      if (res) dispatch(setAllFavoritesRestaurants(res));
+    });
 
     checkFirstTimeApp().then((response) => {
-      
       if (response == undefined || response == null) {
         setTimeout(() => {
           navigation.reset({
