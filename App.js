@@ -32,6 +32,7 @@ import listTypeSlice, {
   setListType,
 } from "./src/redux/features/listTypeSlice/listTypeSlice";
 import ModalFavoritesOurNonFavorites from "./src/components/organisms/ModalFavoritesOurNonFavorites/ModalFavoritesOurNonFavorites";
+
 OpenAPI.BASE = "https://deliziora-api.azurewebsites.net/";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -123,7 +124,7 @@ export default function App() {
                   <Text
                     style={{
                       color: "var(--Neutral-02-Color-Neutral-02, #29272D)",
-                      fontFamily: "Roboto",
+                      fontFamily: "roboto",
                       textAlign: "center",
                       fontSize: 20,
                       fontStyle: "normal",
@@ -169,7 +170,7 @@ export default function App() {
                   <Text
                     style={{
                       color: "var(--Neutral-02-Color-Neutral-02, #29272D)",
-                      fontFamily: "Roboto",
+                      fontFamily: "roboto",
                       fontSize: 20,
                       fontStyle: "normal",
                       fontWeight: "600",
