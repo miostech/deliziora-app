@@ -196,7 +196,7 @@ export default function App() {
                 );
               },
               headerRight: () => {
-                return 
+                return
               },
             })}
           />
@@ -209,17 +209,18 @@ export default function App() {
     const isFocused = useIsFocused();
     const dispatch = useDispatch();
     const listType = useSelector((state) => state.listType);
-    console.log("listType: ", listType);
+
+    
 
     const toggleMapActive = () => {
       // Verifica se a aba está focada antes de alterar o listType
-      if (isFocused) {
-        // Se estiver focada, então altere o listType
+
         dispatch(setListType(!listType)); // Altera o listType para o oposto do valor atual
         console.log("listType: ", listType);
-      }
-    };
+      
 
+      
+    }
     return (
       <Tab.Navigator
         initialRouteName="Map"
@@ -238,7 +239,21 @@ export default function App() {
         />
         <Tab.Screen
           name="Map"
+          listeners={({ navigation, route })=>({
+            blur:()=>{
+              dispatch(setListType(false));
+              console.log("BEFORE", listType);
+            },
+            
+            tabPress: () => {
+              console.log("rota",navigation.isFocused());
+              if(navigation.isFocused()){
+                toggleMapActive();
+              }
+            }
+          })}
           component={listType === true ? ModalFavoritesOurNonFavorites : HomeScreen}
+
           options={{
             tabBarShowLabel: true,
             headerShown: false,
