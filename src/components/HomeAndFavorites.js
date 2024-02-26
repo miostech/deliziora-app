@@ -15,13 +15,13 @@ import { useFocusEffect } from "@react-navigation/native";
 import SearchBar2 from "./../components/SearchBar2";
 import FiltersModal from "./../components/FiltersModal";
 const HomeAndFavorites = () => {
-  
   const allrestaurants = useSelector(
     (state) => state.restaurants.allRestaurants
   );
   const favoriteRestaurants = useSelector(
     (state) => state.restaurants.favoriteRestaurants
   );
+  const [searchTerm, setSearchTerm] = useState("");
   const dispatch = useDispatch();
   const [justRestaurantsFavorite, setJustRestaurantsFavorite] = useState([]);
 
@@ -61,6 +61,26 @@ const HomeAndFavorites = () => {
     setJustRestaurantsFavorite(favoriteRestaurantsDetails);
   }, [favoriteRestaurants, allrestaurants]);
 
+  useEffect(() => {
+    if (!searchTerm) {
+      const favoriteRestaurantsDetails = allrestaurants.filter((restaurant) =>
+        favoriteRestaurants.includes(restaurant._id.$oid)
+      );
+      setJustRestaurantsFavorite(favoriteRestaurantsDetails);
+    }
+  }, [searchTerm]);
+
+  const handleSearch = () => {
+    let foundRestaurants = [];
+
+    // Search for restaurants with names containing the search term
+    foundRestaurants = justRestaurantsFavorite.filter((restaurant) =>
+      restaurant.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    setJustRestaurantsFavorite(foundRestaurants);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -79,19 +99,24 @@ const HomeAndFavorites = () => {
           zIndex: 1,
         }}
       >
-        <SearchBar2 />
+        <SearchBar2
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          handleSearch={handleSearch}
+        />
         <FiltersModal />
       </View>
       <View style={styles.favoritesContainer}>
         <Text style={styles.title}>Restaurantes favoritos</Text>
-        <ScrollView
-          style={styles.scrollView}>
+        <ScrollView style={styles.scrollView}>
           {justRestaurantsFavorite.map((restaurant) => (
             <>
-              <View style={{
-                width: "100%",
-                height: 30,
-              }}></View>
+              <View
+                style={{
+                  width: "100%",
+                  height: 30,
+                }}
+              ></View>
               <RestaurantCard
                 key={restaurant._id.$oid}
                 id={restaurant._id.$oid}
@@ -101,8 +126,8 @@ const HomeAndFavorites = () => {
                 type="complete"
                 imageUri={restaurant.img}
                 enableMomentum
-              /></>
-
+              />
+            </>
           ))}
         </ScrollView>
       </View>
@@ -122,7 +147,6 @@ const styles = StyleSheet.create({
     width: "90%",
     marginTop: 60,
     gap: 20,
-
   },
   title: {
     textAlign: "center",

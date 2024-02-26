@@ -197,6 +197,12 @@ function HomeScreen() {
   );
 
   useEffect(() => {
+    if (!searchTerm) {
+      setFilteredRestaurants(allRestaurants);
+    }
+  }, [searchTerm]);
+
+  useEffect(() => {
     if (searchResult?.name) {
       const filtered = allRestaurants.filter((restaurant) => {
         return restaurant.name
@@ -246,7 +252,6 @@ function HomeScreen() {
       mapsRef.current.fitToCoordinates(coordinates, {
         edgePadding: { top: 300, right: 300, bottom: 300, left: 300 }, // Adjust padding as needed
         animated: true,
-        
       });
     }
     setFilteredRestaurants(foundRestaurants);
