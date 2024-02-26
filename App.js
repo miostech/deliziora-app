@@ -210,16 +210,16 @@ export default function App() {
     const dispatch = useDispatch();
     const listType = useSelector((state) => state.listType);
 
-    
+
 
     const toggleMapActive = () => {
       // Verifica se a aba está focada antes de alterar o listType
 
-        dispatch(setListType(!listType)); // Altera o listType para o oposto do valor atual
-        console.log("listType: ", listType);
-      
+      dispatch(setListType(!listType)); // Altera o listType para o oposto do valor atual
+      console.log("listType: ", listType);
 
-      
+
+
     }
     return (
       <Tab.Navigator
@@ -230,6 +230,7 @@ export default function App() {
           name="Home"
           component={HomeAndFavorites}
           options={{
+            tabBarLabel: "Início",
             tabBarShowLabel: true,
             headerShown: false,
             tabBarIcon: HomeSvg,
@@ -239,15 +240,15 @@ export default function App() {
         />
         <Tab.Screen
           name="Map"
-          listeners={({ navigation, route })=>({
-            blur:()=>{
+          listeners={({ navigation, route }) => ({
+            blur: () => {
               dispatch(setListType(false));
               console.log("BEFORE", listType);
             },
-            
+
             tabPress: () => {
-              console.log("rota",navigation.isFocused());
-              if(navigation.isFocused()){
+              console.log("rota", navigation.isFocused());
+              if (navigation.isFocused()) {
                 toggleMapActive();
               }
             }
@@ -257,6 +258,7 @@ export default function App() {
           options={{
             tabBarShowLabel: true,
             headerShown: false,
+            tabBarLabel: listType === false ? "Mapa " : "Lista",
             tabBarIcon: listType === false ? MapSvg : ListType,
             tabBarIconStyle: {
               position: "absolute",
@@ -277,6 +279,7 @@ export default function App() {
           component={Notifications}
           options={{
             tabBarShowLabel: true,
+            tabBarLabel: "Notificações",
             headerShown: false,
             tabBarIcon: NotificationSvg,
             tabBarInactiveTintColor: "black", // Cor das abas inativas
