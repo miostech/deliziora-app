@@ -197,9 +197,7 @@ export default function App() {
                 );
               },
               headerRight: () => {
-                return (
-                 /* Aqui deve ir o botão de adicionar e remover dos favoritos */
-                );
+                return 
               },
             })}
           />
