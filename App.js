@@ -27,7 +27,6 @@ import { OpenAPI } from "deliziora-client-module/client-web";
 import { Path, Svg } from "react-native-svg";
 import HomeSvg from "./src/components/SVGs/HomeSvg/HomeSvg";
 import ListType from "./src/components/ListType";
-import { useNavigation } from '@react-navigation/native';
 import ModalFavoritesOrNonFavorites from "./src/components/organisms/ModalFavoritesOurNonFavorites/ModalFavoritesOurNonFavorites";
 import listTypeSlice, {
   setListType,
@@ -197,9 +196,7 @@ export default function App() {
                 );
               },
               headerRight: () => {
-                return (
-                 /* Aqui deve ir o botão de adicionar e remover dos favoritos */
-                );
+                return 
               },
             })}
           />
