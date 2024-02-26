@@ -10,11 +10,13 @@ import listTypeReducer from './listTypeSlice/listTypeSlice';
 import profilePageReducer from './profilePageSlice/profilePageSlice';
 import currentRestaurantSelected from './currentRestaurantSelected/currentRestaurantSelectedSlice';
 import menuOfDayReducer from './menuOfDaySlice/menuOfDaySlice'
+import distanceSlice from './distanceSlice/distanceSlice';
 
 const rootReducer = combineReducers({
     restaurants: restaurantsReducer,
     markers: markersReducer,
     carousel: carouselReducer,
+    distance: distanceSlice,
     switchSlice: switchSliceReducer,
     menuOfDay: menuOfDayReducer,
     typesOfSearch: typesOfSearchReducer,

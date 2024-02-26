@@ -10,12 +10,12 @@ import * as Device from "expo-device";
 import { setCurrentId } from '../redux/features/profilePageSlice/profilePageSlice';
 const colors = require('./../style/Colors.json')
 
-// Componente para o card completo
-function CompleteRestaurantCard({ id, name, description, navigation, distance, imageUri, isFavorite, toggleFavorite, onOpen }) {
+function CompleteRestaurantCard({ id, name, description, navigation, distance, imageUri, isFavorite, toggleFavorite, onOpen, latitude, longitude }) {
+   
     return (
         <View style={styles.restaurantCard}>
             <View style={styles.rowCardOne}>
-                {/* <ImageBackground style={styles.image} source={{ uri: imageUri }} /> */}
+                <ImageBackground style={styles.image} source={{ uri: imageUri }} />
                 <View>
                     <Text style={styles.restaurantName}>
                         {name}
@@ -58,7 +58,7 @@ function CompleteRestaurantCard({ id, name, description, navigation, distance, i
 }
 
 // Componente para o card minimalista
-function MinimalistRestaurantCard({ id, name, imageUri, isFavorite, toggleFavorite, distance }) {
+function MinimalistRestaurantCard({ id, name, imageUri, isFavorite, toggleFavorite, distance, latitude, longitude }) {
     return (
         <View style={{
             height: 82,
@@ -92,7 +92,7 @@ function MinimalistRestaurantCard({ id, name, imageUri, isFavorite, toggleFavori
                 justifyContent: "flex-start",
                 gap: 10
             }}>
-                {/* <ImageBackground style={
+                <ImageBackground style={
                     {
                         width: 72,
                         height: 58,
@@ -100,7 +100,7 @@ function MinimalistRestaurantCard({ id, name, imageUri, isFavorite, toggleFavori
                         alignItems: "center",
                         borderRadius: 8
                     }
-                } source={{ uri: imageUri }} /> */}
+                } source={{ uri: imageUri }} />
                 <View>
                     <Text style={{
                         maxWidth: 200,
@@ -141,7 +141,7 @@ function MinimalistRestaurantCard({ id, name, imageUri, isFavorite, toggleFavori
     );
 }
 
-export default function RestaurantCard({ id, name, description, distance, imageUri, isLoading, type, onOpen }) {
+export default function RestaurantCard({ id, name, description, distance, imageUri, isLoading, type, onOpen, latitude, longitude }) {
     const navigation = useNavigation(); // Obter objeto de navegação
 
     const dispatch = useDispatch();
@@ -209,6 +209,8 @@ export default function RestaurantCard({ id, name, description, distance, imageU
                 distance={distance}
                 imageUri={imageUri}
                 isFavorite={favoriteRestaurants.includes(id)}
+                latitude={latitude}
+                longitude={longitude}
                 toggleFavorite={toggleFavorite}
                 onOpen={handleOpen} // Alterado para chamar handleOpen
             />
@@ -220,12 +222,15 @@ export default function RestaurantCard({ id, name, description, distance, imageU
                 name={name}
                 distance={distance}
                 imageUri={imageUri}
+                latitude={latitude}
+                longitude={longitude}
                 isFavorite={favoriteRestaurants.includes(id)}
                 toggleFavorite={toggleFavorite}
             />
         );
     }
 }
+
 
 const styles = StyleSheet.create({
     restaurantCard: {

@@ -21,6 +21,7 @@ import {
 } from "deliziora-client-module/client-web";
 import * as Device from "expo-device";
 import * as Location from "expo-location";
+import { updateLocation } from "../redux/features/locationSlice/locationSlice";
 
 export default function WalkthroughSlider() {
   const navigation = useNavigation();

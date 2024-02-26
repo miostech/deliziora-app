@@ -8,20 +8,22 @@ const initialState = {
   },
   errorMsg: null,
 };
- 
+
 const locationSlice = createSlice({
   name: 'location',
   initialState,
   reducers: {
     updateLocation(state, action) {
-      console.log("BANANANA",action.payload)
-      
-      state.location.latitude = action.payload.latitude;
-      state.location.longitude = action.payload.longitude;
+      console.warn(action.payload);
+      console.log("BANANANA", action.payload)
+      state.location.latitude = action.payload.location.latitude;
+      state.location.longitude = action.payload.location.longitude;
       state.errorMsg = null;
+      console.warn(state,"here");
       return state
     },
     setLocationError(state, action) {
+
       state.errorMsg = action.payload;
     },
   },

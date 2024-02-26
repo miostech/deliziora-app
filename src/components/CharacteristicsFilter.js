@@ -11,7 +11,7 @@ const CharacteristicsFilter = () => {
   const dispatch = useDispatch();
   const [allchar, setAllChar] = useState([]);
 
-  /* const selectedCharacteristics = useSelector(state => state.characteristics);
+  const selectedCharacteristics = useSelector(state => state.characteristics);
 
   useEffect(() => {
     // Obtém todas as características da API quando o componente é montado
@@ -25,7 +25,7 @@ const CharacteristicsFilter = () => {
     return () => {
       setAllChar([]);
     };
-  }, [allchar]);
+  }, []);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -49,10 +49,9 @@ const CharacteristicsFilter = () => {
     // Exibe todas as características no console
     console.log("Características selecionadas:", selectedCharacteristics);
   };
- */
   return (
     <View style={styles.container}>
-    {/*   <Pressable onPress={toggleModal} style={styles.openModalButton}>
+      <Pressable onPress={toggleModal} style={styles.openModalButton}>
         <Text style={styles.openModalText}>Selecionar Caracteristicas</Text>
       </Pressable>
 
@@ -81,7 +80,7 @@ const CharacteristicsFilter = () => {
             </View>
           ))}
         </View>
-      </Modal> */}
+      </Modal>
     </View>
   );
 };

@@ -2,13 +2,17 @@
 import React, { Component, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Slider } from 'react-native-elements';
+import { updateDistance } from '../redux/features/distanceSlice/distanceSlice';
+
+import { useDispatch, useSelector } from "react-redux";
 // create a component
 const DistanceSlider = () => {
-    const [distance, setDistance] = useState(1)
-
+    const [distance, setDistance] = useState(1);
+    const dispatch = useDispatch();
     const handleRangeChange = (value) => {
         setDistance(value);
-        console.log(value, "km")
+        dispatch(updateDistance(value));
+        console.log("Redux state Storage Distance :" + value);
     };
 
     return (

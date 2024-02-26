@@ -21,13 +21,14 @@ import {
 } from "deliziora-client-module/client-web";
 import {
   setAllRestaurants,
-  setAllRestaurantsOpen,
+  setFilteredRestaurants
 } from "../redux/features/restaurants/restaurantsSlice";
 import { setMenuOfDay } from "../redux/features/menuOfDaySlice/menuOfDaySlice";
 import RestaurantCard from "./../components/RestaurantCard";
 import MarkersRestaurant from "./../components/MarkersRestaurant";
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { updateLocation } from "../redux/features/locationSlice/locationSlice";
 const windowWidth = Dimensions.get("window").width;
 
 function HomeScreen() {
@@ -40,8 +41,10 @@ function HomeScreen() {
   const [errorMsg, setErrorMsg] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResult, setSearchResult] = useState({});
-  const [filteredRestaurants, setFilteredRestaurants] =
-    useState(allRestaurants);
+  /* const [filteredRestaurants, setFilteredRestaurants] =
+    useState(allRestaurants); */
+  const filteredRestaurants = useSelector(state => state.restaurants.filteredRestaurants);
+
   const [menuOfTheDayByRestaurant, setMenuOfTheDayByRestaurant] = useState({});
   const [loading, setLoading] = useState(true);
   const mapsRef = useRef(null);
@@ -51,7 +54,8 @@ function HomeScreen() {
     RestaurantService.returnAllRestaurants()
       .then((res) => {
         dispatch(setAllRestaurants(res.data));
-        setFilteredRestaurants(res.data);
+        dispatch(setFilteredRestaurants(res.data));
+        // setFilteredRestaurants(res.data);
       })
       .catch((err) => {
         console.log("ERROR", err);
@@ -86,6 +90,12 @@ function HomeScreen() {
 
       let currentLocation = await Location.getCurrentPositionAsync({});
       setLocation(currentLocation);
+      console.log(
+        "AQUII",
+        currentLocation.coords.latitude,
+        currentLocation.coords.longitude
+      );
+      dispatch(updateLocation({ location: { latitude: currentLocation.coords.latitude, longitude: currentLocation.coords.longitude } }))
     })();
   }, []);
 
@@ -269,11 +279,14 @@ function HomeScreen() {
     }
   };
 
+
   const renderCarouselItem = ({ item }) => (
     <RestaurantCard
       key={item.id}
       id={item._id.$oid}
       name={item.name}
+      latitude={item.latitude}
+      longitude={item.longitude}
       description={item.description}
       distance={item.distance}
       type="complete"

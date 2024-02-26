@@ -4,7 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const switchSlice = createSlice({
     name: 'switch',
     initialState: {
-        status: 'closed',
+        status: true,
     },
     reducers: {
         setOpenStatus(state, action) {

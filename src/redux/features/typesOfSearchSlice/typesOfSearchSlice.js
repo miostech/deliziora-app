@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const typesOfSearchSlice = createSlice({
   name: "typesOfSearch",
   initialState: {
-    selectedOption: "option1", 
+    selectedOption: "complete_menu",
   },
   reducers: {
     setSelectedOption(state, action) {
