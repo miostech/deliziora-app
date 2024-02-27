@@ -24,6 +24,7 @@ import ProfileRestaurantPage from "./src/view/ProfileRestaurantPage";
 import MenuPlatesPage from "./src/view/MenuPlatesPage";
 import RestaurantList from "./src/view/RestaurantList";
 import { OpenAPI } from "deliziora-client-module/client-web";
+import Toast from 'react-native-toast-message';
 import { Path, Svg } from "react-native-svg";
 import HomeSvg from "./src/components/SVGs/HomeSvg/HomeSvg";
 import ListType from "./src/components/ListType";
@@ -377,6 +378,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <AppStacks />
+      <Toast />
     </Provider>
   );
 }
