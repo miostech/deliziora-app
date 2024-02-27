@@ -16,7 +16,6 @@ import { useFocusEffect } from "@react-navigation/native";
 import SearchBar2 from "./../components/SearchBar2";
 import FiltersModal from "./../components/FiltersModal";
 const HomeAndFavorites = () => {
-  
   const allrestaurants = useSelector(
     (state) => state.restaurants.allRestaurants
   );
@@ -125,14 +124,15 @@ const HomeAndFavorites = () => {
       </View>
       <View style={styles.favoritesContainer}>
         <Text style={styles.title}>Restaurantes favoritos</Text>
-        <ScrollView
-          style={styles.scrollView}>
+        <ScrollView style={styles.scrollView}>
           {justRestaurantsFavorite.map((restaurant) => (
             <>
-              <View style={{
-                width: "100%",
-                height: 30,
-              }}></View>
+              <View
+                style={{
+                  width: "100%",
+                  height: 30,
+                }}
+              ></View>
               <RestaurantCard
                 key={restaurant._id.$oid}
                 id={restaurant._id.$oid}
@@ -142,10 +142,11 @@ const HomeAndFavorites = () => {
                 type="complete"
                 imageUri={restaurant.img}
                 enableMomentum
-              /></>
-
+              />
+            </>
           ))}
         </ScrollView>
+
       </View>
     </SafeAreaView>
   );
@@ -163,7 +164,6 @@ const styles = StyleSheet.create({
     width: "90%",
     marginTop: 60,
     gap: 20,
-
   },
   title: {
     textAlign: "center",

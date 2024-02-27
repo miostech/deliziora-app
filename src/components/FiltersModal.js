@@ -9,7 +9,7 @@ import TypeOfSearch from './TypeOfSearch';
 import CharacteristicsFilter from './CharacteristicsFilter';
 import DistanceSlider from './DistanceSlider';
 import { useSelector, useDispatch } from 'react-redux';
-import { RestaurantService, OpenAPI } from 'deliziora-client-module/client-web';
+import { RestaurantService } from 'deliziora-client-module/client-web';
 import { setFilteredRestaurants } from '../redux/features/restaurants/restaurantsSlice';
 export default function FiltersModal() {
     const dispatch = useDispatch();

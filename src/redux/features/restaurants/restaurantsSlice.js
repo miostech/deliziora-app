@@ -71,8 +71,7 @@ const restaurantsSlice = createSlice({
     //   );
     // },
     
-  },
-});
+  });
 
 export const { setAllRestaurants, addToFavorites, removeFromFavorites, setAllFavoritesRestaurants, setAllRestaurantsOpen, setFilteredRestaurants } = restaurantsSlice.actions;
 

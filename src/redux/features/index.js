@@ -5,7 +5,7 @@ import carouselReducer from './carousel/carouselSlice';
 import switchSliceReducer from './switchSlice/switchSlice';
 import typesOfSearchReducer from './typesOfSearchSlice/typesOfSearchSlice';
 import characteristicsSliceReducer from './characteristicsSlice/characteristicsSlice';
-import locationReducer from './locationSlice/locationSlice';
+import locationSlice from './locationSlice/locationSlice';
 import listTypeReducer from './listTypeSlice/listTypeSlice';
 import profilePageReducer from './profilePageSlice/profilePageSlice';
 import currentRestaurantSelected from './currentRestaurantSelected/currentRestaurantSelectedSlice';
@@ -24,7 +24,7 @@ const rootReducer = combineReducers({
     typesOfSearch: typesOfSearchReducer,
     restaurantsFavorites: restaurantsFavoritesSlice,
     characteristics: characteristicsSliceReducer,
-    location: locationReducer,
+    location: locationSlice,
     listType: listTypeReducer,
     profilePage: profilePageReducer,
     currentRestaurantSelected: currentRestaurantSelected,

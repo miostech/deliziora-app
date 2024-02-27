@@ -99,34 +99,6 @@ function HomeScreen() {
     })();
   }, []);
 
-  async function getInitialValues() {
-    try {
-      const today = new Date().getDay(); // Get the current day (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-      const restaurants = allRestaurants; // Add your array of restaurant objects here
-      const promises = [];
-
-      await restaurants.forEach(async (element) => {
-        const menuOfRestaurant =
-          await MenuOfTheDayService.returnAllMenuOfDayByRestaurant(
-            element._id.$oid
-          );
-        console.warn("MENU", menuOfRestaurant);
-        if (
-          menuOfRestaurant &&
-          menuOfRestaurant.data &&
-          menuOfRestaurant.data.length > 0
-        ) {
-          const menuItems = menuOfRestaurant.data.filter(
-            (item) => item.day === today
-          );
-          console.warn("WARN", menuItems);
-        }
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   useFocusEffect(
     React.useCallback(() => {
       const fetchData = () => {
@@ -196,7 +168,6 @@ function HomeScreen() {
             .catch((error) => {
               console.error(error);
             });
-          // getInitialValues();
         } catch (error) {
           console.error(error);
         }
@@ -208,7 +179,7 @@ function HomeScreen() {
 
   useEffect(() => {
     if (!searchTerm) {
-      setFilteredRestaurants(allRestaurants);
+      dispatch(setFilteredRestaurants(allRestaurants));
     }
   }, [searchTerm]);
 
@@ -219,10 +190,10 @@ function HomeScreen() {
           .toLowerCase()
           .includes(searchResult.name.toLowerCase());
       });
-      setFilteredRestaurants(filtered);
+      dispatch(setFilteredRestaurants(filtered));
     } else {
       // If no search result, display all restaurants
-      setFilteredRestaurants(allRestaurants);
+      dispatch(setFilteredRestaurants(allRestaurants));
     }
   }, [searchResult]);
 
@@ -264,7 +235,7 @@ function HomeScreen() {
         animated: true,
       });
     }
-    setFilteredRestaurants(foundRestaurants);
+    dispatch(setFilteredRestaurants(foundRestaurants));
   };
 
   const handleChangeSlide = (index) => {
@@ -362,7 +333,7 @@ function HomeScreen() {
           height: 200,
           position: "absolute",
           alignSelf: "center",
-          bottom: 20,
+          bottom: 10,
           left: 0,
           right: 0,
           zIndex: 1,
