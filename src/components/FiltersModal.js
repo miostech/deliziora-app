@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Platform, Pressable, ScrollView, Text, StyleSheet, View } from 'react-native';
 import { FilterSearch } from './FilterSearch';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -8,19 +8,113 @@ import SwitchOpenOrClose from './Switch';
 import TypeOfSearch from './TypeOfSearch';
 import CharacteristicsFilter from './CharacteristicsFilter';
 import DistanceSlider from './DistanceSlider';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { RestaurantService, OpenAPI } from 'deliziora-client-module/client-web';
+import { setFilteredRestaurants } from '../redux/features/restaurants/restaurantsSlice';
 export default function FiltersModal() {
-    let rbSheetRef;
+    const dispatch = useDispatch();
+    const selectedCharacteristics = useSelector(state => state.characteristics);
+    const selectedOption = useSelector((state) => state.typesOfSearch.selectedOption);
+    const status = useSelector((state) => state.switchSlice.status);
+    const typesOfSearch = useSelector((state) => state.typesOfSearch.selectedOption);
+    const distanceValue = useSelector((state) => state.distance.value);
+    const coords = useSelector((state) => state.location.location);
+    const allRestaurants = useSelector(
+        (state) => state.restaurants.allRestaurants
+    );
+
+    const rbSheetRef = useRef();
+
+
+    const applyFilters = () => {
+        console.log("teste");
+        console.log({
+            is_open: status == "opened" ? true : false,
+            lng: coords.longitude,
+            lag: coords.latitude,
+            complete_menu: typesOfSearch == "complete_menu" || typesOfSearch == "all" ? true : false,
+            especialty: typesOfSearch == "especialty" || typesOfSearch == "all" ? true : false,
+            distance: distanceValue,
+            characteristics: selectedCharacteristics,
+        })
+        // OpenAPI.BASE = "http://192.168.1.65:8000"
+        RestaurantService.filterRestaurant({
+            is_open: status == "opened" ? true : false,
+            lng: String(coords.longitude),
+            lag: String(coords.latitude),
+            complete_menu: typesOfSearch == "complete_menu" || typesOfSearch == "all" ? true : false,
+            especialty: typesOfSearch == "especialty" || typesOfSearch == "all" ? true : false,
+            distance: distanceValue,
+            characteristics: selectedCharacteristics
+        }).then((res) => {
+            {
+                dispatch(setFilteredRestaurants(res.data));
+
+            }
+        }).catch((err) => {
+            console.log("ERROR", err);
+        }).finally(() => {
+            rbSheetRef.current.close();
+        })
+    }
+
+
+    /* 
+    const [openRestaurantsIds, setOpenRestaurantsIds] = React.useState([]);
+    
+    useEffect(() => {
+        setOpenRestaurantsIds(allRestaurants
+            .filter(restaurant => restaurant.isOpen === true)
+            .map(restaurant => restaurant._id.$oid))
+
+        console.log("Todos Fechados : ", openRestaurantsIds); // You can remove this line after verifying the output
+    }, []);
+    const applyFilters = (restaurants, filters) => {
+        return restaurants.filter((restaurant) => {
+            if (filters.is_open !== undefined && restaurant.isOpen !== filters.is_open) {
+                return false;
+            }
+            if (filters.lag && restaurant.latitude !== filters.lag) {
+                return false;
+            }
+            if (filters.lng && restaurant.longitude !== filters.lng) {
+                return false;
+            }
+            if (filters.distance && !isWithinDistance(restaurant, filters.distance)) {
+                return false;
+            }
+            if (filters.characteristics.length > 0 && !filters.characteristics.every((char) =>
+                restaurant.characteristics.includes(char))) {
+                return false;
+            }
+            if (filters.complete_menu !== undefined && restaurant.completeMenu !== filters.complete_menu) {
+                return false;
+            }
+            if (filters.especialty !== undefined && restaurant.especiality !== filters.especialty) {
+                return false;
+            }
+            return true;
+        });
+    };
+
+    function isWithinDistance(restaurant, distance) {
+        return true;
+    } */
+
+
+
+    const handleClearFilters = () => {
+        dispatch(setFilteredRestaurants(allRestaurants));
+        rbSheetRef.current.close();
+    }
 
     return (
         <>
-            <Pressable onPress={() => rbSheetRef.open()}>
+            <Pressable onPress={() => rbSheetRef.current.open()}>
                 <FilterSearch />
             </Pressable>
             <RBSheet
-                ref={ref => {
-                    rbSheetRef = ref;
-                }}
+                ref={rbSheetRef}
                 openDuration={250}
                 closeOnDragDown={true}
                 customStyles={{
@@ -45,7 +139,7 @@ export default function FiltersModal() {
             >
                 <ScrollView contentContainerStyle={styles.scrollView}>
                     <View style={styles.modalHeader}>
-                        <Pressable onPress={() => rbSheetRef.close()}>
+                        <Pressable onPress={() => rbSheetRef.current.close()}>
                             <Close />
                         </Pressable>
                         <Text>Filtros</Text>
@@ -127,15 +221,15 @@ export default function FiltersModal() {
                                     marginTop: 10,
                                     padding: 10,
                                 }}
-                                onPress={() => rbSheetRef.close()}
+                                onPress={handleClearFilters}
                             >
-                                <Text 
-                                style={{
-                                    fontWeight: "bold",
-                                    color: "#000000",
-                                    textAlign: "center",
-                                    fontSize: 16
-                                }}>
+                                <Text
+                                    style={{
+                                        fontWeight: "bold",
+                                        color: "#000000",
+                                        textAlign: "center",
+                                        fontSize: 16
+                                    }}>
                                     Limpar filtros
                                 </Text>
                             </Pressable>
@@ -149,7 +243,9 @@ export default function FiltersModal() {
                                 height: 40,
                                 marginTop: 10,
                                 padding: 10,
-                            }}>
+                            }}
+                                onPress={applyFilters}
+                            >
                                 <Text style={{
                                     fontWeight: "bold",
                                     color: "white",

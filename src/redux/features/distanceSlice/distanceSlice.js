@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const distanceSlice = createSlice({
     name: 'distance',
     initialState: {
-        value: 1, // Valor inicial da distância
+        value: 1,
     },
     reducers: {
         updateDistance: (state, action) => {

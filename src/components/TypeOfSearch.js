@@ -6,9 +6,9 @@ import { setSelectedOption } from "../redux/features/typesOfSearchSlice/typesOfS
 
 const TypeOfSearch = () => {
   const dropdownOptions = [
-    { label: "Menu completo + prato do dia", value: "option1" },
-    { label: "Especialidade apenas", value: "option2" },
-    { label: "Todos", value: "option3" },
+    { label: "Menu completo + prato do dia", value: "complete_menu" },
+    { label: "Especialidade apenas", value: "especialty" },
+    { label: "Todos", value: "all" },
   ];
 
   const selectedOption = useSelector((state) => state.typesOfSearch.selectedOption);
@@ -23,10 +23,10 @@ const TypeOfSearch = () => {
     <View style={styles.container}>
       <RNPickerSelect
         items={dropdownOptions}
-        placeholder={{ label: "Selecione uma opção", value: null }}
+        placeholder={{ label: "Selecione uma opção" }}
         onValueChange={handleValueChange}
         style={pickerSelectStyles}
-        value={selectedOption || "option1"}
+        value={selectedOption}
       />
     </View>
   );
