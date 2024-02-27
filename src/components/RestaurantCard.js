@@ -19,6 +19,7 @@ import { useNavigation } from "@react-navigation/native"; // Importação necess
 
 import * as Device from "expo-device";
 import { setCurrentId } from "../redux/features/profilePageSlice/profilePageSlice";
+import { Image } from "react-native";
 const colors = require("./../style/Colors.json");
 
 function CompleteRestaurantCard({
@@ -38,48 +39,68 @@ function CompleteRestaurantCard({
     <>
       <View style={styles.restaurantCard}>
         <View style={styles.rowCardOne}>
-          <ImageBackground style={styles.image} source={{ uri: imageUri }} />
-          <View>
-            <Text style={styles.restaurantName}>{name}</Text>
-            <Text style={styles.distance}>
-              Distância {distance < 1 ? (distance * 1000).toFixed(0) + "m" : distance.toFixed(2) + "km"}
-            </Text>
-          </View>
-          <Pressable onPress={toggleFavorite}>
-            {isFavorite ? (
-              <Svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="#F36527"
-                stroke="#F36527"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <Path
-                  d="M12.8197 3.82407L12.3771 4.33703C12.1778 4.56804 11.8199 4.56824 11.6203 4.33745L11.1757 3.82322C9.07663 1.39554 5.67336 1.39554 3.5743 3.82322C1.47523 6.25088 1.47523 10.1869 3.5743 12.6146L11.4697 21.7459C11.7626 22.0847 12.2375 22.0847 12.5304 21.7459L20.4318 12.6129C22.5262 10.1772 22.5298 6.25219 20.4304 3.82407C18.3275 1.39198 14.9226 1.39198 12.8197 3.82407Z"
+          <Image
+            style={[styles.image, { borderRadius: 10 }]}
+            source={{ uri: imageUri }}
+          />
+          <View
+            style={{
+              display: "flex",
+              marginLeft: 10,
+              flexDirection: "row",
+              width: "65%",
+              justifyContent: "space-between",
+            }}
+          >
+            <View style={{ display: "flex" }}>
+              <Text style={styles.restaurantName}>{name}</Text>
+              <Text style={styles.distance}>
+                Distância{" "}
+                {distance < 1
+                  ? (distance * 1000).toFixed(0) + "m"
+                  : distance.toFixed(2) + "km"}
+              </Text>
+            </View>
+            <Pressable onPress={toggleFavorite}>
+              {isFavorite ? (
+                <Svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="#F36527"
                   stroke="#F36527"
-                  strokeWidth="2"
-                />
-              </Svg>
-            ) : (
-              <Svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <Path
-                  d="M12.8197 3.82407L12.3771 4.33703C12.1778 4.56804 11.8199 4.56824 11.6203 4.33745L11.1757 3.82322C9.07663 1.39554 5.67336 1.39554 3.5743 3.82322C1.47523 6.25088 1.47523 10.1869 3.5743 12.6146L11.4697 21.7459C11.7626 22.0847 12.2375 22.0847 12.5304 21.7459L20.4318 12.6129C22.5262 10.1772 22.5298 6.25219 20.4304 3.82407C18.3275 1.39198 14.9226 1.39198 12.8197 3.82407Z"
-                  stroke="#201F23"
-                  strokeWidth="2"
-                />
-              </Svg>
-            )}
-          </Pressable>
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <Path
+                    d="M12.8197 3.82407L12.3771 4.33703C12.1778 4.56804 11.8199 4.56824 11.6203 4.33745L11.1757 3.82322C9.07663 1.39554 5.67336 1.39554 3.5743 3.82322C1.47523 6.25088 1.47523 10.1869 3.5743 12.6146L11.4697 21.7459C11.7626 22.0847 12.2375 22.0847 12.5304 21.7459L20.4318 12.6129C22.5262 10.1772 22.5298 6.25219 20.4304 3.82407C18.3275 1.39198 14.9226 1.39198 12.8197 3.82407Z"
+                    stroke="#F36527"
+                    strokeWidth="2"
+                  />
+                </Svg>
+              ) : (
+                <Svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <Path
+                    d="M12.8197 3.82407L12.3771 4.33703C12.1778 4.56804 11.8199 4.56824 11.6203 4.33745L11.1757 3.82322C9.07663 1.39554 5.67336 1.39554 3.5743 3.82322C1.47523 6.25088 1.47523 10.1869 3.5743 12.6146L11.4697 21.7459C11.7626 22.0847 12.2375 22.0847 12.5304 21.7459L20.4318 12.6129C22.5262 10.1772 22.5298 6.25219 20.4304 3.82407C18.3275 1.39198 14.9226 1.39198 12.8197 3.82407Z"
+                    stroke="#201F23"
+                    strokeWidth="2"
+                  />
+                </Svg>
+              )}
+            </Pressable>
+          </View>
         </View>
         <View style={styles.rowCardTwo}>
-          <Text style={styles.description} numberOfLines={2} lineBreakMode="tail">
+          <Text
+            style={styles.description}
+            numberOfLines={2}
+            lineBreakMode="tail"
+          >
             {description}
           </Text>
           <View style={styles.visitButton}>
@@ -371,7 +392,7 @@ const styles = StyleSheet.create({
   restaurantCard: {
     height: 160,
     maxHeight: 160,
-    gap:10,
+    gap: 10,
     width: "100%",
     maxWidth: "100%",
     display: "flex",
@@ -395,7 +416,6 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 5,
     alignItems: "flex-start",
-    justifyContent: "space-between",
   },
   rowCardTwo: {
     display: "flex",
@@ -407,11 +427,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   image: {
-    flex: 1,
-    minHeight: 100,
-    maxHeight: 100,
-    minWidth: 100,
-    maxWidth: 100,
+    width: 100,
+    height: 100,
   },
   description: {
     width: "60%",
@@ -420,7 +437,6 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#48464A",
     fontFamily: "Roboto",
-    backgroundColor:"red"
   },
   distance: {
     fontSize: 11,

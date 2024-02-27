@@ -37,7 +37,7 @@ export default function MarkersRestaurant({
       {restaurants.map((item, index) => (
         <Marker
           key={item.name}
-          identifier="restaurant"
+          identifier={item.name}
           draggable={false}
           onDrag={false}
           coordinate={{

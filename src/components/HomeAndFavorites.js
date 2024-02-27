@@ -130,7 +130,7 @@ const HomeAndFavorites = () => {
               <View
                 style={{
                   width: "100%",
-                  height: 30,
+                  height: 20,
                 }}
               ></View>
               <RestaurantCard
@@ -138,6 +138,8 @@ const HomeAndFavorites = () => {
                 id={restaurant._id.$oid}
                 name={restaurant.name}
                 description={restaurant.description}
+                latitude={restaurant.latitude}
+                longitude={restaurant.longitude}
                 distance={"5"}
                 type="complete"
                 imageUri={restaurant.img}

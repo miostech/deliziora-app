@@ -245,12 +245,14 @@ const ModalFavoritesOurNonFavorites = () => {
           {filteredRestaurants.map((restaurant) => (
             <View
               key={restaurant._id.$oid}
-              style={{ width: "100%", height: 230 }}
+              style={{ width: "100%", height: 180 }}
             >
               <RestaurantCard
                 id={restaurant._id.$oid}
                 name={restaurant.name}
                 description={restaurant.description}
+                latitude={restaurant.latitude}
+                longitude={restaurant.longitude}
                 distance={"5"}
                 type="complete"
                 imageUri={restaurant.img}
@@ -288,7 +290,7 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     height: "100%",
-    marginBottom: 20,
+    marginBottom: 10,
   },
   favoriteButton: {
     textAlign: "center",

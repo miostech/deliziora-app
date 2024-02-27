@@ -129,12 +129,11 @@ export default function App() {
                       fontSize: 20,
                       fontStyle: "normal",
                       fontWeight: "600",
-                      maxWidth: "75%",
+                      maxWidth: "100%",
                       height: "100%",
                       flexWrap: "wrap",
                     }}
                   >
-                    {" "}
                     Menu Completo - {restaurantData.name}
                   </Text>
                 );

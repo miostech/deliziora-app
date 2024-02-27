@@ -21,14 +21,16 @@ import {
 } from "deliziora-client-module/client-web";
 import {
   setAllRestaurants,
-  setFilteredRestaurants
+  setFilteredRestaurants,
 } from "../redux/features/restaurants/restaurantsSlice";
+import * as Device from "expo-device";
 import { setMenuOfDay } from "../redux/features/menuOfDaySlice/menuOfDaySlice";
 import RestaurantCard from "./../components/RestaurantCard";
 import MarkersRestaurant from "./../components/MarkersRestaurant";
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { updateLocation } from "../redux/features/locationSlice/locationSlice";
+import MarkerIconCurrentComponent from "../components/MarkerIconCurrentComponent";
 const windowWidth = Dimensions.get("window").width;
 
 function HomeScreen() {
@@ -43,7 +45,9 @@ function HomeScreen() {
   const [searchResult, setSearchResult] = useState({});
   /* const [filteredRestaurants, setFilteredRestaurants] =
     useState(allRestaurants); */
-  const filteredRestaurants = useSelector(state => state.restaurants.filteredRestaurants);
+  const filteredRestaurants = useSelector(
+    (state) => state.restaurants.filteredRestaurants
+  );
 
   const [menuOfTheDayByRestaurant, setMenuOfTheDayByRestaurant] = useState({});
   const [loading, setLoading] = useState(true);
@@ -95,7 +99,14 @@ function HomeScreen() {
         currentLocation.coords.latitude,
         currentLocation.coords.longitude
       );
-      dispatch(updateLocation({ location: { latitude: currentLocation.coords.latitude, longitude: currentLocation.coords.longitude } }))
+      dispatch(
+        updateLocation({
+          location: {
+            latitude: currentLocation.coords.latitude,
+            longitude: currentLocation.coords.longitude,
+          },
+        })
+      );
     })();
   }, []);
 
@@ -240,16 +251,18 @@ function HomeScreen() {
 
   const handleChangeSlide = (index) => {
     if (mapsRef.current && filteredRestaurants[index]) {
-      const { latitude, longitude } = filteredRestaurants[index];
-      mapsRef.current.animateToRegion({
-        latitude: Number(latitude),
-        longitude: Number(longitude),
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
+      const { name } = filteredRestaurants[index];
+      console.warn("RESTAU", name)
+      mapsRef.current.fitToSuppliedMarkers(["home", name], {
+        edgePadding: {
+          top:700,
+          right: 0,
+          bottom: 700,
+          left: 0,
+        },
       });
     }
   };
-
 
   const renderCarouselItem = ({ item }) => (
     <RestaurantCard
@@ -288,8 +301,6 @@ function HomeScreen() {
         ref={mapsRef}
         style={styles.map}
         provider="google"
-        maxZoomLevel={30}
-        showsUserLocation
         initialRegion={{
           latitude: location?.coords?.latitude,
           longitude: location?.coords?.longitude,
@@ -302,6 +313,16 @@ function HomeScreen() {
           setSearchResult={setSearchResult}
           setSearchTerm={setSearchTerm}
         />
+        <Marker
+          key={"home"}
+          identifier="home"
+          coordinate={{
+            latitude: location?.coords?.latitude,
+            longitude: location?.coords?.longitude,
+          }}
+        >
+          <MarkerIconCurrentComponent />  
+        </Marker>
       </MapView>
 
       <View
