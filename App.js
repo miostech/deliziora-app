@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -32,16 +32,63 @@ import listTypeSlice, {
   setListType,
 } from "./src/redux/features/listTypeSlice/listTypeSlice";
 import ModalFavoritesOurNonFavorites from "./src/components/organisms/ModalFavoritesOurNonFavorites/ModalFavoritesOurNonFavorites";
-
+import {
+  addOrRemoveFavorits,
+  removeFavoritsNew,
+} from "./src/redux/features/restaurantsFavorites/restaurantsFavoritesSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 OpenAPI.BASE = "https://deliziora-api.azurewebsites.net/";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const colors = require("./src/style/Colors.json");
 export default function App() {
   function AppStacks() {
+    const dispatch = useDispatch();
     const restaurantData = useSelector(
       (state) => state.currentRestaurantSelected
     );
+    const [isFavorite, setIsFavorite] = useState(false);
+    const favoriteRestaurants = useSelector(
+      (state) => state.restaurantsFavorites
+    );
+
+    let id = restaurantData._id.$oid;
+    useEffect(() => {
+      // Verifica se o restaurante está nos favoritos ao montar o componente
+      checkIsFavorite();
+    }, [favoriteRestaurants, dispatch, toggleFavorite]);
+
+    const checkIsFavorite = async () => {
+      try {
+        // Recupera os restaurantes favoritos do AsyncStorage
+        const storedFavorites = await AsyncStorage.getItem(
+          "@favoriteRestaurants"
+        );
+        console.log("FAVORITOS", storedFavorites);
+        if (storedFavorites) {
+          const parsedFavorites = JSON.parse(storedFavorites);
+          console.log("", parsedFavorites);
+          setIsFavorite(parsedFavorites.includes(id));
+        }
+      } catch (error) {
+        console.error("Erro ao recuperar restaurantes favoritos:", error);
+      }
+    };
+    const toggleFavorite = () => {
+      try {
+        console.log("HERE", id);
+        // Verifica se o restaurante é favorito
+        if (isFavorite) {
+          // Remove o restaurante dos favoritos
+          dispatch(removeFavoritsNew({ restaurantId: id }));
+        } else {
+          // Adiciona o restaurante aos favoritos
+          dispatch(addOrRemoveFavorits({ restaurantId: id }));
+        }
+      } catch (error) {
+        console.error("Error updating favorite restaurants:", error);
+      }
+    };
 
     return (
       <NavigationContainer>
@@ -197,7 +244,45 @@ export default function App() {
                 );
               },
               headerRight: () => {
-                return
+                return (
+                  <Pressable
+                    style={{
+                      alignSelf: "flex-end",
+                      justifySelf: "flex-end",
+                    }}
+                    onPress={toggleFavorite}
+                  >
+                    {isFavorite ? (
+                      <Svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="#F36527"
+                        stroke="#F36527"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <Path
+                          d="M12.8197 3.82407L12.3771 4.33703C12.1778 4.56804 11.8199 4.56824 11.6203 4.33745L11.1757 3.82322C9.07663 1.39554 5.67336 1.39554 3.5743 3.82322C1.47523 6.25088 1.47523 10.1869 3.5743 12.6146L11.4697 21.7459C11.7626 22.0847 12.2375 22.0847 12.5304 21.7459L20.4318 12.6129C22.5262 10.1772 22.5298 6.25219 20.4304 3.82407C18.3275 1.39198 14.9226 1.39198 12.8197 3.82407Z"
+                          stroke="#F36527"
+                          strokeWidth="2"
+                        />
+                      </Svg>
+                    ) : (
+                      <Svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <Path
+                          d="M12.8197 3.82407L12.3771 4.33703C12.1778 4.56804 11.8199 4.56824 11.6203 4.33745L11.1757 3.82322C9.07663 1.39554 5.67336 1.39554 3.5743 3.82322C1.47523 6.25088 1.47523 10.1869 3.5743 12.6146L11.4697 21.7459C11.7626 22.0847 12.2375 22.0847 12.5304 21.7459L20.4318 12.6129C22.5262 10.1772 22.5298 6.25219 20.4304 3.82407C18.3275 1.39198 14.9226 1.39198 12.8197 3.82407Z"
+                          stroke="#201F23"
+                          strokeWidth="2"
+                        />
+                      </Svg>
+                    )}
+                  </Pressable>)
               },
             })}
           />
