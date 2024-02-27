@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const restaurantCurrentProfilePageSlice = createSlice({
   name: 'restaurantCurrentProfilePage',
   initialState: {
-    data: null,
+    data: {},
     loading: false,
     error: null,
   },

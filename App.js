@@ -52,7 +52,6 @@ export default function App() {
       (state) => state.restaurantsFavorites
     );
 
-    let id = restaurantData._id.$oid;
     useEffect(() => {
       // Verifica se o restaurante está nos favoritos ao montar o componente
       checkIsFavorite();
@@ -68,7 +67,7 @@ export default function App() {
         if (storedFavorites) {
           const parsedFavorites = JSON.parse(storedFavorites);
           console.log("", parsedFavorites);
-          setIsFavorite(parsedFavorites.includes(id));
+          setIsFavorite(parsedFavorites.includes(restaurantData._id.$oid));
         }
       } catch (error) {
         console.error("Erro ao recuperar restaurantes favoritos:", error);
@@ -76,14 +75,14 @@ export default function App() {
     };
     const toggleFavorite = () => {
       try {
-        console.log("HERE", id);
+        console.log("HERE", restaurantData._id.$oid);
         // Verifica se o restaurante é favorito
         if (isFavorite) {
           // Remove o restaurante dos favoritos
-          dispatch(removeFavoritsNew({ restaurantId: id }));
+          dispatch(removeFavoritsNew({ restaurantId: restaurantData._id.$oid }));
         } else {
           // Adiciona o restaurante aos favoritos
-          dispatch(addOrRemoveFavorits({ restaurantId: id }));
+          dispatch(addOrRemoveFavorits({ restaurantId: restaurantData._id.$oid }));
         }
       } catch (error) {
         console.error("Error updating favorite restaurants:", error);
