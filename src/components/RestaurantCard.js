@@ -16,7 +16,7 @@ import {
   removeFavoritsNew,
 } from "../redux/features/restaurantsFavorites/restaurantsFavoritesSlice";
 import { useNavigation } from "@react-navigation/native"; // Importação necessária para usar a navegação
-
+import { VisitorsService } from "deliziora-client-module/client-web";
 import * as Device from "expo-device";
 import { setCurrentId } from "../redux/features/profilePageSlice/profilePageSlice";
 import { Image } from "react-native";
@@ -327,20 +327,32 @@ export default function RestaurantCard({
     return deg * (Math.PI / 180);
   }
 
-  console.log(
-    "DISTANCE",
-    currentLocation.latitude,
-    currentLocation.longitude,
-    latitude,
-    longitude
-  );
+
+  function checkFirstTimeApp() {
+    return new Promise(async (res, rej) => {
+      const user = await AsyncStorage.getItem("@userData");
+      if (user == undefined || user == null) {
+        rej("no user");
+      } else {
+        res(user);
+      }
+    });
+  }
 
   const handleOpen = () => {
     // Navegar para a página ProfileRestaurantPage com o ID do card clicado
-    navigation.navigate("ProfileRestaurantPage", { restaurantId: id });
+    
     // Armazenar o ID do restaurante no estado global do Redux
     dispatch(setCurrentId(id));
+    checkFirstTimeApp()
+      .then((res) => {
+        VisitorsService.addVisitor(id, res)
+          .then((res) => console.log(res))
+          .catch((err) => console.warn("erro ao adicionar: ", err));
+      })
+      .catch((err) => {console.warn(err)});
     console.log(id, "cade");
+    navigation.navigate("ProfileRestaurantPage", { restaurantId: id });
   };
 
   if (isLoading) {

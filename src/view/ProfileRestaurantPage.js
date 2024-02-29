@@ -27,6 +27,7 @@ import MapLocationPageIcon from "../components/SVGs/MapLocationPageIcon/MapLocat
 export default function ProfileRestaurantPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const currentLocation = useSelector((state) => state.location.location);
   const [restaurantData, setRestaurantData] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false); // Estado de favorito
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false); // Estado de exibição de descrição
@@ -35,15 +36,30 @@ export default function ProfileRestaurantPage() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  const handleFavorite = () => {
-    setIsFavorite(!isFavorite); // Alterna o estado do favorito
-  };
-  const generateGoogleMapsLink = (lat, long) => {
-    const url = `
-  https://www.google.com/maps/search/?api=1&query=${lat},${long}`;
-    console.log("CIK");
-    return url;
-  };
+  function getDistanceFromLatLon(lat1, lon1, lat2, lon2) {
+    const earthRadius = 6371; // Radius of the earth in km
+    const dLat = deg2rad(lat2 - lat1); // deg2rad below
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) *
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = earthRadius * c; // Distance in km
+    return distance;
+  }
+
+  function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+  }
+  var distance = getDistanceFromLatLon(
+    currentLocation.latitude,
+    currentLocation.longitude,
+    restaurantData?.latitude,
+    restaurantData?.longitude
+  );
 
   useEffect(() => {
     RestaurantService.returnRestaurantById(currentId)
@@ -158,6 +174,13 @@ export default function ProfileRestaurantPage() {
               : restaurantData.address}
           </Text>
         </Pressable>
+        <Text style={{alignSelf:"center"}}>
+          {"("}
+          {distance < 1
+            ? (distance * 1000).toFixed(0) + "m"
+            : distance.toFixed(2) + "km"}{" "}
+          de distancia{")"}
+        </Text>
         <Pressable
           style={{
             display: "flex",
