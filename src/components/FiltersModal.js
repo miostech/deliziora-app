@@ -97,48 +97,6 @@ export default function FiltersModal() {
   };
 
 
-  /* 
-    const [openRestaurantsIds, setOpenRestaurantsIds] = React.useState([]);
-    
-    useEffect(() => {
-        setOpenRestaurantsIds(allRestaurants
-            .filter(restaurant => restaurant.isOpen === true)
-            .map(restaurant => restaurant._id.$oid))
-
-        console.log("Todos Fechados : ", openRestaurantsIds); // You can remove this line after verifying the output
-    }, []);
-    const applyFilters = (restaurants, filters) => {
-        return restaurants.filter((restaurant) => {
-            if (filters.is_open !== undefined && restaurant.isOpen !== filters.is_open) {
-                return false;
-            }
-            if (filters.lag && restaurant.latitude !== filters.lag) {
-                return false;
-            }
-            if (filters.lng && restaurant.longitude !== filters.lng) {
-                return false;
-            }
-            if (filters.distance && !isWithinDistance(restaurant, filters.distance)) {
-                return false;
-            }
-            if (filters.characteristics.length > 0 && !filters.characteristics.every((char) =>
-                restaurant.characteristics.includes(char))) {
-                return false;
-            }
-            if (filters.complete_menu !== undefined && restaurant.completeMenu !== filters.complete_menu) {
-                return false;
-            }
-            if (filters.especialty !== undefined && restaurant.especiality !== filters.especialty) {
-                return false;
-            }
-            return true;
-        });
-    };
-
-    function isWithinDistance(restaurant, distance) {
-        return true;
-    } */
-
   const handleClearFilters = () => {
     dispatch(setFilteredRestaurants(allRestaurants));
     rbSheetRef.current.close();

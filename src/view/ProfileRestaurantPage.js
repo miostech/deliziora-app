@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   ScrollView,
   ScrollViewBase,
   Linking,
+  StyleSheet,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -24,6 +25,8 @@ import { addCurrentRestaurant } from "../redux/features/currentRestaurantSelecte
 import PhoneIcon from "../components/PhoneIcon";
 
 import MapLocationPageIcon from "../components/SVGs/MapLocationPageIcon/MapLocationPageIcon";
+import InfoIcon from "../components/InfoIcon";
+import RBSheet from "react-native-raw-bottom-sheet";
 export default function ProfileRestaurantPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,6 +38,7 @@ export default function ProfileRestaurantPage() {
   const currentId = useSelector((state) => state.profilePage.currentId);
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const rbSheetRef = useRef();
 
   function getDistanceFromLatLon(lat1, lon1, lat2, lon2) {
     const earthRadius = 6371; // Radius of the earth in km
@@ -75,7 +79,7 @@ export default function ProfileRestaurantPage() {
               .filter((item) =>
                 response.data.characteristics.includes(item._id.$oid)
               )
-              .map((item) => ({ icon: item.icon }));
+              .map((item) => ({ icon: item.icon, name: item.name }));
             console.log("ARRAY CHARACTERISTICS", newArrayChars);
             SetFilteredChars(newArrayChars);
             setLoading(false);
@@ -134,132 +138,117 @@ export default function ProfileRestaurantPage() {
         style={{
           display: "flex",
           flexDirection: "column",
-          padding: 10,
+          paddingTop: 10,
           height: "100%",
           width: "100%",
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
-          flex: 2,
+          borderTopLeftRadius: 30,
+          borderTopRightRadius: 30,
         }}
       >
-        <Pressable
+        <View
           style={{
-            display: "flex",
-            flexDirection: "row",
-            gap: 40,
-            width: 300,
-            justifyContent: "flex-start",
+            alignSelf: "center",
             alignItems: "center",
-            marginLeft: 27,
-            marginBottom: 5,
+            display: "flex",
+            justifyContent: "center",
+            width: 260,
           }}
-          onPress={() => Linking.openURL(url)}
         >
-          <MapLocationPageIcon />
+          <Pressable
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 40,
+              width: "100%",
+              alignItems: "center",
+              marginBottom: 15,
+            }}
+            onPress={() => Linking.openURL(url)}
+          >
+            <MapLocationPageIcon />
+            <View style={{}}>
+              <Text
+                style={{
+                  color: "var(--Neutral-02-Color-Neutral-04, #48464A)",
+                  fontFamily: "Roboto",
+                  fontSize: 16,
+                  fontStyle: "normal",
+                  fontWeight: "300",
+                }}
+              >
+                {restaurantData.address.length > 200
+                  ? restaurantData.address.substring(0, 200) + "..."
+                  : restaurantData.address}
+              </Text>
+              <Text style={{ alignSelf: "center" }}>
+                {"("}
+                {distance < 1
+                  ? (distance * 1000).toFixed(0) + "m"
+                  : distance.toFixed(2) + "km"}{" "}
+                de distancia{")"}
+              </Text>
+            </View>
+          </Pressable>
 
-          <Text
+          <Pressable
             style={{
-              color: "var(--Neutral-02-Color-Neutral-04, #48464A)",
-              textAlign: "left",
-              fontFamily: "Roboto",
-              fontSize: 16,
-              fontStyle: "normal",
-              fontWeight: "300",
-              minWidth: 300,
-              maxWidth: 330,
+              display: "flex",
+              flexDirection: "row",
+              gap: 40,
+              width: "100%",
+              marginBottom: 10,
             }}
+            onPress={() => Linking.openURL(`tel:${restaurantData.contact}`)}
           >
-            {restaurantData.address.length > 200
-              ? restaurantData.address.substring(0, 200) + "..."
-              : restaurantData.address}
-          </Text>
-        </Pressable>
-        <Text style={{alignSelf:"center"}}>
-          {"("}
-          {distance < 1
-            ? (distance * 1000).toFixed(0) + "m"
-            : distance.toFixed(2) + "km"}{" "}
-          de distancia{")"}
-        </Text>
-        <Pressable
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            gap: 40,
-            width: "90%",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            marginLeft: 30,
-            marginBottom: 10,
-            paddingBottom: 10,
-            borderBottomColor: "gray",
-            borderBottomWidth: 1,
-          }}
-          onPress={() => Linking.openURL(`tel:${restaurantData.contact}`)}
-        >
-          <PhoneIcon />
-          <Text
-            style={{
-              color: "var(--Neutral-02-Color-Neutral-04, #48464A)",
-              textAlign: "center",
-              fontFamily: "Roboto",
-              fontSize: 16,
-              fontStyle: "normal",
-              fontWeight: "300",
-            }}
-          >
-            {restaurantData.contact}
-          </Text>
-        </Pressable>
-        {/* Restaurant is opened or closed ? */}
-        <RestaurantIsOpenOrClosed />
-        {/* Restaurant is opened or closed ? */}
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <Path
-              d="M16 3.25C15.8009 3.24906 15.6099 3.32837 15.47 3.47L7.46999 11.47C7.17754 11.7628 7.17754 12.2372 7.46999 12.53L15.47 20.53C15.7655 20.8054 16.226 20.7972 16.5116 20.5116C16.7972 20.226 16.8053 19.7655 16.53 19.47L9.05999 12L16.53 4.53C16.8224 4.23718 16.8224 3.76282 16.53 3.47C16.3901 3.32837 16.1991 3.24906 16 3.25Z"
-              fill="#79767B"
+            <PhoneIcon />
+
+            <Text
+              style={{
+                color: "var(--Neutral-02-Color-Neutral-04, #48464A)",
+                textAlign: "center",
+                fontFamily: "Roboto",
+                fontSize: 16,
+                fontStyle: "normal",
+                marginLeft: 27,
+
+                fontWeight: "300",
+              }}
+            >
+              {restaurantData.contact}
+            </Text>
+          </Pressable>
+          <RestaurantIsOpenOrClosed />
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 40 }}>
+            <Pressable
+              onPress={() => {
+                rbSheetRef.current.open();
+              }}
+            >
+              <InfoIcon />
+            </Pressable>
+
+            <FlatList
+              data={filteredChars}
+              style={{
+                width: "40%",
+                height: 50,
+                padding: 5,
+              }}
+              renderItem={({ item }) => (
+                <Image
+                  source={{ uri: item.icon }}
+                  style={{ width: 32, height: 32 }}
+                />
+              )}
+              contentContainerStyle={{
+                gap: 20,
+              }}
+              keyExtractor={(item) => item.toString()}
+              horizontal={true}
             />
-          </Svg>
-          <FlatList
-            data={filteredChars}
-            style={{
-              maxWidth: "90%",
-              height: 50,
-              padding: 5,
-            }}
-            renderItem={({ item }) => (
-              <Image
-                source={{ uri: item.icon }}
-                style={{ width: 32, height: 32 }}
-              />
-            )}
-            contentContainerStyle={{
-              gap: 30,
-              paddingRight: 20,
-            }}
-            keyExtractor={(item) => item.toString()}
-            horizontal={true}
-          />
-          <Svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <Path
-              d="M8.00001 20.75C8.19908 20.7509 8.39013 20.6716 8.53001 20.53L16.53 12.53C16.8225 12.2372 16.8225 11.7628 16.53 11.47L8.53001 3.47C8.2345 3.19464 7.774 3.20277 7.48839 3.48838C7.20278 3.77399 7.19465 4.23449 7.47001 4.53L14.94 12L7.47001 19.47C7.17756 19.7628 7.17756 20.2372 7.47001 20.53C7.6099 20.6716 7.80095 20.7509 8.00001 20.75Z"
-              fill="#79767B"
-            />
-          </Svg>
+          </View>
         </View>
+
         <View
           style={{
             display: "flex",
@@ -286,16 +275,26 @@ export default function ProfileRestaurantPage() {
           </Text>
           <Pressable
             onPress={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+            style={{
+              width: 300,
+              height: 50,
+              backgroundColor: "black",
+              marginTop: 20,
+              marginBottom: 20,
+              alignSelf: "center",
+              borderRadius: 100,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
             <Text
               style={{
-                color: "#09598B",
+                color: "white",
                 fontFamily: "Roboto",
-                fontSize: 12,
+                fontSize: 16,
                 fontStyle: "normal",
                 fontWeight: "300",
-                paddingBottom: 5,
-                marginLeft: 20,
+                textAlign: "center",
               }}
             >
               {isDescriptionExpanded ? "Ver menos" : "Ver mais"}
@@ -318,7 +317,7 @@ export default function ProfileRestaurantPage() {
             style={{
               color: "var(--Neutral-02-Color-Neutral-01, #201F23)",
               fontFamily: "Roboto",
-              fontSize: 16,
+              fontSize: 18,
               fontStyle: "normal",
               fontWeight: "bold",
               marginLeft: 20,
@@ -342,7 +341,7 @@ export default function ProfileRestaurantPage() {
             style={{
               color: "var(--Neutral-02-Color-Neutral-01, #201F23)",
               fontFamily: "Roboto",
-              fontSize: 16,
+              fontSize: 18,
               fontStyle: "normal",
               marginLeft: 20,
               fontWeight: "bold",
@@ -382,6 +381,99 @@ export default function ProfileRestaurantPage() {
           </Pressable>
         </ScrollView>
       </ScrollView>
+      <RBSheet
+        ref={rbSheetRef}
+        openDuration={250}
+        closeOnDragDown={true}
+        customStyles={{
+          container: {
+            justifyContent: "center",
+            alignItems: "center",
+            height: "80%",
+            borderTopLeftRadius: 24,
+            borderTopRightRadius: 24,
+            ...Platform.select({
+              ios: {
+                marginTop: 20,
+              },
+              android: {
+                // Estilos para Android, se necessário
+              },
+              default: {
+                // Estilos padrão para outras plataformas
+              },
+            }),
+          },
+        }}
+      >
+        <View style={styles.scrollView}>
+          <View style={styles.modalHeader}>
+            <FlatList
+              data={filteredChars}
+              style={{
+                width: "100%",
+                padding: 5,
+                
+              }}
+              renderItem={({ item }) => (
+                <>
+                  <View style={{width:"100%", display:"flex", justifyContent:"center", alignItems:"center"}}>
+                    <Image
+                      source={{ uri: item.icon }}
+                      style={{ width: 60, height: 60 }}
+                    />
+                    <Text>{item.name}</Text>
+                  </View>
+                </>
+              )}
+              contentContainerStyle={{
+                gap: 20,
+                width:"100%",
+                justifyContent:"center",
+                alignItems:"center",
+               
+              }}
+              keyExtractor={(item) => item.toString()}
+            />
+          </View>
+        </View>
+      </RBSheet>
     </View>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  text: {
+    fontFamily: "Roboto",
+    fontSize: 16,
+    fontWeight: "400",
+    lineHeight: 19,
+    letterSpacing: 0,
+    textAlign: "left",
+  },
+  text2: {
+    fontFamily: "Roboto",
+    fontSize: 16,
+    fontWeight: "600",
+    lineHeight: 19,
+    letterSpacing: 0,
+    textAlign: "left",
+  },
+  scrollView: {
+    flexGrow: 1,
+    justifyContent: "flex-start",
+    alignItems: "stretch",
+    paddingVertical: 8,
+    width: "90%",
+  },
+  modalHeader: {
+    width: "100%",
+    display: "flex",
+    justifyContent:"center",
+    alignItems: "center",
+  },
+});
