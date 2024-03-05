@@ -417,7 +417,7 @@ export default function ProfileRestaurantPage() {
               style={{
                 width: "100%",
                 padding: 5,
-
+                overflow: "scroll"
               }}
               renderItem={({ item }) => (
                 <>

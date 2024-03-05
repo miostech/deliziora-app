@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -52,28 +52,35 @@ export default function App() {
     const favoriteRestaurants = useSelector(
       (state) => state.restaurantsFavorites
     );
+    const storedFavorites = AsyncStorage.getItem(
+      "@favoriteRestaurants"
+    );
 
     useEffect(() => {
+      const checkIsFavorite = async () => {
+        try {
+          // Recupera os restaurantes favoritos do AsyncStorage
+          const storedFavorites = await AsyncStorage.getItem(
+            "@favoriteRestaurants"
+          );
+          console.log("FAVORITOS", storedFavorites);
+          if (storedFavorites) {
+            const parsedFavorites = JSON.parse(storedFavorites);
+            console.log("", parsedFavorites);
+            setIsFavorite(storedFavorites.includes(restaurantData._id.$oid));
+          }
+        } catch (error) {
+          console.error("Erro ao recuperar restaurantes favoritos:", error);
+        }
+      };
       // Verifica se o restaurante está nos favoritos ao montar o componente
       checkIsFavorite();
-    }, [favoriteRestaurants, dispatch, toggleFavorite]);
-
-    const checkIsFavorite = async () => {
-      try {
-        // Recupera os restaurantes favoritos do AsyncStorage
-        const storedFavorites = await AsyncStorage.getItem(
-          "@favoriteRestaurants"
-        );
-        console.log("FAVORITOS", storedFavorites);
-        if (storedFavorites) {
-          const parsedFavorites = JSON.parse(storedFavorites);
-          console.log("", parsedFavorites);
-          setIsFavorite(parsedFavorites.includes(restaurantData._id.$oid));
-        }
-      } catch (error) {
-        console.error("Erro ao recuperar restaurantes favoritos:", error);
+      return () => {
+        setIsFavorite(false);
       }
-    };
+    }, [restaurantData]);
+
+
     const toggleFavorite = () => {
       try {
         console.log("HERE", restaurantData._id.$oid);
