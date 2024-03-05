@@ -59,10 +59,9 @@ const MenuOfDay = () => {
 
 const styles = StyleSheet.create({
     container: {
-        width: "90%",
+        width: "100%",
         height: "35%",
         overflow: "scroll",
-        marginLeft: 20,
     },
     plateContainer: {
         flexDirection: "row",

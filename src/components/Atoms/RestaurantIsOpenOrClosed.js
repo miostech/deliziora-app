@@ -66,7 +66,7 @@ const RestaurantIsOpenOrClosed = () => {
       style={{
         display: "flex",
         flexDirection: "row",
-        gap: 40,
+        gap: 20,
         width: "100%",
         alignItems: "center",
         marginBottom: 15,
@@ -77,10 +77,12 @@ const RestaurantIsOpenOrClosed = () => {
           rbSheetRef.current.open();
         }}
       >
-        <Clock />
+        <View style={{width: 30}}>
+          <Clock />
+        </View>
       </Pressable>
 
-      <View style={{ marginLeft: 20 }}>
+      <View style={{ }}>
         <View
           style={{
             flexDirection: "row",
@@ -92,7 +94,7 @@ const RestaurantIsOpenOrClosed = () => {
           <Text style={styles.text}>{closingTime}</Text>
         </View>
         <Text
-          style={[{ fontWeight: "600", alignSelf: "center" }, styles.text2]}
+          style={[{ fontWeight: "600", alignSelf: "flex-start", }, styles.text2]}
         >
           {"("}
           {isOpen ? "Aberto" : "Fechado"}
@@ -140,7 +142,7 @@ const RestaurantIsOpenOrClosed = () => {
                 <Text>
                   Fechado: {restaurant?.opening_hours?.[day.key]?.closed}
                 </Text>
-                <Divider/>
+                <Divider />
               </View>
             ))}
           </View>

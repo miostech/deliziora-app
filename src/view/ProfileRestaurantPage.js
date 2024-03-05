@@ -140,7 +140,7 @@ export default function ProfileRestaurantPage() {
           flexDirection: "column",
           paddingTop: 10,
           height: "100%",
-          width: "100%",
+          width: "90%",
           borderTopLeftRadius: 30,
           borderTopRightRadius: 30,
         }}
@@ -151,22 +151,24 @@ export default function ProfileRestaurantPage() {
             alignItems: "center",
             display: "flex",
             justifyContent: "center",
-            width: 260,
+            width: "100%",
           }}
         >
           <Pressable
             style={{
               display: "flex",
               flexDirection: "row",
-              gap: 40,
               width: "100%",
               alignItems: "center",
               marginBottom: 15,
+              gap: 20,
             }}
             onPress={() => Linking.openURL(url)}
           >
-            <MapLocationPageIcon />
-            <View style={{}}>
+            <View style={{ width: 30 }}>
+              <MapLocationPageIcon />
+            </View>
+            <View style={{ width: "85%" }}>
               <Text
                 style={{
                   color: "var(--Neutral-02-Color-Neutral-04, #48464A)",
@@ -174,13 +176,14 @@ export default function ProfileRestaurantPage() {
                   fontSize: 16,
                   fontStyle: "normal",
                   fontWeight: "300",
+                  maxWidth: "100%"
                 }}
+                lineBreakMode="tail"
+                numberOfLines={2}
               >
-                {restaurantData.address.length > 200
-                  ? restaurantData.address.substring(0, 200) + "..."
-                  : restaurantData.address}
+                {restaurantData.address}
               </Text>
-              <Text style={{ alignSelf: "center" }}>
+              <Text style={{ alignSelf: "flex-start" }}>
                 {"("}
                 {distance < 1
                   ? (distance * 1000).toFixed(0) + "m"
@@ -194,51 +197,58 @@ export default function ProfileRestaurantPage() {
             style={{
               display: "flex",
               flexDirection: "row",
-              gap: 40,
+              gap: 20,
               width: "100%",
               marginBottom: 10,
             }}
             onPress={() => Linking.openURL(`tel:${restaurantData.contact}`)}
           >
-            <PhoneIcon />
+            <View style={{ width: 30 }}>
+              <PhoneIcon />
+            </View>
 
-            <Text
-              style={{
-                color: "var(--Neutral-02-Color-Neutral-04, #48464A)",
-                textAlign: "center",
-                fontFamily: "Roboto",
-                fontSize: 16,
-                fontStyle: "normal",
-                marginLeft: 27,
-
-                fontWeight: "300",
-              }}
-            >
-              {restaurantData.contact}
-            </Text>
+            <View>
+              <Text
+                style={{
+                  color: "var(--Neutral-02-Color-Neutral-04, #48464A)",
+                  textAlign: "left",
+                  fontFamily: "Roboto",
+                  fontSize: 16,
+                  fontStyle: "normal",
+                  width: "100%",
+                  fontWeight: "300",
+                }}
+              >
+                {restaurantData.contact}
+              </Text>
+            </View>
           </Pressable>
+
           <RestaurantIsOpenOrClosed />
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 40 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
             <Pressable
               onPress={() => {
                 rbSheetRef.current.open();
               }}
             >
-              <InfoIcon />
+              <View style={{ width: 30 }}>
+                <InfoIcon />
+              </View>
             </Pressable>
 
             <FlatList
               data={filteredChars}
               style={{
-                width: "40%",
                 height: 50,
-                padding: 5,
               }}
               renderItem={({ item }) => (
-                <Image
-                  source={{ uri: item.icon }}
-                  style={{ width: 32, height: 32 }}
-                />
+                <View style={{ height: "100%", justifyContent: "center" }}>
+                  <Image
+                    source={{ uri: item.icon }}
+                    style={{ width: 32, height: 32 }}
+                  />
+                </View>
+
               )}
               contentContainerStyle={{
                 gap: 20,
@@ -254,15 +264,13 @@ export default function ProfileRestaurantPage() {
             display: "flex",
             flexDirection: "column",
             gap: 5,
-            marginLeft: 20,
-            minWidth: "90%",
-            maxWidth: "90%",
+            minWidth: "100%",
+            maxWidth: "100%",
           }}
         >
           <Text
             style={{
               textAlign: "justify",
-              marginLeft: 20,
               fontFamily: "Roboto",
               fontSize: 16,
               fontStyle: "normal",
@@ -305,12 +313,11 @@ export default function ProfileRestaurantPage() {
           style={{
             display: "flex",
             flexDirection: "column",
-            width: "90%",
-            maxWidth: "90%",
+            width: "100%",
+            maxWidth: "100%",
             maxHeigh: 200,
             gap: 5,
             marginBottom: 5,
-            marginLeft: 20,
           }}
         >
           <Text
@@ -320,7 +327,6 @@ export default function ProfileRestaurantPage() {
               fontSize: 18,
               fontStyle: "normal",
               fontWeight: "bold",
-              marginLeft: 20,
             }}
           >
             Especialidade
@@ -332,7 +338,6 @@ export default function ProfileRestaurantPage() {
               fontSize: 16,
               fontStyle: "normal",
               fontWeight: "300",
-              marginLeft: 20,
             }}
           >
             {restaurantData.especialty}
@@ -343,7 +348,6 @@ export default function ProfileRestaurantPage() {
               fontFamily: "Roboto",
               fontSize: 18,
               fontStyle: "normal",
-              marginLeft: 20,
               fontWeight: "bold",
             }}
           >
