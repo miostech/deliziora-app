@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import "react-native-get-random-values";
 import { v4 as uuid4 } from "uuid";
 import * as Device from "expo-device";
-import { Image, SafeAreaView, Text, View } from "react-native";
+import { Image, SafeAreaView, StatusBar, Text, View } from "react-native";
 import * as Location from "expo-location";
 import { BackHandler } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -235,6 +235,7 @@ export default function SplashScreen() {
   /* Bloco modificado para testar solução de bug  */
   return (
     <View>
+      <StatusBar barStyle={"dark-content"} backgroundColor={"white"}/>
       <Image
         source={gif}
         style={{ height: "100%", width: "100%" }}

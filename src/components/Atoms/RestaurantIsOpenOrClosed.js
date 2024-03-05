@@ -5,6 +5,7 @@ import { RestaurantService } from "deliziora-client-module/client-web";
 import RBSheet from "react-native-raw-bottom-sheet";
 import moment from "moment";
 import Clock from "../../components/SVGs/Clock/Clock";
+import { Divider } from "react-native-elements";
 const RestaurantIsOpenOrClosed = () => {
   const currentId = useSelector((state) => state.profilePage.currentId); // Removido, pois não estamos mais usando Redux
   const [restaurant, setRestaurant] = useState({});
@@ -107,8 +108,8 @@ const RestaurantIsOpenOrClosed = () => {
             justifyContent: "center",
             alignItems: "center",
             height: "80%",
-            borderTopLeftRadius:24,
-            borderTopRightRadius:24,
+            borderTopLeftRadius: 24,
+            borderTopRightRadius: 24,
             ...Platform.select({
               ios: {
                 marginTop: 20,
@@ -129,7 +130,7 @@ const RestaurantIsOpenOrClosed = () => {
               Hórario de funcionamento:
             </Text>
             {daysOfWeek.map((day) => (
-              <View key={day.key} style={{ marginBottom: 30 }}>
+              <View key={day.key} style={{ marginBottom: 30, width: "100%" }}>
                 <Text style={[styles.text2, { fontWeight: "700" }]}>
                   {day.label}
                 </Text>
@@ -139,6 +140,7 @@ const RestaurantIsOpenOrClosed = () => {
                 <Text>
                   Fechado: {restaurant?.opening_hours?.[day.key]?.closed}
                 </Text>
+                <Divider/>
               </View>
             ))}
           </View>

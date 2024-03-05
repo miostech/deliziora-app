@@ -26,6 +26,7 @@ import { updateLocation } from "../redux/features/locationSlice/locationSlice";
 export default function WalkthroughSlider() {
   const navigation = useNavigation();
   const colors = require("../style/Colors.json");
+  const [isLoading, setIsLoading] = useState(false);
   const [carouselWidth, setCarouselWidth] = useState(
     Dimensions.get("window").width
   );
@@ -145,6 +146,7 @@ useEffect(() => {
 
   function creatingAnonymousUser() {
     return new Promise((resolve, reject) => {
+      setIsLoading(true);
       getStatusLocation()
         .then((status) => {
           if (status === "granted") {
@@ -153,10 +155,13 @@ useEffect(() => {
               getCurrentLocationDevice().then((location) => {
                 createUserLocationDB(res.data, location).then((res) => {
                   console.log(res);
+                  setIsLoading(false);
                   resolve("accepted");
                 });
               });
             });
+          }else{
+            navigation.navigate("HomeTab", { screen: "Map" });
           }
         })
         .catch(() => {
@@ -182,8 +187,8 @@ useEffect(() => {
     },
     {
       id: 1,
-      title: "Deliziora precisa da tua localização atual",
-      text: "De forma a mostrar os resultados mais próximos de ti com exatidão e te mostrar onde está a comida que procuras, precisamos de ter acesso à tua localização exata",
+      title: isLoading ? "Aguarde, carregando..." : "Telabite precisa da tua localização atual",
+      text: isLoading ? "" : "De forma a mostrar os resultados mais próximos de ti com exatidão e te mostrar onde está a comida que procuras, precisamos de ter acesso à tua localização exata",
       image: <WalkthroughSvg1 />,
       button: (
         <View>
@@ -347,6 +352,7 @@ useEffect(() => {
           </TouchableOpacity>
         )}
       </View>
+      
     </View>
   );
 }

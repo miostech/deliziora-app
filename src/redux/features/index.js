@@ -12,6 +12,7 @@ import currentRestaurantSelected from './currentRestaurantSelected/currentRestau
 import menuOfDayReducer from './menuOfDaySlice/menuOfDaySlice'
 import distanceSlice from './distanceSlice/distanceSlice';
 import restaurantsFavoritesSlice from './restaurantsFavorites/restaurantsFavoritesSlice'
+import currentRestaurantMarkerSlice from './currentRestaurantMarker/CurrentRestaurantMarker';
 
 
 const rootReducer = combineReducers({
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
     listType: listTypeReducer,
     profilePage: profilePageReducer,
     currentRestaurantSelected: currentRestaurantSelected,
+    currentRestaurantMarker: currentRestaurantMarkerSlice
 });
 
 export default rootReducer;

@@ -173,7 +173,7 @@ export default function App() {
                       color: "var(--Neutral-02-Color-Neutral-02, #29272D)",
                       fontFamily: "roboto",
                       textAlign: "center",
-                      fontSize: 20,
+                      fontSize: 14,
                       fontStyle: "normal",
                       fontWeight: "600",
                       maxWidth: "100%",

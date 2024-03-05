@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Deliziora",
+    "name": "Telabite",
     "slug": "Deliziora",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -22,9 +22,9 @@
           "location",
           "fetch"
         ],
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "Permitir Deliziora que use sua localização",
-        "NSLocationWhenInUseUsageDescription": "Permitir Deliziora que use sua localização",
-        "NSLocationAlwaysUsageDescription": "Permitir Deliziora que use sua localização"
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Permitir Telabite que use sua localização",
+        "NSLocationWhenInUseUsageDescription": "Permitir Telabite que use sua localização",
+        "NSLocationAlwaysUsageDescription": "Permitir Telabite que use sua localização"
       },
       "bundleIdentifier": "com.miostech.Deliziora",
       "config": {
@@ -53,7 +53,7 @@
           "apiKey": "AIzaSyD6fOT8rSbECcaRqpKQL94QKtgtDss4jbw"
         }
       },
-      "versionCode": 3
+      "versionCode": 10
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -62,7 +62,7 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Permitir Deliziora que use sua localização",
+          "locationAlwaysAndWhenInUsePermission": "Permitir Telabite que use sua localização",
           "isAndroidBackgroundLocationEnabled": true,
           "isIosBackgroundLocationEnabled": true
         }

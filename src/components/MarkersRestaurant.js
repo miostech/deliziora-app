@@ -12,6 +12,7 @@ export default function MarkersRestaurant({
   CarrouselRef,
   setSearchResult,
   setSearchTerm,
+  selectedRestaurant
 }) {
   const dispatch = useDispatch();
   const restaurants = useSelector(selectRestaurants);
@@ -46,7 +47,7 @@ export default function MarkersRestaurant({
           }}
           onPress={() => handleMarkerPress(index)}
         >
-          <MarkerIconComponent />
+          <MarkerIconComponent selectedRestaurant={selectedRestaurant} itemName={item.name}/>
         </Marker>
       ))}
     </>

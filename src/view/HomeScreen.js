@@ -7,6 +7,7 @@ import {
   BackHandler,
   Pressable,
   ActivityIndicator,
+  Linking,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import MapView, { Marker } from "react-native-maps";
@@ -15,6 +16,7 @@ import SearchBar2 from "./../components/SearchBar2";
 import FiltersModal from "./../components/FiltersModal";
 import Carousel from "react-native-snap-carousel";
 import {
+  AnonymousUserLocationService,
   MenuOfTheDayService,
   MenuService,
   RestaurantService,
@@ -27,10 +29,12 @@ import * as Device from "expo-device";
 import { setMenuOfDay } from "../redux/features/menuOfDaySlice/menuOfDaySlice";
 import RestaurantCard from "./../components/RestaurantCard";
 import MarkersRestaurant from "./../components/MarkersRestaurant";
-import { useFocusEffect } from "@react-navigation/native";
+import { Link, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { updateLocation } from "../redux/features/locationSlice/locationSlice";
 import MarkerIconCurrentComponent from "../components/MarkerIconCurrentComponent";
+import { setCurrentRestaurantMarker } from "../redux/features/currentRestaurantMarker/CurrentRestaurantMarker";
+import Toast from 'react-native-toast-message';
 const windowWidth = Dimensions.get("window").width;
 
 function HomeScreen() {
@@ -43,6 +47,8 @@ function HomeScreen() {
   const [errorMsg, setErrorMsg] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResult, setSearchResult] = useState({});
+  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+  const [userPermitedAccessLocation, setUserPermitedAccessLocation] = useState(null)
   /* const [filteredRestaurants, setFilteredRestaurants] =
     useState(allRestaurants); */
   const filteredRestaurants = useSelector(
@@ -87,18 +93,31 @@ function HomeScreen() {
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
+      var currentLocation = null;
       if (status !== "granted") {
         setErrorMsg("Permissão para acessar a localização foi negada");
-        return;
+        setLocation({ coords: { latitude: 38.70820288465464, longitude: -9.13673167964773 } })
+        currentLocation = { coords: { latitude: 38.70820288465464, longitude: -9.13673167964773 } }
+        Toast.show({
+          text1: "Preicisa de permitir o acesso à localização",
+          text2: "Por favor vá às definições e permita o acesso à localização",
+          visibilityTime: 60000,
+          type: "error",
+          position: "top",
+          onPress: () => {
+            Linking.openSettings();
+          },
+        });
       }
-
-      let currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation(currentLocation);
-      console.log(
-        "AQUII",
-        currentLocation.coords.latitude,
-        currentLocation.coords.longitude
-      );
+      else {
+        currentLocation = await Location.getCurrentPositionAsync({});
+        setLocation(currentLocation);
+        console.log(
+          "AQUII",
+          currentLocation.coords.latitude,
+          currentLocation.coords.longitude
+        );
+      }
       dispatch(
         updateLocation({
           location: {
@@ -107,6 +126,33 @@ function HomeScreen() {
           },
         })
       );
+      const responseInfo = await fetch(
+        `https://api.geodatasource.com/city?key=YKRGEZIEITLVMDUSF2M6HUPN9DMUFVRB&format=json&lat=${currentLocation.coords.latitude}&lng=${currentLocation.coords.longitude}`,
+        {
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      )
+
+      console.warn("RESPONSE", responseInfo);
+
+      var data = await responseInfo.json();
+
+      console.warn("DATA", data);
+
+      const id_user = await AsyncStorage.getItem("@userData");
+      console.warn("ID", id_user);
+
+      await AnonymousUserLocationService.createNewUserLocation({
+        id_anonymous_user: id_user,
+        district: data.city ? data.city : "",
+        county: data.region ? data.region : "",
+        parish: "",
+        latitude: String(currentLocation.coords.latitude),
+        longitude: String(currentLocation.coords.longitude),
+        created_at: "",
+      })
     })();
   }, []);
 
@@ -252,12 +298,13 @@ function HomeScreen() {
   const handleChangeSlide = (index) => {
     if (mapsRef.current && filteredRestaurants[index]) {
       const { name } = filteredRestaurants[index];
+      dispatch(setCurrentRestaurantMarker(name));
       console.warn("RESTAU", name)
       mapsRef.current.fitToSuppliedMarkers(["home", name], {
         edgePadding: {
-          top:700,
+          top: Device.brand == "Apple" ? 250 : Dimensions.get("window").height / 1.6,
           right: 0,
-          bottom: 700,
+          bottom: Device.brand == "Apple" ? 250 : Dimensions.get("window").height / 1.6,
           left: 0,
         },
       });
@@ -312,6 +359,7 @@ function HomeScreen() {
           CarrouselRef={CarrouselRef}
           setSearchResult={setSearchResult}
           setSearchTerm={setSearchTerm}
+          selectedRestaurant={selectedRestaurant}
         />
         <Marker
           key={"home"}
@@ -321,7 +369,7 @@ function HomeScreen() {
             longitude: location?.coords?.longitude,
           }}
         >
-          <MarkerIconCurrentComponent />  
+          <MarkerIconCurrentComponent />
         </Marker>
       </MapView>
 
@@ -382,7 +430,7 @@ const styles = StyleSheet.create({
   },
   map: {
     width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height,
+    height: "100%",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",

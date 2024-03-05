@@ -17,7 +17,7 @@ import {
 import ArrowLeft from "../components/SVGs/ArrowLeft/ArrowLeft";
 import { useNavigation } from "@react-navigation/native";
 import { Path, Svg } from "react-native-svg";
-import { Image } from "react-native-elements";
+import { Divider, Image } from "react-native-elements";
 import MenuOfDay from "../components/Atoms/MenuOfDay";
 import LoadingPageScreen from "./LoadingPageScreen";
 import RestaurantIsOpenOrClosed from "../components/Atoms/RestaurantIsOpenOrClosed";
@@ -47,9 +47,9 @@ export default function ProfileRestaurantPage() {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(deg2rad(lat1)) *
-        Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+      Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = earthRadius * c; // Distance in km
     return distance;
@@ -413,25 +413,26 @@ export default function ProfileRestaurantPage() {
               style={{
                 width: "100%",
                 padding: 5,
-                
+
               }}
               renderItem={({ item }) => (
                 <>
-                  <View style={{width:"100%", display:"flex", justifyContent:"center", alignItems:"center"}}>
+                  <View style={{ minWidth: "100%", display: "flex", alignItems: "center", flexDirection: "row", gap: 20 }}>
                     <Image
                       source={{ uri: item.icon }}
                       style={{ width: 60, height: 60 }}
                     />
                     <Text>{item.name}</Text>
                   </View>
+                  <Divider />
                 </>
               )}
               contentContainerStyle={{
                 gap: 20,
-                width:"100%",
-                justifyContent:"center",
-                alignItems:"center",
-               
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+
               }}
               keyExtractor={(item) => item.toString()}
             />
@@ -473,7 +474,7 @@ const styles = StyleSheet.create({
   modalHeader: {
     width: "100%",
     display: "flex",
-    justifyContent:"center",
+    justifyContent: "center",
     alignItems: "center",
   },
 });
