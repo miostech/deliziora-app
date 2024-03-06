@@ -84,31 +84,31 @@ export default function App() {
 
 
     const toggleFavorite = () => {
-  try {
-    const restaurantId = restaurantData._id.$oid;
-    // Verifica se o restaurante é favorito
-    const isCurrentlyFavorite = favoriteRestaurants.includes(restaurantId);
-    setIsFavorite(!isCurrentlyFavorite); // Atualiza o estado local imediatamente
+      try {
+        const restaurantId = restaurantData._id.$oid;
+        // Verifica se o restaurante é favorito
+        const isCurrentlyFavorite = favoriteRestaurants.includes(restaurantId);
+        setIsFavorite(!isCurrentlyFavorite); // Atualiza o estado local imediatamente
 
-    // Atualiza a lista de restaurantes favoritos no AsyncStorage
-    let updatedFavorites = [...favoriteRestaurants];
-    if (isCurrentlyFavorite) {
-      updatedFavorites = updatedFavorites.filter(id => id !== restaurantId);
-    } else {
-      updatedFavorites.push(restaurantId);
-    }
-    AsyncStorage.setItem("@favoriteRestaurants", JSON.stringify(updatedFavorites));
+        // Atualiza a lista de restaurantes favoritos no AsyncStorage
+        let updatedFavorites = [...favoriteRestaurants];
+        if (isCurrentlyFavorite) {
+          updatedFavorites = updatedFavorites.filter(id => id !== restaurantId);
+        } else {
+          updatedFavorites.push(restaurantId);
+        }
+        AsyncStorage.setItem("@favoriteRestaurants", JSON.stringify(updatedFavorites));
 
-    // Atualiza o estado global de favoritos
-    if (isCurrentlyFavorite) {
-      dispatch(removeFavoritsNew({ restaurantId }));
-    } else {
-      dispatch(addOrRemoveFavorits({ restaurantId }));
-    }
-  } catch (error) {
-    console.error("Error updating favorite restaurants:", error);
-  }
-};
+        // Atualiza o estado global de favoritos
+        if (isCurrentlyFavorite) {
+          dispatch(removeFavoritsNew({ restaurantId }));
+        } else {
+          dispatch(addOrRemoveFavorits({ restaurantId }));
+        }
+      } catch (error) {
+        console.error("Error updating favorite restaurants:", error);
+      }
+    };
 
 
     return (
@@ -189,7 +189,7 @@ export default function App() {
 
               headerTitle: () => {
                 return (
-                  <Text
+                  <Text textBreakStrategy="highQuality"
                     style={{
                       color: "var(--Neutral-02-Color-Neutral-02, #29272D)",
                       fontFamily: "roboto",
@@ -197,7 +197,8 @@ export default function App() {
                       fontSize: 14,
                       fontStyle: "normal",
                       fontWeight: "600",
-                      maxWidth: "100%",
+                      maxWidth: "85%"
+                      ,
                       height: "100%",
                       flexWrap: "wrap",
                     }}
@@ -238,7 +239,10 @@ export default function App() {
                     style={{
                       color: "var(--Neutral-02-Color-Neutral-02, #29272D)",
                       fontFamily: "roboto",
-                      fontSize: 20,
+                      fontSize: 16,
+                      maxWidth: "85%",
+                      flexWrap: "wrap",
+                      textAlign: "center",
                       fontStyle: "normal",
                       fontWeight: "600",
                     }}
@@ -257,6 +261,7 @@ export default function App() {
                       justifyContent: "center",
                       marginLeft: 10,
                       marginRight: 15,
+                      maxWidth: "15%"
                     }}
                   >
                     <ArrowLeft />
