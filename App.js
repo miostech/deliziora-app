@@ -236,13 +236,16 @@ export default function App() {
               headerTitle: () => {
                 return (
                   <Text
+                  numberOfLines={2}
+                  lineBreakMode="tail"
+                  lineBreakStrategyIOS="tail"
                     style={{
                       color: "var(--Neutral-02-Color-Neutral-02, #29272D)",
                       fontFamily: "roboto",
                       fontSize: 16,
-                      maxWidth: "85%",
+                      maxWidth: "100%",
                       flexWrap: "wrap",
-                      textAlign: "center",
+                      textAlign: "left",
                       fontStyle: "normal",
                       fontWeight: "600",
                     }}
