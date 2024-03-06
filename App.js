@@ -56,6 +56,8 @@ export default function App() {
       "@favoriteRestaurants"
     );
 
+
+
     useEffect(() => {
       const checkIsFavorite = async () => {
         try {
@@ -82,20 +84,32 @@ export default function App() {
 
 
     const toggleFavorite = () => {
-      try {
-        console.log("HERE", restaurantData._id.$oid);
-        // Verifica se o restaurante é favorito
-        if (isFavorite) {
-          // Remove o restaurante dos favoritos
-          dispatch(removeFavoritsNew({ restaurantId: restaurantData._id.$oid }));
-        } else {
-          // Adiciona o restaurante aos favoritos
-          dispatch(addOrRemoveFavorits({ restaurantId: restaurantData._id.$oid }));
-        }
-      } catch (error) {
-        console.error("Error updating favorite restaurants:", error);
-      }
-    };
+  try {
+    const restaurantId = restaurantData._id.$oid;
+    // Verifica se o restaurante é favorito
+    const isCurrentlyFavorite = favoriteRestaurants.includes(restaurantId);
+    setIsFavorite(!isCurrentlyFavorite); // Atualiza o estado local imediatamente
+
+    // Atualiza a lista de restaurantes favoritos no AsyncStorage
+    let updatedFavorites = [...favoriteRestaurants];
+    if (isCurrentlyFavorite) {
+      updatedFavorites = updatedFavorites.filter(id => id !== restaurantId);
+    } else {
+      updatedFavorites.push(restaurantId);
+    }
+    AsyncStorage.setItem("@favoriteRestaurants", JSON.stringify(updatedFavorites));
+
+    // Atualiza o estado global de favoritos
+    if (isCurrentlyFavorite) {
+      dispatch(removeFavoritsNew({ restaurantId }));
+    } else {
+      dispatch(addOrRemoveFavorits({ restaurantId }));
+    }
+  } catch (error) {
+    console.error("Error updating favorite restaurants:", error);
+  }
+};
+
 
     return (
       <NavigationContainer>
