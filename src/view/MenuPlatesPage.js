@@ -15,6 +15,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import ArrowLeft from "../components/SVGs/ArrowLeft/ArrowLeft";
 import { Divider } from "react-native-elements";
+import DishDay from "../components/SVGs/DishDay";
 
 // Import category images
 const Carne = require("../../assets/Meat.png");
@@ -95,7 +96,36 @@ const MenuOfDay = () => {
   };
 
   return (
-    <ScrollView style={{ width: "100%", marginTop: 40 }}>
+    <ScrollView style={{ width: "100%" }}>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          position: "sticky",
+          borderRadius: 10,
+          width: "90%",
+          marginTop: 10,
+          marginBottom: 20,
+          marginLeft: 20,
+          backgroundColor: "white",
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 3,
+          },
+          shadowOpacity: 0.27,
+          shadowRadius: 4.65,
+          height: 50,
+          gap: 10,
+        }}
+      >
+        <DishDay width={24} height={24} />
+        <Text lineBreakMode="tail" numberOfLines={2}>
+          Quando um prato tiver este ícone, ele será um menu completo
+        </Text>
+      </View>
       {Object.entries(categorizedMenu).map(
         ([category, items]) =>
           items.length > 0 && (
@@ -150,7 +180,7 @@ const styles = StyleSheet.create({
   },
   categoryTitle: {
     fontFamily: "Roboto",
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "600",
     lineHeight: 23,
     letterSpacing: 0,
@@ -184,8 +214,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   categoryImage: {
-    width: 104,
-    height: 104,
-    resizeMode: "contain",
+    width: 54,
+    height: 54,
   },
 });

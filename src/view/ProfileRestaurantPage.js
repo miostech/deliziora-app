@@ -322,18 +322,24 @@ export default function ProfileRestaurantPage() {
             marginBottom: 5,
           }}
         >
-          <Text
-            style={{
-              color: "var(--Neutral-02-Color-Neutral-01, #201F23)",
-              fontFamily: "Roboto",
-              fontSize: 18,
-              fontStyle: "normal",
-              fontWeight: "bold",
-            }}
-          >
-            Especialidade
-          </Text>
-          <Text
+          <View style={{
+            marginBottom: 10,
+          }}>
+            <Text
+              style={{
+                color: "var(--Neutral-02-Color-Neutral-01, #201F23)",
+                fontFamily: "Roboto",
+                fontSize: 18,
+                fontStyle: "normal",
+                fontWeight: "bold",
+              }}
+            >
+              Especialidade
+            </Text>
+          </View>
+          <View style={{
+            marginBottom: 10,
+          }}><Text
             style={{
               color: "var(--Neutral-02-Color-Neutral-01, #201F23)",
               fontFamily: "Roboto",
@@ -343,7 +349,8 @@ export default function ProfileRestaurantPage() {
             }}
           >
             {restaurantData.especialty}
-          </Text>
+          </Text></View>
+          
           <View style={{
             display: "flex",
             flexDirection: "row",
@@ -362,15 +369,6 @@ export default function ProfileRestaurantPage() {
             >
               Prato do Dia
             </Text>
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 10,
-                width: "100%",
-              }}
-            ><DishDay width={24} height={24} /><Text>* Menu completo</Text></View>
 
           </View>
 
@@ -401,7 +399,7 @@ export default function ProfileRestaurantPage() {
                 fontWeight: "300",
               }}
             >
-              Ver Menu Completo
+              Ver Menu
             </Text>
           </Pressable>
         </ScrollView>

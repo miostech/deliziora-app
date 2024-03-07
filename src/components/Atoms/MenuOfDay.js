@@ -59,14 +59,21 @@ const MenuOfDay = () => {
       {platesOfTheDay.length > 0 ? (
         platesOfTheDay.map((plate, index) => (
           <View key={index} style={styles.plateContainer}>
-            {plate.menu_complete ? (
-              <>
-                <Image source={PratoDoDia} style={{ width: 24, height: 24 }} />
-              </>
-            ) : (
-              <></>
-            )}
-            <Text style={styles.text}>{plate.name}</Text>
+            <View style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 20,
+            }}>
+              {plate.menu_complete ? (
+                <>
+                  <Image source={PratoDoDia} style={{ width: 24, height: 24 }} />
+                </>
+              ) : (
+                <></>
+              )}
+              <Text style={styles.text}>{plate.name}</Text>
+            </View>
             <Text style={styles.text}>€{plate.price}</Text>
           </View>
         ))
@@ -93,6 +100,7 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "Roboto",
     fontSize: 16,
+    justifySelfent: "flex-start",
     fontWeight: "400",
     lineHeight: 19,
     letterSpacing: 0,
