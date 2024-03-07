@@ -27,6 +27,8 @@ import PhoneIcon from "../components/PhoneIcon";
 import MapLocationPageIcon from "../components/SVGs/MapLocationPageIcon/MapLocationPageIcon";
 import InfoIcon from "../components/InfoIcon";
 import RBSheet from "react-native-raw-bottom-sheet";
+import { InfoToast } from "react-native-toast-message";
+import DishDay from "../components/SVGs/DishDay";
 export default function ProfileRestaurantPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -342,17 +344,36 @@ export default function ProfileRestaurantPage() {
           >
             {restaurantData.especialty}
           </Text>
-          <Text
-            style={{
-              color: "var(--Neutral-02-Color-Neutral-01, #201F23)",
-              fontFamily: "Roboto",
-              fontSize: 18,
-              fontStyle: "normal",
-              fontWeight: "bold",
-            }}
-          >
-            Prato do Dia
-          </Text>
+          <View style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            width: "100%",
+            gap: 15,
+          }}>
+            <Text
+              style={{
+                color: "var(--Neutral-02-Color-Neutral-01, #201F23)",
+                fontFamily: "Roboto",
+                fontSize: 18,
+                fontStyle: "normal",
+                fontWeight: "bold",
+              }}
+            >
+              Prato do Dia
+            </Text>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                width: "100%",
+              }}
+            ><DishDay width={24} height={24} /><Text>* Menu completo</Text></View>
+
+          </View>
+
           <MenuOfDay />
           <Pressable
             style={{
