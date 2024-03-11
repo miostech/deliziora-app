@@ -229,7 +229,7 @@ export default function ProfileRestaurantPage() {
           </Pressable>
 
           <RestaurantIsOpenOrClosed />
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 20}}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
             <Pressable
               onPress={() => {
                 rbSheetRef.current.open();
@@ -403,7 +403,8 @@ export default function ProfileRestaurantPage() {
       <RBSheet
         ref={rbSheetRef}
         openDuration={250}
-        closeOnDragDown={false}
+        dragFromTopOnly
+        closeOnDragDown
         customStyles={{
           container: {
             justifyContent: "center",
@@ -425,15 +426,17 @@ export default function ProfileRestaurantPage() {
           },
         }}
       >
-        <View style={styles.scrollView}>
+        <ScrollView style={styles.scrollView}>
+          <Pressable onPress={() => rbSheetRef.current.close()} style={{
+            width: 30,
+            height: 30,
+            position: "absolute",
+            top: 10,
+            right: 0,
+          }}>
+            <Close />
+          </Pressable>
           <View style={styles.modalHeader}>
-              <Pressable onPress={() => rbSheetRef.current.close()} style={{
-                width: 30,
-                height: 30,
-                position: "absolute",
-                top: 15,
-                right: 0,
-              }}><Close /></Pressable>
             <FlatList
               data={filteredChars}
               style={{
@@ -465,7 +468,7 @@ export default function ProfileRestaurantPage() {
               keyExtractor={(item) => item.toString()}
             />
           </View>
-        </View>
+        </ScrollView>
       </RBSheet>
     </View>
   );
@@ -494,12 +497,10 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flexGrow: 1,
-    justifyContent: "flex-start",
-    alignItems: "stretch",
-    paddingVertical: 8,
     width: "90%",
   },
   modalHeader: {
+    marginTop: 20,
     width: "100%",
     display: "flex",
     justifyContent: "center",

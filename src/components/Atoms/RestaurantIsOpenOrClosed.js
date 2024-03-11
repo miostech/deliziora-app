@@ -106,7 +106,8 @@ const RestaurantIsOpenOrClosed = () => {
         ref={rbSheetRef}
         closeOnPressBack={true}
         openDuration={250}
-        closeOnDragDown={false}
+        dragFromTopOnly
+        closeOnDragDown={true}
         customStyles={{
           container: {
             justifyContent: "center",
@@ -137,7 +138,7 @@ const RestaurantIsOpenOrClosed = () => {
               width: 30,
               height: 30,
               position: "absolute",
-              top: 15,
+              top: 10,
               right: 10,
             }}><Close /></Pressable>
           </View>
@@ -197,7 +198,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     display: "flex",
     height: 50,
-    position:"relative",
+    position: "relative",
     alignItems: "center",
   },
 });
