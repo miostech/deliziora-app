@@ -69,7 +69,7 @@ export default function App() {
           if (storedFavorites) {
             const parsedFavorites = JSON.parse(storedFavorites);
             console.log("", parsedFavorites);
-            setIsFavorite(storedFavorites.includes(restaurantData._id.$oid));
+            setIsFavorite(storedFavorites.includes(restaurantData?._id?.$oid));
           }
         } catch (error) {
           console.error("Erro ao recuperar restaurantes favoritos:", error);

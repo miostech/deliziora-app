@@ -53,13 +53,19 @@ function CompleteRestaurantCard({
             }}
           >
             <View style={{ display: "flex" }}>
-              <Text numberOfLines={2} lineBreakMode="tail" style={{
-                fontSize: 16,
-                fontWeight: "bold",
-                marginBottom: 10,
-                maxWidth: "95%",
-                flexWrap: "wrap",
-              }}>{name}</Text>
+              <Text
+                numberOfLines={2}
+                lineBreakMode="tail"
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  marginBottom: 10,
+                  maxWidth: "95%",
+                  flexWrap: "wrap",
+                }}
+              >
+                {name}
+              </Text>
               <Text style={styles.distance}>
                 Distância{" "}
                 {distance < 1
@@ -290,7 +296,7 @@ export default function RestaurantCard({
       console.log("FAVORITOS", storedFavorites);
       if (storedFavorites) {
         const parsedFavorites = JSON.parse(storedFavorites);
-        console.log("", parsedFavorites);
+        console.log("Parsed Favorites:", parsedFavorites);
         setIsFavorite(parsedFavorites.includes(id));
       }
     } catch (error) {
@@ -321,9 +327,9 @@ export default function RestaurantCard({
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(deg2rad(lat1)) *
-      Math.cos(deg2rad(lat2)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = earthRadius * c; // Distance in km
     return distance;
@@ -332,7 +338,6 @@ export default function RestaurantCard({
   function deg2rad(deg) {
     return deg * (Math.PI / 180);
   }
-
 
   function checkFirstTimeApp() {
     return new Promise(async (res, rej) => {
@@ -356,7 +361,9 @@ export default function RestaurantCard({
           .then((res) => console.log(res))
           .catch((err) => console.warn("erro ao adicionar: ", err));
       })
-      .catch((err) => { console.warn(err) });
+      .catch((err) => {
+        console.warn(err);
+      });
     console.log(id, "cade");
     navigation.navigate("ProfileRestaurantPage", { restaurantId: id });
   };
