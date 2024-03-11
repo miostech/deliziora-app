@@ -29,6 +29,7 @@ import InfoIcon from "../components/InfoIcon";
 import RBSheet from "react-native-raw-bottom-sheet";
 import { InfoToast } from "react-native-toast-message";
 import DishDay from "../components/SVGs/DishDay";
+import Close from "../components/SVGs/Close";
 export default function ProfileRestaurantPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -228,7 +229,7 @@ export default function ProfileRestaurantPage() {
           </Pressable>
 
           <RestaurantIsOpenOrClosed />
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 20}}>
             <Pressable
               onPress={() => {
                 rbSheetRef.current.open();
@@ -402,7 +403,7 @@ export default function ProfileRestaurantPage() {
       <RBSheet
         ref={rbSheetRef}
         openDuration={250}
-        closeOnDragDown={true}
+        closeOnDragDown={false}
         customStyles={{
           container: {
             justifyContent: "center",
@@ -426,11 +427,20 @@ export default function ProfileRestaurantPage() {
       >
         <View style={styles.scrollView}>
           <View style={styles.modalHeader}>
+              <Pressable onPress={() => rbSheetRef.current.close()} style={{
+                width: 30,
+                height: 30,
+                position: "absolute",
+                top: 15,
+                right: 0,
+              }}><Close /></Pressable>
             <FlatList
               data={filteredChars}
               style={{
                 width: "100%",
                 padding: 5,
+                height: "100%",
+                marginTop: 40,
                 overflow: "scroll"
               }}
               renderItem={({ item }) => (
