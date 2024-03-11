@@ -4,6 +4,7 @@ import { useSelector } from "react-redux"; // Removido, pois não estamos mais u
 import { RestaurantService } from "deliziora-client-module/client-web";
 import RBSheet from "react-native-raw-bottom-sheet";
 import moment from "moment";
+import Close from "../SVGs/Close";
 import Clock from "../../components/SVGs/Clock/Clock";
 import { Divider } from "react-native-elements";
 const RestaurantIsOpenOrClosed = () => {
@@ -103,7 +104,9 @@ const RestaurantIsOpenOrClosed = () => {
       </View>
       <RBSheet
         ref={rbSheetRef}
+        closeOnPressBack={true}
         openDuration={250}
+        dragFromTopOnly
         closeOnDragDown={true}
         customStyles={{
           container: {
@@ -128,9 +131,16 @@ const RestaurantIsOpenOrClosed = () => {
       >
         <ScrollView contentContainerStyle={styles.scrollView}>
           <View style={styles.modalHeader}>
-            <Text style={[styles.text, { marginBottom: 20 }]}>
+            <Text style={styles.text}>
               Hórario de funcionamento:
             </Text>
+            <Pressable onPress={() => rbSheetRef.current.close()} style={{
+              width: 30,
+              height: 30,
+              position: "absolute",
+              top: 10,
+              right: 10,
+            }}><Close /></Pressable>
           </View>
           {daysOfWeek.map((day) => (
             <View key={day.key} style={{ marginBottom: 30, width: "100%" }}>
@@ -185,9 +195,10 @@ const styles = StyleSheet.create({
   },
   modalHeader: {
     width: "100%",
+    flexDirection: "row",
     display: "flex",
-    height: 60,
-
+    height: 50,
+    position: "relative",
     alignItems: "center",
   },
 });

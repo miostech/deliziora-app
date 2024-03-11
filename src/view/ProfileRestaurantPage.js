@@ -29,6 +29,7 @@ import InfoIcon from "../components/InfoIcon";
 import RBSheet from "react-native-raw-bottom-sheet";
 import { InfoToast } from "react-native-toast-message";
 import DishDay from "../components/SVGs/DishDay";
+import Close from "../components/SVGs/Close";
 export default function ProfileRestaurantPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -402,7 +403,8 @@ export default function ProfileRestaurantPage() {
       <RBSheet
         ref={rbSheetRef}
         openDuration={250}
-        closeOnDragDown={true}
+        dragFromTopOnly
+        closeOnDragDown
         customStyles={{
           container: {
             justifyContent: "center",
@@ -424,13 +426,24 @@ export default function ProfileRestaurantPage() {
           },
         }}
       >
-        <View style={styles.scrollView}>
+        <ScrollView style={styles.scrollView}>
+          <Pressable onPress={() => rbSheetRef.current.close()} style={{
+            width: 30,
+            height: 30,
+            position: "absolute",
+            top: 10,
+            right: 0,
+          }}>
+            <Close />
+          </Pressable>
           <View style={styles.modalHeader}>
             <FlatList
               data={filteredChars}
               style={{
                 width: "100%",
                 padding: 5,
+                height: "100%",
+                marginTop: 40,
                 overflow: "scroll"
               }}
               renderItem={({ item }) => (
@@ -455,7 +468,7 @@ export default function ProfileRestaurantPage() {
               keyExtractor={(item) => item.toString()}
             />
           </View>
-        </View>
+        </ScrollView>
       </RBSheet>
     </View>
   );
@@ -484,12 +497,10 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flexGrow: 1,
-    justifyContent: "flex-start",
-    alignItems: "stretch",
-    paddingVertical: 8,
     width: "90%",
   },
   modalHeader: {
+    marginTop: 20,
     width: "100%",
     display: "flex",
     justifyContent: "center",
