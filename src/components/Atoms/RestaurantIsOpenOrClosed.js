@@ -82,7 +82,7 @@ const RestaurantIsOpenOrClosed = () => {
         </View>
       </Pressable>
 
-      <View style={{ }}>
+      <View style={{ width: "85%", alignItems: "center" }}>
         <View
           style={{
             flexDirection: "row",
@@ -94,7 +94,7 @@ const RestaurantIsOpenOrClosed = () => {
           <Text style={styles.text}>{closingTime}</Text>
         </View>
         <Text
-          style={[{ fontWeight: "600", alignSelf: "flex-start", }, styles.text2]}
+          style={[{ fontWeight: "300", alignSelf: "center", }]}
         >
           {"("}
           {isOpen ? "Aberto" : "Fechado"}
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "Roboto",
     fontSize: 16,
-    fontWeight: "400",
+    fontWeight: "600",
     lineHeight: 19,
     letterSpacing: 0,
     textAlign: "left",

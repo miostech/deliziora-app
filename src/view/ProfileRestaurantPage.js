@@ -125,13 +125,14 @@ export default function ProfileRestaurantPage() {
       <View
         style={{
           width: "100%",
-          height: 235,
+          height: 150,
           backgroundColor: "var(--Neutral-02-Color-Neutral-02, #29272D)",
         }}
       >
         <Image
           source={{ uri: restaurantData.img }}
-          style={{ width: "100%", height: 232 }}
+          resizeMode="cover"
+          style={{ width: "100%", height: 150 }}
         />
       </View>
       <ScrollView
@@ -151,7 +152,7 @@ export default function ProfileRestaurantPage() {
             alignItems: "center",
             display: "flex",
             justifyContent: "center",
-            width: "100%",
+            width: "80%",
           }}
         >
           <Pressable
@@ -168,22 +169,22 @@ export default function ProfileRestaurantPage() {
             <View style={{ width: 30 }}>
               <MapLocationPageIcon />
             </View>
-            <View style={{ width: "85%" }}>
+            <View style={{ width: "85%" , alignItems: "center"}}>
               <Text
                 style={{
                   color: "var(--Neutral-02-Color-Neutral-04, #48464A)",
                   fontFamily: "Roboto",
                   fontSize: 16,
                   fontStyle: "normal",
-                  fontWeight: "300",
+                  fontWeight: "600",
                   maxWidth: "100%"
                 }}
                 lineBreakMode="tail"
-                numberOfLines={2}
+                numberOfLines={1}
               >
                 {restaurantData.address}
               </Text>
-              <Text style={{ alignSelf: "flex-start" }}>
+              <Text style={{ alignSelf: "center" }}>
                 {"("}
                 {distance < 1
                   ? (distance * 1000).toFixed(0) + "m"
@@ -207,16 +208,16 @@ export default function ProfileRestaurantPage() {
               <PhoneIcon />
             </View>
 
-            <View>
+            <View style={{justifyContent: "center", width: "85%", alignItems: "center"}}>
               <Text
                 style={{
                   color: "var(--Neutral-02-Color-Neutral-04, #48464A)",
-                  textAlign: "left",
+                  textAlign: "center",
                   fontFamily: "Roboto",
                   fontSize: 16,
                   fontStyle: "normal",
                   width: "100%",
-                  fontWeight: "300",
+                  fontWeight: "600",
                 }}
               >
                 {restaurantData.contact}
@@ -240,6 +241,7 @@ export default function ProfileRestaurantPage() {
               data={filteredChars}
               style={{
                 height: 50,
+                alignSelf: "center",
               }}
               renderItem={({ item }) => (
                 <View style={{ height: "100%", justifyContent: "center" }}>
@@ -252,6 +254,8 @@ export default function ProfileRestaurantPage() {
               )}
               contentContainerStyle={{
                 gap: 20,
+                justifyContent: "center",
+                width: "100%"
               }}
               keyExtractor={(item) => item.toString()}
               horizontal={true}
@@ -349,6 +353,7 @@ export default function ProfileRestaurantPage() {
               fontSize: 18,
               fontStyle: "normal",
               fontWeight: "bold",
+              marginTop: 20,
             }}
           >
             Prato do Dia
