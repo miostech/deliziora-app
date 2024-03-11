@@ -27,6 +27,8 @@ import PhoneIcon from "../components/PhoneIcon";
 import MapLocationPageIcon from "../components/SVGs/MapLocationPageIcon/MapLocationPageIcon";
 import InfoIcon from "../components/InfoIcon";
 import RBSheet from "react-native-raw-bottom-sheet";
+import { InfoToast } from "react-native-toast-message";
+import DishDay from "../components/SVGs/DishDay";
 export default function ProfileRestaurantPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -169,7 +171,7 @@ export default function ProfileRestaurantPage() {
             <View style={{ width: 30 }}>
               <MapLocationPageIcon />
             </View>
-            <View style={{ width: "85%" , alignItems: "center"}}>
+            <View style={{ width: "85%", alignItems: "center" }}>
               <Text
                 style={{
                   color: "var(--Neutral-02-Color-Neutral-04, #48464A)",
@@ -208,7 +210,7 @@ export default function ProfileRestaurantPage() {
               <PhoneIcon />
             </View>
 
-            <View style={{justifyContent: "center", width: "85%", alignItems: "center"}}>
+            <View style={{ justifyContent: "center", width: "85%", alignItems: "center" }}>
               <Text
                 style={{
                   color: "var(--Neutral-02-Color-Neutral-04, #48464A)",
@@ -324,18 +326,24 @@ export default function ProfileRestaurantPage() {
             marginBottom: 5,
           }}
         >
-          <Text
-            style={{
-              color: "var(--Neutral-02-Color-Neutral-01, #201F23)",
-              fontFamily: "Roboto",
-              fontSize: 18,
-              fontStyle: "normal",
-              fontWeight: "bold",
-            }}
-          >
-            Especialidade
-          </Text>
-          <Text
+          <View style={{
+            marginBottom: 10,
+          }}>
+            <Text
+              style={{
+                color: "var(--Neutral-02-Color-Neutral-01, #201F23)",
+                fontFamily: "Roboto",
+                fontSize: 18,
+                fontStyle: "normal",
+                fontWeight: "bold",
+              }}
+            >
+              Especialidade
+            </Text>
+          </View>
+          <View style={{
+            marginBottom: 10,
+          }}><Text
             style={{
               color: "var(--Neutral-02-Color-Neutral-01, #201F23)",
               fontFamily: "Roboto",
@@ -344,8 +352,9 @@ export default function ProfileRestaurantPage() {
               fontWeight: "300",
             }}
           >
-            {restaurantData.especialty}
-          </Text>
+              {restaurantData.especialty}
+            </Text>
+          </View>
           <Text
             style={{
               color: "var(--Neutral-02-Color-Neutral-01, #201F23)",
@@ -385,7 +394,7 @@ export default function ProfileRestaurantPage() {
                 fontWeight: "300",
               }}
             >
-              Ver Menu Completo
+              Ver Menu
             </Text>
           </Pressable>
         </ScrollView>
@@ -422,7 +431,7 @@ export default function ProfileRestaurantPage() {
               style={{
                 width: "100%",
                 padding: 5,
-
+                overflow: "scroll"
               }}
               renderItem={({ item }) => (
                 <>

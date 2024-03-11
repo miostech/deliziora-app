@@ -31,7 +31,7 @@
     "@tabler/icons-react": "^2.42.0",
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",
-    "deliziora-client-module": "1.0.15",
+    "deliziora-client-module": "1.0.19",
     "expo": "^49.0.20",
     "expo-device": "~5.4.0",
     "expo-font": "~11.4.0",

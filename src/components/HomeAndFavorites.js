@@ -172,10 +172,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
+    marginTop: 10,
   },
   scrollView: {
     flex: 1,
-    marginBottom: 20,
+    marginBottom: 20
   },
 });
 

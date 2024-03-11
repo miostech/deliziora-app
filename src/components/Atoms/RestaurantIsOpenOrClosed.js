@@ -77,7 +77,7 @@ const RestaurantIsOpenOrClosed = () => {
           rbSheetRef.current.open();
         }}
       >
-        <View style={{width: 30}}>
+        <View style={{ width: 30 }}>
           <Clock />
         </View>
       </Pressable>
@@ -131,21 +131,21 @@ const RestaurantIsOpenOrClosed = () => {
             <Text style={[styles.text, { marginBottom: 20 }]}>
               Hórario de funcionamento:
             </Text>
-            {daysOfWeek.map((day) => (
-              <View key={day.key} style={{ marginBottom: 30, width: "100%" }}>
-                <Text style={[styles.text2, { fontWeight: "700" }]}>
-                  {day.label}
-                </Text>
-                <Text>
-                  Aberto: {restaurant?.opening_hours?.[day.key]?.open}
-                </Text>
-                <Text>
-                  Fechado: {restaurant?.opening_hours?.[day.key]?.closed}
-                </Text>
-                <Divider />
-              </View>
-            ))}
           </View>
+          {daysOfWeek.map((day) => (
+            <View key={day.key} style={{ marginBottom: 30, width: "100%" }}>
+              <Text style={[styles.text2, { fontWeight: "700" }]}>
+                {day.label}
+              </Text>
+              <Text>
+                Aberto: {restaurant?.opening_hours?.[day.key]?.open}
+              </Text>
+              <Text>
+                Fechado: {restaurant?.opening_hours?.[day.key]?.closed}
+              </Text>
+              <Divider />
+            </View>
+          ))}
         </ScrollView>
       </RBSheet>
     </View>

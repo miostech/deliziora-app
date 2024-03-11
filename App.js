@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -52,43 +52,64 @@ export default function App() {
     const favoriteRestaurants = useSelector(
       (state) => state.restaurantsFavorites
     );
+    const storedFavorites = AsyncStorage.getItem(
+      "@favoriteRestaurants"
+    );
+
+
 
     useEffect(() => {
+      const checkIsFavorite = async () => {
+        try {
+          // Recupera os restaurantes favoritos do AsyncStorage
+          const storedFavorites = await AsyncStorage.getItem(
+            "@favoriteRestaurants"
+          );
+          console.log("FAVORITOS", storedFavorites);
+          if (storedFavorites) {
+            const parsedFavorites = JSON.parse(storedFavorites);
+            console.log("", parsedFavorites);
+            setIsFavorite(storedFavorites.includes(restaurantData._id.$oid));
+          }
+        } catch (error) {
+          console.error("Erro ao recuperar restaurantes favoritos:", error);
+        }
+      };
       // Verifica se o restaurante está nos favoritos ao montar o componente
       checkIsFavorite();
-    }, [favoriteRestaurants, dispatch, toggleFavorite]);
-
-    const checkIsFavorite = async () => {
-      try {
-        // Recupera os restaurantes favoritos do AsyncStorage
-        const storedFavorites = await AsyncStorage.getItem(
-          "@favoriteRestaurants"
-        );
-        console.log("FAVORITOS", storedFavorites);
-        if (storedFavorites) {
-          const parsedFavorites = JSON.parse(storedFavorites);
-          console.log("", parsedFavorites);
-          setIsFavorite(parsedFavorites.includes(restaurantData._id.$oid));
-        }
-      } catch (error) {
-        console.error("Erro ao recuperar restaurantes favoritos:", error);
+      return () => {
+        setIsFavorite(false);
       }
-    };
+    }, [restaurantData]);
+
+
     const toggleFavorite = () => {
       try {
-        console.log("HERE", restaurantData._id.$oid);
+        const restaurantId = restaurantData._id.$oid;
         // Verifica se o restaurante é favorito
-        if (isFavorite) {
-          // Remove o restaurante dos favoritos
-          dispatch(removeFavoritsNew({ restaurantId: restaurantData._id.$oid }));
+        const isCurrentlyFavorite = favoriteRestaurants.includes(restaurantId);
+        setIsFavorite(!isCurrentlyFavorite); // Atualiza o estado local imediatamente
+
+        // Atualiza a lista de restaurantes favoritos no AsyncStorage
+        let updatedFavorites = [...favoriteRestaurants];
+        if (isCurrentlyFavorite) {
+          updatedFavorites = updatedFavorites.filter(id => id !== restaurantId);
         } else {
-          // Adiciona o restaurante aos favoritos
-          dispatch(addOrRemoveFavorits({ restaurantId: restaurantData._id.$oid }));
+          updatedFavorites.push(restaurantId);
+        }
+        AsyncStorage.setItem("@favoriteRestaurants", JSON.stringify(updatedFavorites));
+
+        // Atualiza o estado global de favoritos
+        if (isCurrentlyFavorite) {
+          dispatch(removeFavoritsNew({ restaurantId }));
+        } else {
+          dispatch(addOrRemoveFavorits({ restaurantId }));
         }
       } catch (error) {
         console.error("Error updating favorite restaurants:", error);
       }
     };
+
 
     return (
       <NavigationContainer>
@@ -168,7 +189,7 @@ export default function App() {
 
               headerTitle: () => {
                 return (
-                  <Text
+                  <Text textBreakStrategy="highQuality"
                     style={{
                       color: "var(--Neutral-02-Color-Neutral-02, #29272D)",
                       fontFamily: "roboto",
@@ -176,7 +197,8 @@ export default function App() {
                       fontSize: 14,
                       fontStyle: "normal",
                       fontWeight: "600",
-                      maxWidth: "100%",
+                      maxWidth: "85%"
+                      ,
                       height: "100%",
                       flexWrap: "wrap",
                     }}
@@ -214,10 +236,16 @@ export default function App() {
               headerTitle: () => {
                 return (
                   <Text
+                  numberOfLines={2}
+                  lineBreakMode="tail"
+                  lineBreakStrategyIOS="tail"
                     style={{
                       color: "var(--Neutral-02-Color-Neutral-02, #29272D)",
                       fontFamily: "roboto",
-                      fontSize: 20,
+                      fontSize: 16,
+                      maxWidth: "100%",
+                      flexWrap: "wrap",
+                      textAlign: "left",
                       fontStyle: "normal",
                       fontWeight: "600",
                     }}
@@ -236,6 +264,7 @@ export default function App() {
                       justifyContent: "center",
                       marginLeft: 10,
                       marginRight: 15,
+                      maxWidth: "15%"
                     }}
                   >
                     <ArrowLeft />
