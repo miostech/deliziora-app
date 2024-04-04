@@ -20,6 +20,7 @@ import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { RestaurantService } from "deliziora-client-module/client-web";
 import { setFilteredRestaurants } from "../redux/features/restaurants/restaurantsSlice";
 export default function FiltersModal() {
+  
   const dispatch = useDispatch();
   const selectedCharacteristics = useSelector((state) => state.characteristics);
   const selectedOption = useSelector(
@@ -38,6 +39,7 @@ export default function FiltersModal() {
     (state) => state.restaurants.filteredRestaurants
   );
 
+  console.log("current", typesOfSearch)
   const rbSheetRef = useRef();
 
   const applyFilters = () => {

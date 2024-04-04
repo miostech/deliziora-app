@@ -42,6 +42,12 @@ export default function ProfileRestaurantPage() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const rbSheetRef = useRef();
+  const flatListRef = useRef();
+
+  function useRefMethod() {
+    flatListRef.current.flashScrollIndicators()
+  }
+
 
   function getDistanceFromLatLon(lat1, lon1, lat2, lon2) {
     const earthRadius = 6371; // Radius of the earth in km
@@ -241,13 +247,18 @@ export default function ProfileRestaurantPage() {
             </Pressable>
 
             <FlatList
+              ref={flatListRef}
+              initialNumToRender={3}
               data={filteredChars}
               style={{
                 height: 50,
+                width:"100%",
                 alignSelf: "center",
+                backgroundColor:"red",
+                overflow:"hidden"
               }}
               renderItem={({ item }) => (
-                <View style={{ height: "100%", justifyContent: "center" }}>
+                <View style={{ height: "100%", justifyContent: "center", backgroundColor:"blue" }}>
                   <Image
                     source={{ uri: item.icon }}
                     style={{ width: 32, height: 32 }}
@@ -262,6 +273,7 @@ export default function ProfileRestaurantPage() {
               }}
               keyExtractor={(item) => item.toString()}
               horizontal={true}
+              maxToRenderPerBatch={3}
             />
           </View>
         </View>
@@ -283,10 +295,9 @@ export default function ProfileRestaurantPage() {
               fontStyle: "normal",
               fontWeight: "300",
             }}
+            numberOfLines={isDescriptionExpanded ? undefined : 1}
           >
-            {isDescriptionExpanded
-              ? restaurantData.description
-              : `${restaurantData.description.substring(0, 50)}...`}
+            {restaurantData.description}
           </Text>
           <Pressable
             onPress={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
