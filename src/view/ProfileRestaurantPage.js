@@ -30,6 +30,7 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import { InfoToast } from "react-native-toast-message";
 import DishDay from "../components/SVGs/DishDay";
 import Close from "../components/SVGs/Close";
+import Carousel from "react-native-snap-carousel";
 export default function ProfileRestaurantPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -245,39 +246,26 @@ export default function ProfileRestaurantPage() {
                 <InfoIcon />
               </View>
             </Pressable>
-
-            <FlatList
-              ref={flatListRef}
-              initialNumToRender={3}
+            <Carousel
               data={filteredChars}
-              style={{
-                height: 50,
-                width:"100%",
-                alignSelf: "center",
-                backgroundColor:"red",
-                overflow:"hidden"
-              }}
               renderItem={({ item }) => (
-                <View style={{ height: "100%", justifyContent: "center", backgroundColor:"blue" }}>
+                <View style={{ alignItems: "center", display:"flex", flexDirection:"row" }}>
                   <Image
                     source={{ uri: item.icon }}
                     style={{ width: 32, height: 32 }}
                   />
                 </View>
-
               )}
-              contentContainerStyle={{
-                gap: 20,
-                justifyContent: "center",
-                width: "100%"
-              }}
-              keyExtractor={(item) => item.toString()}
-              horizontal={true}
-              maxToRenderPerBatch={3}
+              sliderWidth={60}
+              centerContent
+              itemWidth={60}
+              loop={true}
+              autoplay={true}
+              autoplayInterval={2000}
             />
           </View>
         </View>
-
+        
         <View
           style={{
             display: "flex",
