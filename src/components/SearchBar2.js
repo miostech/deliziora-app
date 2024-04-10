@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import InterfaceessentialMagnifier from "./SVGs/InterfaceessentialMagnifier/InterfaceessentialMagnifier";
 import { FilterSearch } from "./FilterSearch";
+import { Path, Svg } from "react-native-svg";
 
 export default function SearchBar2({
   searchTerm,
@@ -19,6 +20,11 @@ export default function SearchBar2({
     handleSearch();
     Keyboard.dismiss();
   };
+
+  const clearSearchTerm = () => {
+    setSearchTerm("");
+  };
+  
   return (
     <View style={styles.searchBar2}>
       <View style={styles.content}>
@@ -40,6 +46,15 @@ export default function SearchBar2({
           onEndEditing={handleKeyPress}
           onChangeText={(text) => setSearchTerm(text)}
         />
+        {searchTerm !== "" && (
+          <Pressable onPress={clearSearchTerm}>
+            <Svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <Path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <Path d="M18 6l-12 12" />
+              <Path d="M6 6l12 12" />
+            </Svg>
+          </Pressable>
+        )}
       </View>
     </View>
   );

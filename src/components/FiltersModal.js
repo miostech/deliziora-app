@@ -77,10 +77,11 @@ export default function FiltersModal() {
           if (res.data.length === 0) {
             Toast.show({
               type: "info",
+              visibilityTime:3000,
               text1: "Nenhum restaurante encontrado",
-              text1Style:{fontSize:16},
-              text2Style:{fontSize:12},
-              text2: "Por favor refazer o filtro",
+              text1Style:{fontSize:14},
+              text2Style:{fontSize:10},
+              text2: "Filtro automaticamente removidos para mostrar resultados",
               position: "bottom",
               autoHide: true,
               onHide: ()=>{

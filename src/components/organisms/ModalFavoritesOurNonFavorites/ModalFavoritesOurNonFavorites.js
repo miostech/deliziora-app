@@ -232,7 +232,7 @@ const ModalFavoritesOurNonFavorites = () => {
           zIndex: 1,
         }}
       >
-        <SearchBar2
+       <SearchBar2
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           handleSearch={handleSearch}

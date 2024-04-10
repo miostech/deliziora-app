@@ -35,12 +35,14 @@ import { updateLocation } from "../redux/features/locationSlice/locationSlice";
 import MarkerIconCurrentComponent from "../components/MarkerIconCurrentComponent";
 import { setCurrentRestaurantMarker } from "../redux/features/currentRestaurantMarker/CurrentRestaurantMarker";
 import Toast from 'react-native-toast-message';
+import RestaurantBadge from "../components/Atoms/RestaurantBadge";
 const windowWidth = Dimensions.get("window").width;
 
 function HomeScreen() {
   const allRestaurants = useSelector(
     (state) => state.restaurants.allRestaurants
   );
+
   const menuOfDay = useSelector((state) => state.menuOfDay);
   const dispatch = useDispatch();
   const [location, setLocation] = useState(null);
@@ -342,6 +344,7 @@ function HomeScreen() {
     );
   }
 
+
   return (
     <View style={styles.container} onLayout={onLayoutRootView}>
       <MapView
@@ -408,6 +411,7 @@ function HomeScreen() {
           zIndex: 1,
         }}
       >
+        <RestaurantBadge />
         <Carousel
           ref={CarrouselRef}
           data={filteredRestaurants}
