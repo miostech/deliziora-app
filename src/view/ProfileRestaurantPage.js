@@ -236,7 +236,7 @@ export default function ProfileRestaurantPage() {
           </Pressable>
 
           <RestaurantIsOpenOrClosed />
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 20 , marginBottom:10 }}>
             <Pressable
               onPress={() => {
                 rbSheetRef.current.open();
