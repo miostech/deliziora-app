@@ -14,6 +14,7 @@ import {
   setAllRestaurants,
   toggleFavorite,
   setFilteredRestaurants,
+  
 } from "../../../redux/features/restaurants/restaurantsSlice";
 import {
   MenuOfTheDayService,
@@ -41,12 +42,17 @@ const ModalFavoritesOurNonFavorites = () => {
   const filteredRestaurants = useSelector(
     (state) => state.restaurants.filteredRestaurants
   );
-
+  
+  const IsActiveFilters = useSelector(
+    (state) => state.restaurants.filtersIsActive
+  );
   useEffect(() => {
     RestaurantService.returnAllRestaurants()
       .then((res) => {
         dispatch(setAllRestaurants(res.data));
-        dispatch(setFilteredRestaurants(res.data));
+        if (!IsActiveFilters) {
+          dispatch(setFilteredRestaurants(res.data));
+        }
       })
       .catch((err) => {
         console.log("ERROR", err);
@@ -150,7 +156,7 @@ const ModalFavoritesOurNonFavorites = () => {
   );
 
   useEffect(() => {
-    if (!searchTerm) {
+    if (!searchTerm && IsActiveFilters === false) {
       dispatch(setFilteredRestaurants(allRestaurants));
     }
   }, [searchTerm]);
@@ -164,8 +170,9 @@ const ModalFavoritesOurNonFavorites = () => {
       });
       dispatch(setFilteredRestaurants(filtered));
     } else {
-      // If no search result, display all restaurants
-      dispatch(setFilteredRestaurants(allRestaurants));
+      if (IsActiveFilters === false) {
+        dispatch(setFilteredRestaurants(allRestaurants));
+      }
     }
   }, [searchResult]);
 
@@ -232,7 +239,7 @@ const ModalFavoritesOurNonFavorites = () => {
           zIndex: 1,
         }}
       >
-       <SearchBar2
+        <SearchBar2
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           handleSearch={handleSearch}

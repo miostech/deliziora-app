@@ -57,6 +57,9 @@ function HomeScreen() {
     (state) => state.restaurants.filteredRestaurants
   );
 
+  const IsActiveFilters = useSelector(
+    (state) => state.restaurants.filtersIsActive
+  );
   const [menuOfTheDayByRestaurant, setMenuOfTheDayByRestaurant] = useState({});
   const [loading, setLoading] = useState(true);
   const mapsRef = useRef(null);
@@ -66,8 +69,9 @@ function HomeScreen() {
     RestaurantService.returnAllRestaurants()
       .then((res) => {
         dispatch(setAllRestaurants(res.data));
-        dispatch(setFilteredRestaurants(res.data));
-        // setFilteredRestaurants(res.data);
+        if (!IsActiveFilters) {
+          dispatch(setFilteredRestaurants(res.data));
+        }
       })
       .catch((err) => {
         console.log("ERROR", err);
@@ -237,7 +241,7 @@ function HomeScreen() {
   );
 
   useEffect(() => {
-    if (!searchTerm) {
+    if (!searchTerm && IsActiveFilters === false) {
       dispatch(setFilteredRestaurants(allRestaurants));
     }
   }, [searchTerm]);
@@ -251,8 +255,10 @@ function HomeScreen() {
       });
       dispatch(setFilteredRestaurants(filtered));
     } else {
-      // If no search result, display all restaurants
-      dispatch(setFilteredRestaurants(allRestaurants));
+      
+      if (IsActiveFilters === false) {
+        dispatch(setFilteredRestaurants(allRestaurants));
+      }
     }
   }, [searchResult]);
 

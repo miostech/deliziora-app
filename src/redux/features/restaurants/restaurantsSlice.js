@@ -1,15 +1,14 @@
-// restaurantsSlice.js
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    allRestaurants: [
-
-    ],
+    allRestaurants: [],
     favoriteRestaurants: [],
     allRestaurantsOpen: [],
     filteredRestaurants: [],
+    restaurantsFilteredForModal: [],
+    searchTerm: '', // novo estado para guardar o termo de busca
+    filtersIsActive: false, // novo estado que indica se os filtros estão ativos (começa em false)
 };
 
 const restaurantsSlice = createSlice({
@@ -21,7 +20,6 @@ const restaurantsSlice = createSlice({
         },
         setFilteredRestaurants(state, action) {
             state.filteredRestaurants = action.payload;
-            console.log(state.filteredRestaurants, "Oi");
         },
         setAllRestaurantsOpen(state, action) {
             state.allRestaurantsOpen = action.payload;
@@ -43,37 +41,29 @@ const restaurantsSlice = createSlice({
         setAllFavoritesRestaurants(state, action) {
             state.favoriteRestaurants = action.payload;
             AsyncStorage.setItem('@favoriteRestaurants', JSON.stringify(state.favoriteRestaurants));
-        }
+        },
+        setRestaurantsFilteredForModal(state, action) {
+            state.restaurantsFilteredForModal = action.payload;
+        },
+        setSearchTerm(state, action) { // action para atualizar o termo de busca
+            state.searchTerm = action.payload;
+        },
+        setFiltersIsActive(state, action) { // action para atualizar o estado de filtros ativos
+            state.filtersIsActive = action.payload;
+        },
     },
-    setAllRestaurantsOpen(state, action) {
-      state.allRestaurantsOpen = action.payload;
-    },
-    // addToFavorites(state, action) {
-    //   const { restaurantId } = action.payload;
-    //   if (!state.favoriteRestaurants.includes(restaurantId)) {
-    //     // state.favoriteRestaurants?.push(restaurantId);
-    //     console.warn("LIST", state.favoriteRestaurants);
-    //     var restFav = [];
-    //     restFav = [...state.favoriteRestaurants, restaurantId];
-    //     state.favoriteRestaurants = restFav;
-    //   }
-    //   AsyncStorage.setItem("@favoriteRestaurants", JSON.stringify(restFav));
-    //   return state;
-    // },
-    // removeFromFavorites(state, action) {
-    //   const { restaurantId } = action.payload;
-    //   state.favoriteRestaurants = state.favoriteRestaurants.filter(
-    //     (id) => id !== restaurantId
-    //   );
-    //   AsyncStorage.setItem(
-    //     "@favoriteRestaurants",
-    //     JSON.stringify(state.favoriteRestaurants)
-    //   );
-    // },
-    
-  });
+});
 
-export const { setAllRestaurants, addToFavorites, removeFromFavorites, setAllFavoritesRestaurants, setAllRestaurantsOpen, setFilteredRestaurants } = restaurantsSlice.actions;
-
+export const { 
+    setAllRestaurants, 
+    addToFavorites, 
+    removeFromFavorites, 
+    setAllFavoritesRestaurants, 
+    setAllRestaurantsOpen, 
+    setFilteredRestaurants, 
+    setRestaurantsFilteredForModal,
+    setSearchTerm, // adicionando a nova action à exportação
+    setFiltersIsActive // adicionando a nova action à exportação
+} = restaurantsSlice.actions;
 
 export default restaurantsSlice.reducer;

@@ -18,7 +18,7 @@ import DistanceSlider from "./DistanceSlider";
 import { useSelector, useDispatch } from "react-redux";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { RestaurantService } from "deliziora-client-module/client-web";
-import { setFilteredRestaurants } from "../redux/features/restaurants/restaurantsSlice";
+import { setFilteredRestaurants, setFiltersIsActive } from "../redux/features/restaurants/restaurantsSlice";
 export default function FiltersModal() {
   
   const dispatch = useDispatch();
@@ -74,6 +74,8 @@ export default function FiltersModal() {
       .then((res) => {
         {
           dispatch(setFilteredRestaurants(res.data));
+          dispatch(setFiltersIsActive(true))
+
           if (res.data.length === 0) {
             Toast.show({
               type: "info",
@@ -102,6 +104,7 @@ export default function FiltersModal() {
 
   const handleClearFilters = () => {
     dispatch(setFilteredRestaurants(allRestaurants));
+    dispatch(setFiltersIsActive(false));
     rbSheetRef.current.close();
   };
 
