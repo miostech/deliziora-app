@@ -45,6 +45,7 @@ export default function SearchBar2({
           value={searchTerm}
           onEndEditing={handleKeyPress}
           onChangeText={(text) => setSearchTerm(text)}
+          
         />
         {searchTerm !== "" && (
           <Pressable onPress={clearSearchTerm}>

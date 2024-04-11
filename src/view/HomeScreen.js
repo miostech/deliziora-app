@@ -255,12 +255,12 @@ function HomeScreen() {
       });
       dispatch(setFilteredRestaurants(filtered));
     } else {
-      
+
       if (IsActiveFilters === false) {
         dispatch(setFilteredRestaurants(allRestaurants));
       }
     }
-  }, [searchResult]);
+  }, [searchResult, searchTerm]);
 
   const handleSearch = () => {
     let foundRestaurants = [];

@@ -174,7 +174,7 @@ const ModalFavoritesOurNonFavorites = () => {
         dispatch(setFilteredRestaurants(allRestaurants));
       }
     }
-  }, [searchResult]);
+  }, [searchResult, searchTerm]);
 
   const handleSearch = () => {
     let foundRestaurants = [];
