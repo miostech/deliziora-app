@@ -15,6 +15,7 @@ import RestaurantCard from "./RestaurantCard";
 import { useFocusEffect } from "@react-navigation/native";
 import SearchBar2 from "./../components/SearchBar2";
 import FiltersModal from "./../components/FiltersModal";
+
 const HomeAndFavorites = () => {
   const allrestaurants = useSelector(
     (state) => state.restaurants.allRestaurants
@@ -26,6 +27,7 @@ const HomeAndFavorites = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const dispatch = useDispatch();
   const [justRestaurantsFavorite, setJustRestaurantsFavorite] = useState([]);
+  const [originalFavorites, setOriginalFavorites] = useState([]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -46,29 +48,12 @@ const HomeAndFavorites = () => {
           storedFavorites.includes(restaurant._id.$oid)
         );
         setJustRestaurantsFavorite(favoriteRestaurantsDetails);
+        setOriginalFavorites(favoriteRestaurantsDetails); // Atualiza os favoritos originais
       }
     } catch (error) {
       console.error("Erro ao recuperar restaurantes favoritos:", error);
     }
   };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      const onBackPress = () => {
-        // Do nothing when back button is pressed
-        return true;
-      };
-
-      // Add event listener for hardware back press
-      const backHandler = BackHandler.addEventListener(
-        "hardwareBackPress",
-        onBackPress
-      );
-
-      // Clean up the event listener
-      return () => backHandler.remove();
-    }, [])
-  );
 
   useEffect(() => {
     RestaurantService.returnAllRestaurants()
@@ -81,24 +66,21 @@ const HomeAndFavorites = () => {
       });
   }, [dispatch]);
 
-  useEffect(() => {
-    if (!searchTerm) {
-      const favoriteRestaurantsDetails = allrestaurants.filter((restaurant) =>
-        favoriteRestaurants.includes(restaurant._id.$oid)
-      );
-      setJustRestaurantsFavorite(favoriteRestaurantsDetails);
-    }
-  }, [searchTerm]);
-
   const handleSearch = () => {
     let foundRestaurants = [];
 
     // Search for restaurants with names containing the search term
-    foundRestaurants = justRestaurantsFavorite.filter((restaurant) =>
+    foundRestaurants = originalFavorites.filter((restaurant) =>
       restaurant.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     setJustRestaurantsFavorite(foundRestaurants);
+  };
+
+  const clearSearch = () => {
+    // Restaura os favoritos originais quando o campo de pesquisa é limpo
+    setJustRestaurantsFavorite(originalFavorites);
+    setSearchTerm("");
   };
 
   return (
@@ -119,7 +101,12 @@ const HomeAndFavorites = () => {
           zIndex: 1,
         }}
       >
-        <SearchBar2 />
+         <SearchBar2
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          handleSearch={handleSearch}
+          clearSearch={clearSearch} // Adiciona uma função para limpar o campo de pesquisa
+        />
         <FiltersModal />
       </View>
       <View style={styles.favoritesContainer}>
