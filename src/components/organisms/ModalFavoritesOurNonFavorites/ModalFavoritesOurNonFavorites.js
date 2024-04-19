@@ -34,7 +34,6 @@ const ModalFavoritesOurNonFavorites = () => {
     (state) => state.restaurants.allRestaurants
   );
   const menuOfDay = useSelector((state) => state.menuOfDay);
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResult, setSearchResult] = useState({});
   const [menuOfTheDayByRestaurant, setMenuOfTheDayByRestaurant] = useState({});
@@ -140,7 +139,6 @@ const ModalFavoritesOurNonFavorites = () => {
                 // Set the menuOfTheDayByRestaurant state
                 setMenuOfTheDayByRestaurant(menuOfTheDayByRestaurant);
                 dispatch(setMenuOfDay(menuOfTheDayByRestaurant));
-                setLoading(false);
               });
             })
             .catch((error) => {
@@ -205,24 +203,10 @@ const ModalFavoritesOurNonFavorites = () => {
     dispatch(setFilteredRestaurants(foundRestaurants));
   };
 
-  const onLayoutRootView = React.useCallback(async () => {
-    if (loading) {
-      await SplashScreen.hideAsync();
-      navigation.setOptions({
-        headerShown: true,
-      });
-    }
-  }, [loading]);
-  if (loading) {
-    return (
-      <View style={{ marginTop: 90 }}>
-        <ActivityIndicator size="large" color="#f36527" />
-      </View>
-    );
-  }
+  
 
   return (
-    <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
+    <SafeAreaView style={styles.container}>
       <View
         style={{
           width: "90%",
