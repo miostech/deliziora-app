@@ -38,7 +38,8 @@ import {
   removeFavoritsNew,
 } from "./src/redux/features/restaurantsFavorites/restaurantsFavoritesSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-OpenAPI.BASE = "https://deliziora-api.azurewebsites.net/";
+// OpenAPI.BASE = "https://deliziora-api.azurewebsites.net/";
+// OpenAPI.BASE = "http://192.168.1.71:8000";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const colors = require("./src/style/Colors.json");

@@ -68,7 +68,10 @@ export default function SplashScreen() {
           });
         }, 2900);
       } else {
-        navigation.navigate("HomeTab", { screen: "Map" });
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "HomeTab" }],
+        });
       }
     });
   }, [dispatch, navigation, checkFirstTimeAppFav]);
@@ -76,7 +79,10 @@ export default function SplashScreen() {
 
   useEffect(() => {
     const onBackPress = () => {
-      navigation.navigate("HomeTab");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "HomeTab" }],
+      });
       return true; 
     };
 
