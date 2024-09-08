@@ -208,7 +208,7 @@ export default function ProfileRestaurantPage() {
             style={{
               display: "flex",
               flexDirection: "row",
-              gap: 20,
+              gap: 0,
               width: "100%",
               marginBottom: 10,
             }}
@@ -236,36 +236,53 @@ export default function ProfileRestaurantPage() {
           </Pressable>
 
           <RestaurantIsOpenOrClosed />
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 20 , marginBottom:10 }}>
+
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 20, marginBottom: 10 }}>
             <Pressable
               onPress={() => {
                 rbSheetRef.current.open();
+              }}
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                gap: 20,
+                width: "100%",
+                marginBottom: 10,
+                position: "relative",
               }}
             >
               <View style={{ width: 30 }}>
                 <InfoIcon />
               </View>
+
+              <Carousel
+                data={filteredChars}
+                renderItem={({ item }) => (
+                  <View style={{ alignItems: "center", display: "flex", flexDirection: "row" }}>
+                    <Image
+                      source={{ uri: item.icon }}
+                      style={{ width: 32, height: 32 }}
+                    />
+                  </View>
+                )}
+                sliderWidth={60}
+                centerContent
+                itemWidth={60}
+                loop={true}
+                autoplay={true}
+                autoplayInterval={2000}
+              />
+              {
+                filteredChars.length > 4 && (
+                  <Text style={{ width: 13, position: "absolute", right: -15 }}>
+                    ...
+                  </Text>
+                )
+              }
             </Pressable>
-            <Carousel
-              data={filteredChars}
-              renderItem={({ item }) => (
-                <View style={{ alignItems: "center", display:"flex", flexDirection:"row" }}>
-                  <Image
-                    source={{ uri: item.icon }}
-                    style={{ width: 32, height: 32 }}
-                  />
-                </View>
-              )}
-              sliderWidth={60}
-              centerContent
-              itemWidth={60}
-              loop={true}
-              autoplay={true}
-              autoplayInterval={2000}
-            />
           </View>
         </View>
-        
+
         <View
           style={{
             display: "flex",
@@ -404,6 +421,7 @@ export default function ProfileRestaurantPage() {
         openDuration={250}
         dragFromTopOnly
         closeOnDragDown
+        closeOnPressBack
         customStyles={{
           container: {
             justifyContent: "center",
@@ -433,7 +451,7 @@ export default function ProfileRestaurantPage() {
             top: 10,
             right: 0,
           }}>
-            <Close />
+            {/* <Close /> */}
           </Pressable>
           <View style={styles.modalHeader}>
             <FlatList

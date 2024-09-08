@@ -3538,10 +3538,10 @@ delayed-stream@~1.0.0:
   resolved "https://registry.yarnpkg.com/delayed-stream/-/delayed-stream-1.0.0.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
   integrity sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==
 
-deliziora-client-module@1.0.19:
-  version "1.0.19"
-  resolved "https://registry.yarnpkg.com/deliziora-client-module/-/deliziora-client-module-1.0.19.tgz#276c52c8c11cecb3011ed91c13932c692f2f4f03"
-  integrity sha512-BqPnD9zxCDtQVX95DWbFXZPqT4cMrFrCQKFlwkz4FfGIKoWlgIjoBbF/BzRvDe/Lv1n8/yuCjzVBK/s+88XeRQ==
+deliziora-client-module@1.0.23:
+  version "1.0.23"
+  resolved "https://registry.yarnpkg.com/deliziora-client-module/-/deliziora-client-module-1.0.23.tgz#fad7eff391a3f4c4d01a02f50d51ce65108d126d"
+  integrity sha512-m+afmIfAMtIvRDcrtGBWVhfGwEvSUt/1UCCqKAFBLTbWF4oe7AQKX5EV0unAErL9gxQl6n0IJmJgP2LYZKfElQ==
 
 denodeify@^1.2.1:
   version "1.2.1"

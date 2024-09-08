@@ -19,8 +19,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { RestaurantService } from "deliziora-client-module/client-web";
 import { setFilteredRestaurants, setFiltersIsActive } from "../redux/features/restaurants/restaurantsSlice";
+import SwitchMenuOfTheDay from "./SwitchMenuOfTheDay";
+import SwitchFilters from "./SwitchMenuOfTheDay";
+import { updateNewFiltersTypeCompleteMenu, updateNewFiltersTypeEspecialty, updateNewFiltersTypeMenuDishOfTheDay, updateNewFiltersTypeNameOfTheRestaurant, updateNewFiltersTypeOpenedRestaurant } from "../redux/features/newFiltersType/newFiltersType";
+import { useNavigation } from "@react-navigation/native";
 export default function FiltersModal() {
-  
+
   const dispatch = useDispatch();
   const selectedCharacteristics = useSelector((state) => state.characteristics);
   const selectedOption = useSelector(
@@ -38,38 +42,49 @@ export default function FiltersModal() {
   const filteredRestaurants = useSelector(
     (state) => state.restaurants.filteredRestaurants
   );
+  const menuDishOfTheDay = useSelector(
+    (state) => state.newFilterTypeFeature.menu_dish_of_the_day
+  );
+  const completeMenu = useSelector(
+    (state) => state.newFilterTypeFeature.complete_menu
+  );
+  const especialty = useSelector(
+    (state) => state.newFilterTypeFeature.especialty
+  );
+  const nameOfTheRestaurant = useSelector(
+    (state) => state.newFilterTypeFeature.name_of_the_restaurant
+  );
+  const openedRestaurant = useSelector(
+    (state) => state.newFilterTypeFeature.opened_restaurant
+  );
+
+  const navigation = useNavigation();
 
   console.log("current", typesOfSearch)
   const rbSheetRef = useRef();
 
   const applyFilters = () => {
-    console.log("teste");
     console.log({
-      is_open: status == "opened" ? true : false,
-      lng: coords.longitude,
-      lag: coords.latitude,
-      complete_menu:
-        typesOfSearch == "complete_menu" || typesOfSearch == "all"
-          ? true
-          : false,
-      especialty:
-        typesOfSearch == "especialty" || typesOfSearch == "all" ? true : false,
-      distance: distanceValue,
-      characteristics: selectedCharacteristics,
-    });
-    // OpenAPI.BASE = "http://192.168.1.65:8000"
-    RestaurantService.filterRestaurant({
-      is_open: status == "opened" ? true : false,
+      is_open: openedRestaurant,
       lng: String(coords.longitude),
       lag: String(coords.latitude),
-      complete_menu:
-        typesOfSearch == "complete_menu" || typesOfSearch == "all"
-          ? true
-          : false,
-      especialty:
-        typesOfSearch == "especialty" || typesOfSearch == "all" ? true : false,
       distance: distanceValue,
       characteristics: selectedCharacteristics,
+      menu_dish_of_the_day: menuDishOfTheDay,
+      complete_menu: completeMenu,
+      especialty: especialty,
+      name_of_the_restaurant: nameOfTheRestaurant,
+    });
+    RestaurantService.filterRestaurant({
+      is_open: openedRestaurant,
+      lng: String(coords.longitude),
+      lag: String(coords.latitude),
+      distance: distanceValue,
+      characteristics: selectedCharacteristics,
+      menu_dish_of_the_day: menuDishOfTheDay,
+      complete_menu: completeMenu,
+      especialty: especialty,
+      name_of_the_restaurant: nameOfTheRestaurant,
     })
       .then((res) => {
         {
@@ -77,19 +92,20 @@ export default function FiltersModal() {
           dispatch(setFiltersIsActive(true))
 
           if (res.data.length === 0) {
-            Toast.show({
-              type: "info",
-              visibilityTime:3000,
-              text1: "Nenhum restaurante encontrado",
-              text1Style:{fontSize:14},
-              text2Style:{fontSize:10},
-              text2: "Filtro automaticamente removidos para mostrar resultados",
-              position: "bottom",
-              autoHide: true,
-              onHide: ()=>{
-                dispatch(setFilteredRestaurants(allRestaurants));
-              }
-            });
+            // Toast.show({
+            //   type: "info",
+            //   visibilityTime: 3000,
+            //   text1: "Nenhum restaurante encontrado",
+            //   text1Style: { fontSize: 14 },
+            //   text2Style: { fontSize: 10 },
+            //   text2: "Filtro automaticamente removidos para mostrar resultados",
+            //   position: "bottom",
+            //   autoHide: true,
+            //   onHide: () => {
+            //     dispatch(setFilteredRestaurants(allRestaurants));
+            //   }
+            // });
+            navigation.navigate("NoRestaurants");
           }
         }
       })
@@ -105,6 +121,11 @@ export default function FiltersModal() {
   const handleClearFilters = () => {
     dispatch(setFilteredRestaurants(allRestaurants));
     dispatch(setFiltersIsActive(false));
+    dispatch(updateNewFiltersTypeMenuDishOfTheDay(false));
+    dispatch(updateNewFiltersTypeCompleteMenu(false));
+    dispatch(updateNewFiltersTypeEspecialty(false));
+    dispatch(updateNewFiltersTypeNameOfTheRestaurant(false));
+    dispatch(updateNewFiltersTypeOpenedRestaurant(false));
     rbSheetRef.current.close();
   };
 
@@ -142,10 +163,72 @@ export default function FiltersModal() {
             <Pressable onPress={() => rbSheetRef.current.close()}>
               <Close />
             </Pressable>
-            <Text>Filtros</Text>
+            <Text style={{ fontWeight: 800 }}>Filtros</Text>
           </View>
+
           <View style={styles.modalBody}>
-            <Text
+
+            <Text style={{ fontWeight: "bold", marginTop: 5 }}>
+              Tipo de pesquisa
+            </Text>
+
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 40,
+                paddingBottom: 15,
+              }}
+            >
+              <Text style={{ flex: 1 }}>Pesquisar em menu de prato do dia </Text>
+              <SwitchFilters typeFilter={"menu_dish_of_the_day"} />
+            </View>
+
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 40,
+                paddingBottom: 15,
+              }}
+            >
+              <Text style={{ flex: 1 }}>Pesquisar em menu completo </Text>
+              <SwitchFilters typeFilter={"complete_menu"} />
+            </View>
+
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 40,
+                paddingBottom: 15,
+              }}
+            >
+              <Text style={{ flex: 1 }}>Pesquisar em especialidade </Text>
+              <SwitchFilters typeFilter={"especialty"} />
+            </View>
+
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 40,
+                paddingBottom: 15,
+              }}
+            >
+              <Text style={{ flex: 1 }}>Pesquisar pelo nome do restaurante </Text>
+              <SwitchFilters typeFilter={"name_of_the_restaurant"} />
+            </View>
+
+            {/* <Text
               style={{
                 fontWeight: "bold",
                 marginTop: 5,
@@ -165,8 +248,9 @@ export default function FiltersModal() {
             >
               <Text>Mostrar apenas restaurantes abertos </Text>
               <SwitchOpenOrClose />
-            </View>
-            <View
+            </View> */}
+
+            {/* <View
               style={{
                 paddingTop: 10,
                 gap: 10,
@@ -182,7 +266,8 @@ export default function FiltersModal() {
                 Tipo de Menu
               </Text>
               <TypeOfSearch />
-            </View>
+            </View> */}
+
             <View
               style={{
                 paddingTop: 10,
@@ -193,12 +278,10 @@ export default function FiltersModal() {
                   fontWeight: "bold",
                 }}
               >
-                Caracteristicas
-              </Text>
-              <Text>
-                Busque por Restaurantes, com uma ou mais caracteristicas
+                Caracteristicas do Restaurante
               </Text>
             </View>
+
             <View
               style={{
                 paddingBottom: 15,
@@ -206,7 +289,35 @@ export default function FiltersModal() {
             >
               <CharacteristicsFilter />
             </View>
+
             <View
+              style={{
+                paddingTop: 10,
+              }}
+            >
+              <Text
+                style={{
+                  fontWeight: "bold",
+                }}
+              >
+                Outros critérios
+              </Text>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: 40,
+                  paddingBottom: 15,
+                }}
+              >
+                <Text style={{ flex: 1 }}>Mostrar apenas restaurantes abertos </Text>
+                <SwitchFilters typeFilter={"opened_restaurant"} />
+              </View>
+            </View>
+
+            {/* <View
               style={{
                 paddingTop: 10,
                 borderTopColor: "gray",
@@ -223,7 +334,8 @@ export default function FiltersModal() {
                 Distância
               </Text>
               <DistanceSlider />
-            </View>
+            </View> */}
+
             <View
               style={{
                 display: "flex",

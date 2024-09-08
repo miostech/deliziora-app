@@ -67,7 +67,6 @@ const RestaurantIsOpenOrClosed = () => {
       style={{
         display: "flex",
         flexDirection: "row",
-        gap: 20,
         width: "100%",
         alignItems: "center",
         marginBottom: 15,
@@ -77,31 +76,39 @@ const RestaurantIsOpenOrClosed = () => {
         onPress={() => {
           rbSheetRef.current.open();
         }}
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: 5,
+          alignItems: "center",
+          width: "100%",
+        }}
       >
         <View style={{ width: 30 }}>
           <Clock />
         </View>
+
+        <View style={{ width: "85%", alignItems: "center" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 5,
+            }}
+          >
+            <Text style={styles.text}>{openingTime}</Text>
+            <Text style={styles.text}>-</Text>
+            <Text style={styles.text}>{closingTime}</Text>
+          </View>
+          <Text
+            style={[{ fontWeight: "300", alignSelf: "center", }]}
+          >
+            {"("}
+            {isOpen ? "Aberto" : "Fechado"}
+            {")"}
+          </Text>
+        </View>
       </Pressable>
 
-      <View style={{ width: "85%", alignItems: "center" }}>
-        <View
-          style={{
-            flexDirection: "row",
-            gap: 5,
-          }}
-        >
-          <Text style={styles.text}>{openingTime}</Text>
-          <Text style={styles.text}>-</Text>
-          <Text style={styles.text}>{closingTime}</Text>
-        </View>
-        <Text
-          style={[{ fontWeight: "300", alignSelf: "center", }]}
-        >
-          {"("}
-          {isOpen ? "Aberto" : "Fechado"}
-          {")"}
-        </Text>
-      </View>
       <RBSheet
         ref={rbSheetRef}
         closeOnPressBack={true}

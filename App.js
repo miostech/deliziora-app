@@ -38,7 +38,8 @@ import {
   removeFavoritsNew,
 } from "./src/redux/features/restaurantsFavorites/restaurantsFavoritesSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// OpenAPI.BASE = "https://deliziora-api.azurewebsites.net/";
+import NoRestaurants from "./src/view/NoRestaurants";
+OpenAPI.BASE = "https://telabite-api-g2c5gbc0hzfddeg9.francecentral-01.azurewebsites.net/";
 // OpenAPI.BASE = "http://192.168.1.71:8000";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -180,6 +181,11 @@ export default function App() {
             options={{ headerShown: false }}
           />
           <Stack.Screen
+            name="NoRestaurants"
+            component={NoRestaurants}
+            options={{ headerShown: true }}
+          />
+          <Stack.Screen
             name="MenuPlatesPage"
             component={MenuPlatesPage}
             screenoptions={{ headerShadowVisible: false, animation: "fade" }}
@@ -237,9 +243,9 @@ export default function App() {
               headerTitle: () => {
                 return (
                   <Text
-                  numberOfLines={2}
-                  lineBreakMode="tail"
-                  lineBreakStrategyIOS="tail"
+                    numberOfLines={2}
+                    lineBreakMode="tail"
+                    lineBreakStrategyIOS="tail"
                     style={{
                       color: "var(--Neutral-02-Color-Neutral-02, #29272D)",
                       fontFamily: "roboto",
@@ -325,16 +331,9 @@ export default function App() {
     const dispatch = useDispatch();
     const listType = useSelector((state) => state.listType);
 
-
-
     const toggleMapActive = () => {
-      // Verifica se a aba está focada antes de alterar o listType
-
-      dispatch(setListType(!listType)); // Altera o listType para o oposto do valor atual
+      dispatch(setListType(!listType));
       console.log("listType: ", listType);
-
-
-
     }
     return (
       <Tab.Navigator

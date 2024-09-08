@@ -8,9 +8,7 @@ const colors = require("../style/Colors.json");
 export default function InfoIcon() {
     const Img = require("../../assets/InfoIcon.png")
     return (
-
         <Image source={Img} style={styles.root} />
-
     );
 }
 

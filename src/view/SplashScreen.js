@@ -31,7 +31,6 @@ export default function SplashScreen() {
     return new Promise(async (resolve, reject) => {
       try {
         const user = await AsyncStorage.getItem("@favoriteRestaurants");
-        console.warn("suerrr",user)
         if (user) {
           const favorites = JSON.parse(user); // Parse AsyncStorage data into array
           resolve(favorites);
@@ -50,7 +49,6 @@ export default function SplashScreen() {
     const id = uuid4();
     checkFirstTimeAppFav()
       .then((res) => {
-        console.warn("FAVORITOS", res);
         if (res) {
           dispatch(setAllFavoritesRestaurants(res));
         }

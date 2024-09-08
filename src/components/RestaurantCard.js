@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Pressable,
   Button,
+  TouchableOpacity,
 } from "react-native";
 import { Svg, Path } from "react-native-svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -37,7 +38,9 @@ function CompleteRestaurantCard({
 }) {
   return (
     <>
-      <View style={styles.restaurantCard}>
+      <TouchableOpacity
+        onPress={() => onOpen(id)}
+        style={styles.restaurantCard}>
         <View style={styles.rowCardOne}>
           <Image
             style={[styles.image, { borderRadius: 10 }]}
@@ -110,12 +113,13 @@ function CompleteRestaurantCard({
         <View style={styles.rowCardTwo}>
           <Text
             style={styles.description}
-            numberOfLines={2}
+            numberOfLines={3}
             lineBreakMode="tail"
           >
             {description}
           </Text>
-          <View style={styles.visitButton}>
+
+          {/* <View style={styles.visitButton}>
             <Button
               onPress={() => onOpen(id)} // Aqui foi alterado para chamar onOpen com o ID do restaurante
               title="Abrir"
@@ -125,9 +129,10 @@ function CompleteRestaurantCard({
                   : colors.colors.neutral02Color.neutral_02
               }
             />
-          </View>
+          </View> */}
+
         </View>
-      </View>
+      </TouchableOpacity>
     </>
   );
 }
@@ -327,9 +332,9 @@ export default function RestaurantCard({
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(deg2rad(lat1)) *
-        Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+      Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = earthRadius * c; // Distance in km
     return distance;
@@ -456,8 +461,8 @@ const styles = StyleSheet.create({
     height: 100,
   },
   description: {
-    width: "60%",
-    textAlign: "justify",
+    width: "100%",
+    textAlign: "left",
     fontSize: 12,
     fontWeight: "400",
     color: "#48464A",
